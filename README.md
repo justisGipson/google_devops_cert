@@ -13,10 +13,20 @@ This repo holds all the notes and whatever else is in the [Google Cloud DevOps P
 
 ✅ Understand the purpose and intent of the Professional Cloud DevOps Engineer certification and its relationship to other Google Cloud certifications
 
+### Professional Certificate
+<br>
+
+### Finished Certifications
+<br>
+
 <hr>
 
 ## Table of Contents
 
-1. [GCP Fundamentals: Core Infrastructure]()
+1. [GCP Fundamentals: Core Infrastructure](https://github.com/justisGipson/google_devops_cert/tree/main/GCP_fundamentals_core_infrastructure)
+2. [Developing a Google SRE Culture]()
+3. [Reliable Google Cloud Infrastructure: Design and Process]()
+4. [Logging, Monitoring and Observability in Google Cloud]()
+5. [Getting Started with Google Kubernetes Engine]()
 
 
