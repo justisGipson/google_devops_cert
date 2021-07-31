@@ -448,4 +448,75 @@ The actions are:
 - reading and changing their configurations
 - starting and stopping them.
 
-And which virtual machines? Well, that depends on where the roles apply. In this example, all the users of a certain Google Group have the role, and they have it on all the virtual machines in project_a. If you need something even finer-grained, there are custom roles. A lot of companies have a least-privileged model in which each person in your organization has the minimum amount of privilege needed to do his or her job. So, for example, maybe I want to define an InstanceOperator Role to allow some users to start and stop Compute Engine and virtual machines, but not reconfigure them. Custom roles allow me to do that. A couple cautions about custom roles. First, you have to decide to use custom roles. You'll need to manage their permissions. Some companies decide they'd rather stick with the predefined roles. Second, custom roles can only be used at the project or organization levels. They can't be used at the folder level. What if you want to give permissions to a Compute Engine virtual machine, rather than to a person? Then you would use a service account. For instance, maybe you have an application running in a virtual machine that needs to store data in Google Cloud Storage, but you don't want to let just anyone on the Internet have access to that data, only that virtual machine. So, you'd create a service account to authenticate your VM to cloud storage. Service accounts are named with an email address. But instead of passwords, they use cryptographic keys to access resources. In this simple example, a service account has been granted Compute Engine's InstanceAdmin Role. This would allow an application running in a VM with that service account to create, modify, and delete other VMs. Incidentally, service accounts need to be managed, too. For example, maybe Alice needs to manage what can be act as a given service account, while Bob just needs to be able to view them. Fortunately, in addition to being an identity, a service account is also a resource. So it can have IAM policies on its own attached to it. For instance, Alice can have an editor role in a service account and Bob can have the viewer role. This is just like granting roles for any other GCP resource. You can grant different groups of VMs in your project different identities. This makes it easier to manage different permissions for each group. You can also change the permissions of the service accounts without having to recreate the VMs. Here's a more complex example. Say you have an application that's implemented across a group of Compute Engine virtual machines. One component of your application needs to have an editor role on another project, but another component doesn't. So you would create two different service accounts, one for each subgroup of virtual machines. Only the first service account has privilege on the other project. That reduces the potential impact of a miscoded application or a compromised virtual machine.
+<br>
+
+<img src="../../assets/instance_admin.png" alt="InstanceAdmin Actions" width="50%" height="50%">
+
+<br>
+
+
+And which virtual machines? Well, that depends on where the roles apply.
+
+In this example, all the users of a certain Google Group have the role, and they have it on all the virtual machines in `project_a`.
+
+If you need something even finer-grained, there are custom roles.
+
+A lot of companies have a least-privileged model in which each person in your organization has the minimum amount of privilege needed to do his or her job.
+
+<br>
+
+<img src="../../assets/instance_operator.png" alt="Instance Operator Example" width="50%" height="50%">
+
+<br>
+
+
+So, for example, maybe I want to define an `InstanceOperator` Role to allow some users to start and stop Compute Engine and virtual machines, but not reconfigure them. Custom roles allow me to do that.
+
+A couple cautions about custom roles.
+
+- First, you have to decide to use custom roles. You'll need to manage their permissions. Some companies decide they'd rather stick with the predefined roles.
+- Second, custom roles can only be used at the project or organization levels. They can't be used at the folder level.
+
+What if you want to give permissions to a Compute Engine virtual machine, rather than to a person?  Then you would use a service account.
+
+<br>
+
+<img src="../../assets/service_account.png" alt="Service Account" width="50%" height="50%">
+
+<br>
+
+
+For instance, maybe you have an application running in a virtual machine that needs to store data in Google Cloud Storage, but you don't want to let just anyone on the Internet have access to that data, only that virtual machine. So, you'd create a service account to authenticate your VM to cloud storage.
+
+Service accounts are named with an email address. But instead of passwords, they use cryptographic keys to access resources.
+
+<br>
+
+<img src="../../assets/iam_service_accounts.png" alt="IAM & Service Accounts" width="50%" height="50%">
+
+<br>
+
+
+In this simple example, a service account has been granted Compute Engine's InstanceAdmin Role. This would allow an application running in a VM with that service account to create, modify, and delete other VMs.
+
+Incidentally, service accounts need to be managed, too. For example, maybe Alice needs to manage what can act as a given service account, while Bob just needs to be able to view them.
+
+Fortunately, in addition to being an identity, a service account is also a resource. So it can have IAM policies on its own attached to it.
+
+For instance, Alice can have an editor role in a service account and Bob can have the viewer role. This is just like granting roles for any other GCP resource.
+
+You can grant different groups of VMs in your project different identities. This makes it easier to manage different permissions for each group. You can also change the permissions of the service accounts without having to recreate the VMs.
+
+Here's a more complex example.
+
+<br>
+
+<img src="../../assets/service_account_example.png" alt="Complex Service Account Example" width="50%" height="50%">
+
+<br>
+
+
+Say you have an application that's implemented across a group of Compute Engine virtual machines. One component of your application needs to have an editor role on another project, but another component doesn't. So you would create two different service accounts, one for each subgroup of virtual machines. Only the first service account has privilege on the other project. That reduces the potential impact of a mis-coded application or a compromised virtual machine.
+
+<br>
+
