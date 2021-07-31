@@ -1,4 +1,25 @@
-### What is the Cloud?
+# Google Cloud Fundamentals Core Infrastructure
+
+<br>
+
+- [Google Cloud Fundamentals Core Infrastructure](#google-cloud-fundamentals-core-infrastructure)
+  - [What is the Cloud?](#what-is-the-cloud)
+    - [How Did We Get Here?](#how-did-we-get-here)
+    - [Every Company is a Data Company](#every-company-is-a-data-company)
+    - [GCP Computing Architectures](#gcp-computing-architectures)
+    - [The Google Network](#the-google-network)
+    - [GCP Regions and Zones](#gcp-regions-and-zones)
+    - [Environmental Responsibility](#environmental-responsibility)
+    - [Google Offers Customer-Friendly Pricing](#google-offers-customer-friendly-pricing)
+    - [Open APIs](#open-apis)
+    - [Why Choose Google Cloud Platform](#why-choose-google-cloud-platform)
+    - [Multi-layered Security Approach](#multi-layered-security-approach)
+    - [Budgets & Billing](#budgets--billing)
+  - [Module Intro](#module-intro)
+    - [The GCP Resource Hierarchy](#the-gcp-resource-hierarchy)
+    - [Identity Access & Management](#identity-access--management)
+
+## What is the Cloud?
 
 The US National Institute of Standards and Technology created it, although, there is nothing US specific about it.
 Here it is, cloud computing is a way of using I.T. that has these five equally important traits.
@@ -73,7 +94,7 @@ Google's Edge-caching network sites content close to end users to minimize laten
 
 <br>
 
-### GCP Regions and Zomes
+### GCP Regions and Zones
 
 Here's how GCP is organized.
 
@@ -81,6 +102,7 @@ Let's start at the finest grain level, the Zone.
 <br>
 
 <img src='../../assets/gcp_zones.png' alt='gcp regions and zones' width="50%" height="50%">
+
 <br>
 
 A zone is a deployment area for Google Cloud Platform Resources. For example, when you launch a virtual machine in GCP using Compute Engine, it runs in a zone you specify.
@@ -247,3 +269,183 @@ For example, by default, each GCP project has a quota allowing it no more than f
 Although projects all start with the same quotas, you can change some of them by requesting an increase from Google Cloud support.
 
 <br>
+
+## Module Intro
+
+When you run your workloads in GCP, you use projects to organize them.
+
+You use Google Cloud Identity, and Access Management, also called IM, or IAM to control who can do what. And you use your choice of several interfaces to connect.
+
+In this module, you'll use these basics to get started. Projects are the main way you organize the resources you use in GCP. Use them to group together related resources, usually because they have a common business objective.
+
+The principle of least privilege is very important in managing any kind of compute infrastructure, whether it's in the Cloud or on-premises. This principle says that each user should have only those privileges needed to do their jobs.
+
+In a least-privilege environment, people are protected from an entire class of errors. A coworker of mine once accidentally deleted a running production database. Why? Because he was working as the root user on the system when he shouldn't have been.
+
+<br>
+
+<img src="../../assets/iam.png" alt="iam" width="50%" height="50%">
+
+<br>
+
+GCP customers use IM to implement least privilege, and it makes everybody happier.
+
+There are four ways to interact with GCP's management layer:
+
+- Through the web-based console
+- Through the SDK and its command-line tools
+- Through the APIs
+- Through a mobile app.
+
+In this class, you'll mostly use the console and the command-line tools.
+
+When you build an application on your on-premises infrastructure, you're responsible for the entire stack security. From the physical security of the hardware, and the premises in which they're housed, through the encryption of the data on disk, the integrity of your network, all the way up to securing the content stored in those applications.
+
+When you move an application to Google Cloud Platform, Google handles many of the lower layers of security. Because of its scale, Google can deliver a higher level of security at these layers than most of its customers could afford to do on their own.
+
+The upper layers of the security stack remain the customers' responsibility. Google provides tools such as IAM to help customers implement the policies they choose at these layers.
+
+<br>
+
+### The GCP Resource Hierarchy
+
+You may find it easiest to understand the GCP resource hierarchy from the bottom up.
+
+All the resources you use, whether they're virtual machines, cloud storage buckets, tables and big query or anything else in GCP are organized into projects. Optionally, these projects may be organized into folders. Folders can contain other folders. All the folders and projects used by your organization can be brought together under an organization node. Projects, folders and organization nodes are all places where the policies can be defined. Some GCP resources let you put policies on individual resources too.
+
+<br>
+
+<img src="../../assets/hierarchy.png" alt="hierarchy" width="50%" height="50%">
+
+<br>
+
+In the meantime, remember that policies are inherited downwards in the hierarchy. All Google Cloud platform resources belong to a project. Projects are the basis for enabling and using GCP services like managing APIs, enabling billing and adding and removing collaborators and enabling other Google services. Each project is a separate compartment and each resource belongs to exactly one. Projects can have different owners and users - they're built separately and they're managed separately.
+
+Each GCP project has a name and a project ID that you assign. The project ID is a permanent, unchangeable identifier and it has to be unique across GCP. You use project IDs in several contexts to tell GCP which project you want to work with.
+
+On the other hand, project names are for your convenience and you can assign them. GCP also assigns each of your projects a unique project number and you'll see a display to you in various contexts. But using it is mostly outside the scope of this course.
+
+In general, project IDs are made to be human readable strings and you'll use them frequently to refer to projects.
+
+<br>
+
+<img src="../../assets/folders.png" alt="folders" width="50%" height="50%">
+
+<br>
+
+You can organize projects into folders, although you don't have to. They're a tool at your disposal to make your life easier. For example, you can use folders to represent different departments, teams, applications or environments in your organization. Folders let teams have the ability to delegate administrative rights, so they can work independently.
+
+The resources in a folder inherit IAM policies from the folder. So, if project three and four are administered by the same team by design, you can put IAM policies into folder B instead. Doing it the other way, putting duplicate copies of those policies on project three and project four would be tedious and error prone.
+
+One word of caution: to use folders, you need an organization node at the top of the hierarchy.
+
+So what's that? Let's talk about it now.
+
+You probably want to organize all the projects in your company into a single structure. Most companies want the ability to have centralized visibility on how resources are being used and to apply policy centrally. That's what the organization node is for. It's the top of the hierarchy. There are some special roles associated with it.
+
+<br>
+
+<img src="../../assets/org_node.png" alt="Organization Nodes" width="50%" height="50%">
+
+<br>
+
+For example, you can designate an organization policy administrator so that only people with privilege can change policies. You can also assign a project creator role, which is a great way to control who can spend money.
+
+So how do you get an organization node?
+
+In part the answer depends on whether your company is also a G Suite customer. If you have a G Suite domain, GCP projects will automatically belong to your organization node. Otherwise, you can use Google Cloud Identity to create one.
+
+Here's a tip. When you get a new organization node, it lets anyone in the domain create projects and billing accounts just as they could before. That's to avoid surprises and disruption. But it'd be a great first step with a new organization node to decide who on your team should really be able to do those things.
+
+Once you have an organization node, you can create folders underneath it and put it in projects.
+
+Here's an example of how you might organize your resources.
+
+<br>
+
+<img src="../../assets/hierarchy_example.png" alt="IAM Resource Hierarchy" width="50%" height="50%">
+
+<br>
+
+There are three projects each of which uses resources from several GCP services. In this example, we haven't used any folders, although we could always move projects into folders. Resources inherit the policies of their parent resource. For instance, if you set a policy at the organization level, it is automatically inherited by all its children projects.
+
+And this inheritance is transitive, which means that **all** the resources in those projects inherit the policy too.
+
+There's one important rule to keep in mind.
+
+The policies implemented at a higher level in this hierarchy can't take away access that's granted at a lower level. For example, suppose that a policy applied on the bookshelf project gives user "Pat" the right to modify a cloud storage bucket, but a policy at the organization level says that Pat can only view cloud storage buckets not change them.
+
+The more generous policy is the one that takes effect. Keep this in mind as you design your policies.
+
+<br>
+
+### Identity Access & Management
+
+IAM lets administrators authorize who can take action on specific resources.
+
+An IAM policy has a "who" part, a "can do what" part, and an "on which resource" part.
+
+<br>
+
+<img src="../../assets/iam_policy.png" alt="IAM Policy" width="50%" height="50%">
+
+<br>
+
+The "who" part names the user or users you're talking about. The "who" part of an IAM policy can be defined either by a Google account, a Google group, a Service account, an entire G Suite, or a Cloud Identity domain. The "can do what" part is defined by an IAM role. An IAM role is a collection of permissions. Most of the time, to do any meaningful operations, you need more than one permission.
+
+For example, to manage instances in a project, you need to create, delete, start, stop, and change an instance. So the permissions are grouped together into a role that makes them easier to manage.
+
+The "who" part of an IAM policy can be a Google account, a Google group, a Service account, or an entire G Suite, or Cloud Identity domain.
+
+There are three kinds of roles in Cloud IAM. Let's talk about each in turn.
+
+<br>
+
+<img src="../../assets/iam_types.png" alt="IAM Types" width="50%" height="50%">
+
+<br>
+
+<img src="../../assets/iam_primitive.png" alt="Primitive IAM" width="50%" height="50%">
+
+<br>
+
+
+Primitive roles are broad. You apply them to a GCP project and they affect all resources in that project. These are the owner, editor, and viewer roles. If you're a viewer on a given resource, you can examine it but not change its state. If you're an editor, you can do everything a viewer can do, plus change its state. And if you are an owner, you can do everything an editor can do, plus manage roles and permissions on the resource.
+
+<br>
+
+<img src="../../assets/iam_primitive_roles.png" alt="IAM Primitive Roles" width="50%" height="50%">
+
+<br>
+
+
+The owner role on a project also lets you do one more thing: set up billing. Often, companies want someone to be able to control the billing for a project without the right to change the resources in the project. And that's why you can grant someone the billing administrator role.
+
+Be careful, if you have several people working together on a project that contains sensitive data, primitive roles are probably too coarse. Fortunately, GCP IAM provides a finer grained types of roles.
+
+<br>
+
+<img src="../../assets/iam_predefined_roles.png" alt="IAM Predefined Roles" width="50%" height="50%">
+
+<br>
+
+
+GCP services offer their own sets of predefined roles and they define where those roles can be applied. For example, later in this course, we'll talk about Compute Engine, which offers virtual machines as a service.
+
+Compute Engine offers a set of predefined roles, and you can apply them to Compute Engine resources in a given project, a given folder, or in an entire organization. Another example.
+
+Consider Cloud Bigtable, which is a managed database service. Cloud Bigtable offers roles that can apply across an entire organization to a particular project or even to individual Bigtable database instances.
+
+<br>
+
+### IAM Roles
+
+Compute Engines `InstanceAdmin` Role lets whoever has that role perform a certain set of actions on virtual machines.
+
+The actions are:
+
+- listing them
+- reading and changing their configurations
+- starting and stopping them.
+
+And which virtual machines? Well, that depends on where the roles apply. In this example, all the users of a certain Google Group have the role, and they have it on all the virtual machines in project_a. If you need something even finer-grained, there are custom roles. A lot of companies have a least-privileged model in which each person in your organization has the minimum amount of privilege needed to do his or her job. So, for example, maybe I want to define an InstanceOperator Role to allow some users to start and stop Compute Engine and virtual machines, but not reconfigure them. Custom roles allow me to do that. A couple cautions about custom roles. First, you have to decide to use custom roles. You'll need to manage their permissions. Some companies decide they'd rather stick with the predefined roles. Second, custom roles can only be used at the project or organization levels. They can't be used at the folder level. What if you want to give permissions to a Compute Engine virtual machine, rather than to a person? Then you would use a service account. For instance, maybe you have an application running in a virtual machine that needs to store data in Google Cloud Storage, but you don't want to let just anyone on the Internet have access to that data, only that virtual machine. So, you'd create a service account to authenticate your VM to cloud storage. Service accounts are named with an email address. But instead of passwords, they use cryptographic keys to access resources. In this simple example, a service account has been granted Compute Engine's InstanceAdmin Role. This would allow an application running in a VM with that service account to create, modify, and delete other VMs. Incidentally, service accounts need to be managed, too. For example, maybe Alice needs to manage what can be act as a given service account, while Bob just needs to be able to view them. Fortunately, in addition to being an identity, a service account is also a resource. So it can have IAM policies on its own attached to it. For instance, Alice can have an editor role in a service account and Bob can have the viewer role. This is just like granting roles for any other GCP resource. You can grant different groups of VMs in your project different identities. This makes it easier to manage different permissions for each group. You can also change the permissions of the service accounts without having to recreate the VMs. Here's a more complex example. Say you have an application that's implemented across a group of Compute Engine virtual machines. One component of your application needs to have an editor role on another project, but another component doesn't. So you would create two different service accounts, one for each subgroup of virtual machines. Only the first service account has privilege on the other project. That reduces the potential impact of a miscoded application or a compromised virtual machine.
