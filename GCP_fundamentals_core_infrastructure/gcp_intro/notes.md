@@ -520,3 +520,70 @@ Say you have an application that's implemented across a group of Compute Engine 
 
 <br>
 
+### Interacting with Google Cloud Platform
+
+There are four ways you can interact with Google Cloud Platform, and we'll talk about each in turn:
+- the Console
+- the SDK and Cloud Shell
+- the Mobile App
+- the APIs.
+
+<br>
+
+<img src="../../assets/4_ways_interact.png" alt="Ways to interact with GCP" width="50%" height="50%">
+
+<br>
+
+
+The GCP Console is a web-based administrative interface. If you build an application in GCP, you'll use it. Although, the end users of your application won't. It lets you view and manage all your projects and all the resources they use.
+It also lets you enable, disable and explore the APIs of GCP services.
+
+And it gives you access to Cloud Shell. That's a command-line interface to GCP that's easily accessed from your browser. From Cloud Shell, you can use the tools provided by the Google Cloud Software Development kit `SDK`, without having to first install them somewhere.
+
+What's the Software Development Kit?
+
+The Google Cloud SDK is a set of tools that you can use to manage your resources and your applications on GCP.
+
+These include the `gcloud` tool, which provides the main command line interface for Google Cloud Platform products and services.
+
+There's also `gsutil` which is for Google Cloud Storage and `bq` which is for BigQuery.
+
+The easiest way to get to the SDK commands is to click the Cloud Shell button on a GCP Console. You get a command line in your web browser on a virtual machine with all these commands already installed. You can also install the SDK on your own computers - your laptop, your on-premise servers of virtual machines and other clouds. The SDK is also available as a docker image, which is a really easy and clean way to work with it.
+
+The services that make up GCP offer application programming interfaces so that the code you write can control them.
+
+<br>
+
+<img src="../../assets/restful_api.png" alt="RESTful API" width="50%" height="50%">
+
+<br>
+
+
+These APIs are what's called RESTful. In other words they follow the `representational state transfer paradigm`.
+
+We don't need to go into much detail of what that means here. Basically, it means that your code can use Google services in much the same way that web browsers talk to web servers. The APIs name resources and GCP with URLs. Your code can pass information to the APIs using JSON, which is a very popular way of passing textual information over the web. And there's an open system for user log in and access control.
+
+The GCP Console lets you turn on and off APIs. Many APIs are off by default, and many are associated with quotas and limits. These restrictions help protect you from using resources inadvertently. You can enable only those APIs you need and you can request increases in quotas when you need more resources.
+
+For example, if you're writing an application that needs to control GCP resources, you'll need to get your use of the APIs just right. And to do that, you'll use APIs Explorer.
+
+<br>
+
+<img src="../../assets/apis_explorer.png" alt="APIs Explorer" width="50%" height="50%">
+
+<br>
+
+
+The GCP Console includes a tool called the APIs Explorer that helps you learn about the APIs interactively. It lets you see what APIs are available and in what versions. These APIs expect parameters and documentation on them is built in.
+You can try the APIs interactively even with user authentication.
+
+Suppose you have explored an API and you're ready to build an application that uses it. Do you have to start coding from scratch? No. Google provides client libraries that take a lot of the drudgery out of the task of calling GCP from your code.
+
+<br>
+
+<img src="../../assets/client_libs.png" alt="Cloud Client Libraries" width="50%" height="50%">
+
+<br>
+
+
+There are two kinds of libraries. The Cloud Client Libraries are Google clouds latest and recommended libraries for its APIs. They adopt the native styles and idioms of each language. On the other hand, sometimes a Cloud Client Library doesn't support the newest services and features. In that case, you can use the Google API Client Library for your desired languages. These libraries are designed for generality and completeness. Finally, one more tool that's of interest to everyone, not just developers. There's a mobile App for Android and iOS that lets you examine and manage the resources you're using in GCP. It lets you build dashboards so that you can get the information you need at a glance.
