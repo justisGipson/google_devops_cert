@@ -270,7 +270,7 @@ Although projects all start with the same quotas, you can change some of them by
 
 <br>
 
-## Module Intro
+## Resouce Management Module Intro
 
 When you run your workloads in GCP, you use projects to organize them.
 
@@ -586,4 +586,82 @@ Suppose you have explored an API and you're ready to build an application that u
 <br>
 
 
-There are two kinds of libraries. The Cloud Client Libraries are Google clouds latest and recommended libraries for its APIs. They adopt the native styles and idioms of each language. On the other hand, sometimes a Cloud Client Library doesn't support the newest services and features. In that case, you can use the Google API Client Library for your desired languages. These libraries are designed for generality and completeness. Finally, one more tool that's of interest to everyone, not just developers. There's a mobile App for Android and iOS that lets you examine and manage the resources you're using in GCP. It lets you build dashboards so that you can get the information you need at a glance.
+There are two kinds of libraries.
+
+The Cloud Client Libraries are Google clouds latest and recommended libraries for its APIs. They adopt the native styles and idioms of each language.
+
+On the other hand, sometimes a Cloud Client Library doesn't support the newest services and features. In that case, you can use the Google API Client Library for your desired languages. These libraries are designed for generality and completeness.
+
+Finally, one more tool that's of interest to everyone, not just developers. There's a mobile App for Android and iOS that lets you examine and manage the resources you're using in GCP. It lets you build dashboards so that you can get the information you need at a glance.
+
+<br>
+
+### Cloud Marketplace (formerly Cloud Launcher)
+
+Say you want a quick way to get started with GCP with minimal effort. That's what Google Marketplace provides. I
+
+t's a tool for quickly deploying functional software packages on Google Cloud Platform. There's no need to manually configure the software, virtual machine instances, storage or network settings. Although, you can modify many of them before you launch if you like.
+
+Most software packages in Marketplace are at no additional charge beyond the normal usage fees for GCP resources. Some Cloud Launcher images charge usage fees, particularly those published by third parties with commercially licensed software. But they all show you estimates of their monthly charges before you launch them.
+
+Be aware that these estimates are just that, estimates.
+
+In particular, they don't attempt to estimate networking costs since those will vary based on how you use the applications.
+
+A second note of caution. GCP updates the base images for these software packages to fix critical issues and vulnerabilities. But it doesn't update the software after it's been deployed. Fortunately, you'll have access to the deployed systems, so you can maintain them.
+
+<br>
+
+### Demonstration, Lab
+
+In this demonstration, I'll use Cloud Launcher to deploy a solution on Google Cloud platform. The solution I've chosen is a LAMP stack. LAMP stands for Linux, Apache, MySQL, PHP. It's an easy environment for developing web applications. I'll use Cloud Launcher to deploy that Stack into a Compute Engine Instance. In the GCP Console's Products and Services menu, I click Cloud Launcher.
+
+In the Search Bar, I type LAMP.
+
+LAMP Stacks are environments for web development.
+
+Notice that estimated costs are provided. Now I click Launch On Compute Engine. I leave the deployment name at lampstack-1 and I'll accept the default GCP Zone. I'll accept the other defaults and click Deploy. It takes a few minutes to create the deployment.
+
+When the deployment is finished, the console displays a summary of information about what has been deployed. Let's visit our website's temporary home page. It works.
+
+It's performing some configuration. I login using SSH. We'll change to the directory where the software is installed,
+
+
+and we'll copy in a test page for PHP.
+
+Let's end our SSH session and confirm that our PHP test page is visible.
+
+Now I could continue to configure my PHP website. In this demonstration, I used Cloud Launcher to deploy a LAMP Stack into a Compute Engine Instance.
+
+<br>
+
+## Compute Engine Module Intro
+
+Of all the ways you can run workloads in the cloud, Virtual Machines may be the most familiar.
+
+Compute Engine lets you run virtual machines on Google's global infrastructure.
+
+In this module, we'll learn how Google Compute Engine works with a focus on Google virtual networking.
+
+One of the nice things about virtual machines is that they have the power and generality of a full-fledged operating system in each. You configure a virtual machine much like you build out a physical server by specifying its amounts of CPU, power and memory, its amounts and types of storage and its operating system.
+
+You can flexibly reconfigure them and a VM running on Google's cloud has unmatched worldwide network connectivity.
+
+<br>
+
+### Virtual Private Cloud (VPC) Network
+
+The way a lot of people get started with GCP is to define their own Virtual Private Cloud inside their first GCP project, or they can simply choose the default VPC and get started with that.
+
+Regardless, your VPC networks connect your Google Cloud platform resources to each other and to the internet.
+
+You can segment your networks, use firewall rules to restrict access to instances, and create static routes to forward traffic to specific destinations.
+
+Here's something that surprises a lot of people who are new to GCP.
+
+The Virtual Private Cloud networks that you define have global scope. They can have subnets in any GCP region worldwide and subnets can span the zones that make up a region. This architecture makes it easy for you to define your own network layout with global scope.
+
+You can also have resources in different zones on the same subnet. You can dynamically increase the size of a subnet in a custom network by expanding the range of IP addresses allocated to it. Doing that doesn't affect already configured VMs.
+
+In this example, your VPC has one network. So far, it has one subnet defined in GCP us-east1 region. Notice that it has two Compute Engine VMs attached to it. They're neighbors on the same subnet even though they are in different zones.
+You can use this capability to build solutions that are resilient but still have simple network layouts.
