@@ -659,9 +659,75 @@ You can segment your networks, use firewall rules to restrict access to instance
 
 Here's something that surprises a lot of people who are new to GCP.
 
+<br>
+
+<img src="../../assets/vpc_subnets.png" alt="GCP VPC Subnets" width="50%" height="50%">
+
+<br>
+
+
 The Virtual Private Cloud networks that you define have global scope. They can have subnets in any GCP region worldwide and subnets can span the zones that make up a region. This architecture makes it easy for you to define your own network layout with global scope.
 
 You can also have resources in different zones on the same subnet. You can dynamically increase the size of a subnet in a custom network by expanding the range of IP addresses allocated to it. Doing that doesn't affect already configured VMs.
 
 In this example, your VPC has one network. So far, it has one subnet defined in GCP us-east1 region. Notice that it has two Compute Engine VMs attached to it. They're neighbors on the same subnet even though they are in different zones.
 You can use this capability to build solutions that are resilient but still have simple network layouts.
+
+<br>
+
+### Compute Engine
+
+
+Compute Engine lets you create and run virtual machines on Google infrastructure.
+
+There are no upfront investments and you can run thousands of virtual CPUs on a system that is designed to be fast and to offer consistent performance.
+
+You can create a virtual machine instance by using the Google Cloud Platform console or the GCloud command line tool.
+Your VM can run Linux and Windows Server images provided by Google or customized versions of these images, and you can even import images for many of your physical servers.
+
+When you create a VM, pick a machine type which determines how much memory and how many virtual CPUs it has. These types range from very small to very large indeed. If you can't find a predefined type that meets your needs perfectly, you can make a custom VM.
+
+Speaking of processing power, if you have workloads like machine learning and data processing that can take advantage of GPUs, many GCP zones have GPUs available for you.
+
+Just like physical computers need disks, so do VM. You can choose two kinds of persistent storage; standard or SSD.
+
+If your application needs high-performance scratch space, you can attach a local SSD, but be sure to store data of permanent value somewhere else because local SSDs content doesn't last past when the VM terminates. That's why the other kinds are called persistent disks.
+
+Anyway, most people start off with standard persistent disks and that's the default.
+
+You'll also choose a boot image.
+
+GCP offers lots of versions of Linux and Windows ready to go and you can import your own images too.
+
+Lots of GCP customers want their VMs to always come up with certain configurations like installing software packages on first boot. It's very common to pass GCP VM startup scripts that do just that. You can also pass in other kinds of metadata too.
+
+Once your VMs are running, it's easy to take a durable snapshot of their disks. You can keep these as backups or use them when you need to migrate a VM to another region.
+
+Suppose you have a workload that no human being is sitting around waiting to finish, say a batch job analyzing large dataset, you can save money by choosing `preemptible` VMs to run the job.
+
+A `preemptible` VM is different from an ordinary Compute Engine VM in only one respect. You've given compute engine permission to terminate it if it's resources are needed elsewhere. You can save a lot of money with `preemptible` VMs, although be sure to make your job able to be stopped and restarted.
+
+You can choose the machine properties of your instances such as the number of virtual CPUs and the amount of memory by using a set of predefined machine types or by creating your own custom machine types.
+
+I mentioned a bit ago that you can make very large VMs in compute engine.
+
+<br>
+
+<img src="../../assets/scale_compute_engine.png" alt="Compute Engine Scaling" width="50%" height="50%">
+
+<br>
+
+
+At the time this video was produced, the maximum number of virtual CPUs and the VM was 96 and the maximum memory size was in beta at 624 gigabytes.
+
+Check the [GCP](https://cloud.google.com) website to see where these maximums are today.
+
+These huge VMs are great for workloads like in-memory databases and CPU intensive analytics, but most GCP customers start off with scaling out not scaling up.
+
+Compute Engine has a feature called auto scaling that lets you add and take away VMs from your application based on load metrics.
+
+The other part of making that work is balancing the incoming traffic across the VMs, and Google VPC supports several different kinds of load balancing.
+
+<br>
+
+### Important VPC Capabilities
