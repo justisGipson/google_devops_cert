@@ -15,9 +15,18 @@
     - [Why Choose Google Cloud Platform](#why-choose-google-cloud-platform)
     - [Multi-layered Security Approach](#multi-layered-security-approach)
     - [Budgets & Billing](#budgets--billing)
-  - [Module Intro](#module-intro)
+  - [Resource Management Module Intro](#resource-management-module-intro)
     - [The GCP Resource Hierarchy](#the-gcp-resource-hierarchy)
     - [Identity Access & Management](#identity-access--management)
+    - [IAM Roles](#iam-roles)
+    - [Interacting with Google Cloud Platform](#interacting-with-google-cloud-platform)
+    - [Cloud Marketplace (formerly Cloud Launcher)](#cloud-marketplace-formerly-cloud-launcher)
+    - [Demonstration, Lab](#demonstration-lab)
+  - [Compute Engine Module Intro](#compute-engine-module-intro)
+    - [Virtual Private Cloud (VPC) Network](#virtual-private-cloud-vpc-network)
+    - [Compute Engine](#compute-engine)
+    - [Important VPC Capabilities](#important-vpc-capabilities)
+    - [Getting Started with Compute Engine](#getting-started-with-compute-engine)
 
 ## What is the Cloud?
 
@@ -270,7 +279,7 @@ Although projects all start with the same quotas, you can change some of them by
 
 <br>
 
-## Resouce Management Module Intro
+## Resource Management Module Intro
 
 When you run your workloads in GCP, you use projects to organize them.
 
@@ -731,3 +740,168 @@ The other part of making that work is balancing the incoming traffic across the 
 <br>
 
 ### Important VPC Capabilities
+
+Much like physical networks, VPCs have routing tables. These are used to forward traffic from one instance to another instance within the same network. Even across sub-networks and even between GCP zones without requiring an external IP address.
+
+VPCs routing tables are built in, you don't have to provision or manage a router. Another thing you don't have to provision or manage for GCP, a firewall instance. VPCs give you a global distributed firewall you can control to restrict access to instances, both incoming and outgoing traffic.
+
+You can define firewall rules in terms of metadata tags on Compute Engine instances, which is really convenient.
+
+For example, you can tag all your web servers with say, "web," and write a firewall rule saying that traffic on ports `80` or `443` is allowed into all VMs with the "web" tag, no matter what their IP address happens to be.
+
+Remember, I mentioned that VPCs belong to GCP projects.
+
+But what if your company has several GCP projects and the VPCs need to talk to each other? Don't worry, that's totally doable and manageable.
+
+If you simply want to establish a peering relationship between two VPCs so that they can exchange traffic, that's what VPC Peering does.
+
+On the other hand, if you want to use the full power of IAM to control who and what in one project can interact with a VPC in another, that's what Shared VPC is for.
+
+A few slides back, we talked about how virtual machines can auto-scale to respond to changing load.
+
+<br>
+
+<img src="../../assets/cloud_load_balancing.png" alt="Cloud load balancing" width="50%" height="50%">
+
+<br>
+
+
+But how do your customers get to your application when it might be provided by four VMs one moment and 40 VMs at another?
+
+Cloud Load Balancing is the answer.
+
+Cloud Load Balancing is a fully distributed, software-defined managed service for all your traffic. And because the load balancers don't run in VMs you have to manage, you don't have to worry about scaling or managing them.
+
+You can put Cloud Load Balancing in front of all your traffic - `HTTP` and `HTTPS`, other `TCP` and `SSL` traffic, and `UDP` traffic too.
+
+With Cloud Load Balancing, a single anycast IP frontends all your backend instances in regions around the world. It provides cross-region load balancing, including automatic multi-region failover, which gently moves traffic in fractions if backends become unhealthy.
+
+Cloud Load Balancing reacts quickly to changes in users, traffic, backend health, network conditions, and other related conditions.
+
+And what if you anticipate a huge spike in demand?
+
+Say, your online game is going to be a hit. Do you need to file a support ticket to warn Google of the incoming load? No. No so-called pre-warning is required.
+
+<br>
+
+<img src="../../assets/cross_region_load_balancing.png" alt="Cross Region Load Balancing" width="50%" height="50%">
+
+<br>
+
+
+If you need cross regional load balancing for a web application, use `HTTPS` load balancing.
+
+For Secure Sockets Layer traffic that is not `HTTP`, use the global `SSL` proxy load balancer.
+If it's other `TCP` traffic that does not use Secure Sockets Layer, use the global `TCP` proxy load balancer.
+
+Those two proxy services only work for specific port numbers, and they only work for `TCP`. If you want to load balance `UDP` traffic or traffic on any port number, you can still load balance across a GCP region with the regional load balancer.
+
+Finally, what all those services have in common is that they're intended for traffic coming into the Google network from the internet.
+
+But what if you want to load balance traffic inside your project? Say, between the presentation layer and the business logic layer of your application?
+
+For that, use the internal load balancer. It accepts traffic on a GCP internal IP address and load balances it across Compute Engine VMs.
+
+One of the most famous Google services that people don't pay for is `8.8.8.8`, which provides a public domain name service to the world.
+
+DNS is what translates internet host names to addresses. And as you would imagine, Google has a highly developed DNS infrastructure.
+
+It makes `8.8.8.8` available so that everybody can take advantage of it. But what about the internet host names and addresses of applications you build in GCP?
+
+GCP offers Cloud DNS to help the world find them.
+
+It's a managed DNS service running on the same infrastructure as Google. It has low latency and high availability and it's a cost-effective way to make your applications and services available to your users. The DNS information you publish is served from redundant locations around the world.
+
+Cloud DNS is also programmable.
+
+You can publish and manage millions of DNS zones and records using the GCP console, the command line interface or the API.
+
+Google has a global system of edge caches. You can use this system to accelerate content delivery in your application using Google Cloud CDN. Your customers will experience lower network latency. The origins of your content will experience reduced load and you can save money too.
+
+Once you've set up `HTTPS` load balancing, simply enable Cloud CDN with a single checkbox.
+
+There are lots of other CDNs out there of course. What if you're already using one? Chances are, your CDN is a part of GCPs, CDN interconnect partner program and you can continue to use it.
+
+<br>
+
+<img src="../../assets/interconnect.png" alt="Interconnect Options" width="50%" height="50%">
+
+<br>
+
+Lots of GCP customers want to interconnect their other networks to their Google VPCs, such as on-premises networks or their networks in other clouds. There are many good choices.
+
+Many customers start with a Virtual Private Network connection over the internet using the `IPSEC` protocol. To make that dynamic, they use a GCP feature called Cloud Router. Cloud Router lets your other networks and your Google VPC exchange route information over the VPN using the Border Gateway Protocol.
+
+For instance, if you add a new subnet to your Google VPC, your on-premises network will automatically get routes to it.
+
+But some customers don't want to use the internet, either because of security concerns or because they need more reliable bandwidth. They can consider peering with Google using Direct Peering.
+
+Peering means putting a router in the same public data center as a Google point of presence and exchanging traffic.
+
+Google has more than 100 points of presence around the world. Customers who aren't already in a point of presence can contract with a partner in the carrier peering program to get connected.
+
+One downside of peering though is that it isn't covered by a Google service level agreement. Customers who want the highest uptimes for their interconnection with Google should use Dedicated Interconnect, in which customers get one or more direct private connections to Google.
+
+If these connections have topologies that meet Google's specifications, they can be covered by up to a 99.99 percent SLA. These connections can be backed up by a VPN for even greater reliability.
+
+<br>
+
+### Getting Started with Compute Engine
+
+1. First, create a virtual machine, using the GCP console.
+2. In the Products & services menu, I scroll down to Compute Engine and choose VM instances. I click Create.
+3. I'm going to name my VM instance `my-vm1`
+4. accept the zone that's offered to me. I'll accept the default machine type.
+5. I'll accept Debian GNU/Linux 9 for its operating system. I'll leave its identity and API access the same. And I'm going to modify its firewall to allow inbound HTTP traffic.
+6. Now I click Create
+7. Now I’ll demonstrate building a virtual machine using the command line.
+8. To do this I’ll launch Cloud Shell
+9. Let's put a Cloud Shell in its own window.
+10. I'd like to put this virtual machine in the same region, but a different zone as the previous one.
+11. Our first VM is in the us central1 region.
+12. Let's display a list of all of the zones in that region.
+13. There are four zones and they're all up.
+14. I'm going to set my default zone for new virtual machines.
+15. I'm going to set my default zone for new virtual machines to zone c.
+16. Now I'll launch a new virtual machine using the G Cloud command.
+17. This command creates a new virtual machine called my-vm-2. It's machine type will be n1-standard-1. It'll be a Debian Linux 9 version machine, and it'll be connected to my default subnet Now it's been created.
+18. Now, I'll close my Cloud Shell window.
+19. Let's refresh our VM instances display. Notice that both virtual machines are now listed. First, I'll SSH into my-vm-2.
+20. I'll try to ping my-vm-1
+21. Success, Now I'm going to log into my-vm-1 using SSH.
+22. Because I've never done so before, I'm asked to confirm the key fingerprint.
+23. Now I’m logged in into my-vm-1. Now I’m going to install a simple web server.
+24. And I will edit its default home page.
+25. In this demonstration I'll use the nano text editor.
+26. I'm going to edit the homepage simply to include a custom message
+27. Now, I'll write out my file and exit.
+28. Now let's confirm that the web server is serving my new page. I'll use the curl command line web browser.
+29. Yes, I see the message I included
+30. Now, let's exit my SSH session on my-vm-1 and return my-vm-2.
+31. Can my-vm-2 see the message I put on the web server homepage?
+32. Yes, again
+33. Now I'm going to exit from this SSH session and return to the VM instances list.
+34. Notice that the external IP address is shown from my-vm-1. Let's attempt to connect to it.
+35. And here, once again, is my custom message.
+36. HTTP traffic is allowed into this virtual machine.
+
+<br>
+
+## Cloud Storage Module Intro
+
+Every application needs to store data, maybe media to be streamed or sensor data from devices or customer account balances, or maybe the fact that my Dragonite has more than 2600 CP.
+
+Different applications and workloads required different storage database solutions.
+
+You already know that you can store data on your VM's persistent disk.
+
+Google Cloud Platform has other storage options to meet your needs for structured, unstructured, transactional and relational data.
+
+In this module, I'll tell you about the core storage options:
+- Cloud Storage
+- Cloud SQL
+- Cloud Spanner
+- Cloud Data Store
+- Google Big Table.
+
+Depending on your application, you might want to use one or several of these services to get the job done.
