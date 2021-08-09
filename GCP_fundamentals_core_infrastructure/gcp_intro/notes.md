@@ -910,4 +910,75 @@ Depending on your application, you might want to use one or several of these ser
 
 ### Cloud Storage
 
-Let's start with Google Cloud Storage. What's object storage? It's not the same as file storage, in which you manage your data as a hierarchy of folders. It's not the same as block storage, in which your operating system manages your data as chunks of disk. Instead, object storage means you save to your storage here, you keep this arbitrary bunch of bytes I give you and the storage lets you address it with a unique key. That's it. Often these unique keys are in the form of URLs which means object storage interacts nicely with Web technologies. Cloud Storage works just like that, except better. It's a fully managed scalable service. That means that you don't need to provision capacity ahead of time. Just make objects and the service stores them with high durability and high availability. You can use Cloud Storage for lots of things: serving website content, storing data for archival and disaster recovery, or distributing large data objects to your end users via Direct Download. Cloud Storage is not a file system because each of your objects in Cloud Storage has a URL. Each feels like a file in a lot of ways and that's okay to use the word "file" informally to describe your objects, but still it's not a file system. You would not use Cloud Storage as the root file system of your Linux box. Instead, Cloud Storage is comprised of buckets you create and configure and use to hold your storage objects. The storage objects are immutable, which means that you do not edit them in place but instead you create new versions. Cloud Storage always encrypts your data on the server side before it is written to disk and you don't pay extra for that. Also by default, data in-transit is encrypted using HTTPS. Speaking of transferring data, there are services you can use to get large amounts of data into Cloud Storage conveniently. We'll discuss them later in this module. Once they are in Cloud Storage, you can move them onwards to other GCP storage services. Just as I discussed, your Cloud Storage files are organized into buckets. When you create a bucket, you give it a globally unique name. You specify a geographic location where the bucket and its contents are stored and you choose a default storage class. Pick a location that minimizes latency for your users. In other words, if most of your users are in Europe, you probably want to pick a European location. Speaking of your users, there are several ways to control access to your objects and buckets. For most purposes, Cloud IAM is sufficient. Roles are inherited from project to bucket to object. If you need finer control, you can create access control lists - ACLs - that offer finer control. ACLs define who has access to your buckets and objects as well as what level of access they have. Each ACL consists of two pieces of information, a scope which defines who can perform the specified actions, for example, a specific user or group of users and a permission which defines what actions can be performed. For example, read or write. Remember I mentioned that Cloud Storage objects are immutable. You can turn on object versioning on your buckets if you want. If you do, Cloud Storage keeps a history of modifications. That is, it overrides or deletes all of the objects in the bucket. You can list the archived versions of an object, restore an object to an older state or permanently delete a version as needed. If you don't turn on object versioning, new always overrides old. What if versioning sounds good to you but you're worried about junk accumulating? Cloud Storage also offers lifecycle management policies. For example, you could tell Cloud Storage to delete objects older than 365 days. Or you could tell it to delete objects created before January 1, 2013 or keep only the three most recent versions of each object in a bucket that has versioning enabled.
+Let's start with Google Cloud Storage.
+
+What's object storage? It's not the same as file storage, in which you manage your data as a hierarchy of folders.
+It's not the same as block storage, in which your operating system manages your data as chunks of disk.
+
+Instead, object storage means you save to your storage here, you keep this arbitrary bunch of bytes I give you and the storage lets you address it with a unique key. That's it.
+
+Often these unique keys are in the form of URLs which means object storage interacts nicely with Web technologies.
+
+Cloud Storage works just like that, except better.
+
+It's a fully managed scalable service. That means that you don't need to provision capacity ahead of time. Just make objects and the service stores them with high durability and high availability.
+
+You can use Cloud Storage for lots of things: serving website content, storing data for archival and disaster recovery, or distributing large data objects to your end users via Direct Download.
+
+Cloud Storage is not a file system because each of your objects in Cloud Storage has a URL. Each feels like a file in a lot of ways and that's okay to use the word "file" informally to describe your objects, but still it's not a file system.
+
+You would not use Cloud Storage as the root file system of your Linux box.
+
+Instead, Cloud Storage is comprised of buckets you create and configure and use to hold your storage objects.
+
+The storage objects are immutable, which means that you do not edit them in place but instead you create new versions.
+
+Cloud Storage always encrypts your data on the server side before it is written to disk and you don't pay extra for that. Also by default, data in-transit is encrypted using HTTPS.
+
+Speaking of transferring data, there are services you can use to get large amounts of data into Cloud Storage conveniently. We'll discuss them later in this module.
+
+Once they are in Cloud Storage, you can move them onwards to other GCP storage services.
+
+Just as discussed, your Cloud Storage files are organized into buckets. When you create a bucket, you give it a globally unique name. You specify a geographic location where the bucket and its contents are stored and you choose a default storage class. Pick a location that minimizes latency for your users. In other words, if most of your users are in Europe, you probably want to pick a European location.
+
+<br>
+
+<img src="../../assets/storage_buckets.png" alt="Storage Buckets" width="50%" height="50%">
+
+<br>
+
+Speaking of your users, there are several ways to control access to your objects and buckets.
+
+For most purposes, Cloud IAM is sufficient. Roles are inherited from project to bucket to object. If you need finer control, you can create access control lists - `ACLs` - that offer finer control.
+
+ACLs define who has access to your buckets and objects as well as what level of access they have. Each ACL consists of two pieces of information, a scope which defines who can perform the specified actions, for example, a specific user or group of users and a permission which defines what actions can be performed.
+
+For example, read or write.
+
+Remember it was mentioned that Cloud Storage objects are immutable. You can turn on object versioning on your buckets if you want. If you do, Cloud Storage keeps a history of modifications. That is, it overrides or deletes all of the objects in the bucket.
+
+You can list the archived versions of an object, restore an object to an older state or permanently delete a version as needed.
+
+If you don't turn on object versioning, new always overrides old.
+
+What if versioning sounds good to you but you're worried about junk accumulating? Cloud Storage also offers lifecycle management policies.
+
+For example, you could tell Cloud Storage to delete objects older than 365 days. Or you could tell it to delete objects created before January 1, 2013 or keep only the three most recent versions of each object in a bucket that has versioning enabled.
+
+<br>
+
+### Cloud Storage Interactions
+
+<br>
+
+<img src="../../assets/cloud_storage_interactions.png" alt="Cloud Storage Interactions" width="50%" height="50%">
+
+<br>
+
+Cloud Storage lets you choose among four different types of storage classes:
+- Regional
+- Multi-regional
+- Nearline
+- Coldline
+
+Here's how to think about them. Multi-regional and Regional are high-performance object storage, whereas Nearline and Coldline are backup and archival storage. That's why I placed that heavy dividing line between these two groups. All of the storage classes are accessed in comparable ways using the cloud storage API and they all offer millisecond access times. Now, let's talk about how they differ. Regional storage lets you store your data in a specific GCP region: US Central one, Europe West one or Asia East one. It's cheaper than Multi-regional storage but it offers less redundancy. Multi-regional storage on the other hand, cost a bit more but it's Geo-redundant. That means you pick a broad geographical location like the United States, the European Union, or Asia and cloud storage stores your data in at least two geographic locations separated by at least 160 kilometers. Multi-regional storage is appropriate for storing frequently accessed data. For example, website content, interactive workloads, or data that's part of mobile and gaming applications. People use regional storage on the other hand, to store data close to their Compute Engine, virtual machines, or their Kubernetes engine clusters. That gives better performance for data-intensive computations. Nearline storage is a low-cost, highly durable service for storing infrequently accessed data. The storage class is a better choice than Multi-regional storage or Regional storage in scenarios where you plan to read or modify your data once a month or less on average. For example, if you want to continuously add files to cloud storage and plan to access those files once a month for analysis, Nearline storage is a great choice. Coldline storage is a very low cost, highly durable service for data archiving, online backup, and disaster recovery. Coldline storage is the best choice for data that you plan to access -at most - once a year. This is due to its slightly lower availability, 90-day minimum storage duration, costs for data access, and higher per operation costs. For example, if you want to archive data or have access to it in case of a disaster recovery event. Availability of these storage classes varies with Multi-regional having the highest availability of 99.95 percent followed by Regional with 99.9 percent and Nearline and Coldline with 99 percent. As for pricing, all storage classes incur a cost per gigabyte of data stored per month, with Multi-regional having the highest storage price and Coldline the lowest storage price. Egress and data transfer charges may also apply. In addition to those charges, Nearline storage also incurs an access fee per gigabyte of data read and Coldline storage incurs a higher fee per gigabyte of data read. Regardless of which storage class you choose, there are several ways to bring data into cloud storage. Many customers simply use gsutil which is the cloud storage command from this cloud SDK. You can also move data in with a drag and drop in the GCP console, if you use the Google Chrome browser. But what if you have to upload terabytes or even petabytes of data? Google Cloud platform offers the online storage transfer service and the offline transfer appliance to help. The storage transfer service lets you schedule and manage batch transfers to cloud storage from another cloud provider from a different cloud storage region or from an HTTPS endpoint. The transfer appliance is a rackable, high-capacity storage server that you lease from Google Cloud. You simply connect it to your network, load it with data, and then ship it to an upload facility where the data is uploaded to cloud storage. This service enables you to securely transfer up to a petabyte of data on a single appliance. As of this recording, it's still beta and it's not available everywhere. So, check the website for details. There are other ways of getting your data into cloud storage as this storage option is tightly integrated with many of the Google cloud platform products and services. For example, you can import and export tables from and to BigQuery as well as Cloud SQL. You can also store App Engine logs, cloud data store backups, and objects used by App Engine applications like images. Cloud storage can also store instant startup scripts, Compute Engine images, and objects used by Compute Engine applications. In short, cloud storage is often the ingestion point for data being moved into the cloud and is frequently the long-term storage location for data.
