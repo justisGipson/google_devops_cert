@@ -27,6 +27,11 @@
     - [Compute Engine](#compute-engine)
     - [Important VPC Capabilities](#important-vpc-capabilities)
     - [Getting Started with Compute Engine](#getting-started-with-compute-engine)
+  - [Cloud Storage Module Intro](#cloud-storage-module-intro)
+    - [Cloud Storage](#cloud-storage)
+    - [Cloud Storage Interactions](#cloud-storage-interactions)
+    - [Cloud Bigtable](#cloud-bigtable)
+    - [Cloud SQL & Cloud Spanner](#cloud-sql--cloud-spanner)
 
 ## What is the Cloud?
 
@@ -981,4 +986,210 @@ Cloud Storage lets you choose among four different types of storage classes:
 - Nearline
 - Coldline
 
-Here's how to think about them. Multi-regional and Regional are high-performance object storage, whereas Nearline and Coldline are backup and archival storage. That's why I placed that heavy dividing line between these two groups. All of the storage classes are accessed in comparable ways using the cloud storage API and they all offer millisecond access times. Now, let's talk about how they differ. Regional storage lets you store your data in a specific GCP region: US Central one, Europe West one or Asia East one. It's cheaper than Multi-regional storage but it offers less redundancy. Multi-regional storage on the other hand, cost a bit more but it's Geo-redundant. That means you pick a broad geographical location like the United States, the European Union, or Asia and cloud storage stores your data in at least two geographic locations separated by at least 160 kilometers. Multi-regional storage is appropriate for storing frequently accessed data. For example, website content, interactive workloads, or data that's part of mobile and gaming applications. People use regional storage on the other hand, to store data close to their Compute Engine, virtual machines, or their Kubernetes engine clusters. That gives better performance for data-intensive computations. Nearline storage is a low-cost, highly durable service for storing infrequently accessed data. The storage class is a better choice than Multi-regional storage or Regional storage in scenarios where you plan to read or modify your data once a month or less on average. For example, if you want to continuously add files to cloud storage and plan to access those files once a month for analysis, Nearline storage is a great choice. Coldline storage is a very low cost, highly durable service for data archiving, online backup, and disaster recovery. Coldline storage is the best choice for data that you plan to access -at most - once a year. This is due to its slightly lower availability, 90-day minimum storage duration, costs for data access, and higher per operation costs. For example, if you want to archive data or have access to it in case of a disaster recovery event. Availability of these storage classes varies with Multi-regional having the highest availability of 99.95 percent followed by Regional with 99.9 percent and Nearline and Coldline with 99 percent. As for pricing, all storage classes incur a cost per gigabyte of data stored per month, with Multi-regional having the highest storage price and Coldline the lowest storage price. Egress and data transfer charges may also apply. In addition to those charges, Nearline storage also incurs an access fee per gigabyte of data read and Coldline storage incurs a higher fee per gigabyte of data read. Regardless of which storage class you choose, there are several ways to bring data into cloud storage. Many customers simply use gsutil which is the cloud storage command from this cloud SDK. You can also move data in with a drag and drop in the GCP console, if you use the Google Chrome browser. But what if you have to upload terabytes or even petabytes of data? Google Cloud platform offers the online storage transfer service and the offline transfer appliance to help. The storage transfer service lets you schedule and manage batch transfers to cloud storage from another cloud provider from a different cloud storage region or from an HTTPS endpoint. The transfer appliance is a rackable, high-capacity storage server that you lease from Google Cloud. You simply connect it to your network, load it with data, and then ship it to an upload facility where the data is uploaded to cloud storage. This service enables you to securely transfer up to a petabyte of data on a single appliance. As of this recording, it's still beta and it's not available everywhere. So, check the website for details. There are other ways of getting your data into cloud storage as this storage option is tightly integrated with many of the Google cloud platform products and services. For example, you can import and export tables from and to BigQuery as well as Cloud SQL. You can also store App Engine logs, cloud data store backups, and objects used by App Engine applications like images. Cloud storage can also store instant startup scripts, Compute Engine images, and objects used by Compute Engine applications. In short, cloud storage is often the ingestion point for data being moved into the cloud and is frequently the long-term storage location for data.
+Here's how to think about them.
+
+Multi-regional and Regional are high-performance object storage, whereas Nearline and Coldline are backup and archival storage.
+
+That's why I placed that heavy dividing line between these two groups.
+
+All of the storage classes are accessed in comparable ways using the cloud storage API and they all offer millisecond access times.
+
+Now, let's talk about how they differ.
+
+Regional storage lets you store your data in a specific GCP region: US Central one, Europe West one or Asia East one. It's cheaper than Multi-regional storage but it offers less redundancy.
+
+Multi-regional storage on the other hand, cost a bit more but it's Geo-redundant. That means you pick a broad geographical location like the United States, the European Union, or Asia and cloud storage stores your data in at least two geographic locations separated by at least 160 kilometers.
+
+Multi-regional storage is appropriate for storing frequently accessed data.
+
+For example,
+- website content
+- interactive workloads,
+- data that's part of mobile and gaming applications.
+
+People use regional storage on the other hand, to store data close to their Compute Engine, virtual machines, or their Kubernetes engine clusters. That gives better performance for data-intensive computations.
+
+Nearline storage is a low-cost, highly durable service for storing infrequently accessed data. The storage class is a better choice than Multi-regional storage or Regional storage in scenarios where you plan to read or modify your data once a month or less on average.
+
+For example, if you want to continuously add files to cloud storage and plan to access those files once a month for analysis, Nearline storage is a great choice.
+
+Coldline storage is a very low cost, highly durable service for data archiving, online backup, and disaster recovery.
+
+Coldline storage is the best choice for data that you plan to access -at most - once a year. This is due to its slightly lower availability, 90-day minimum storage duration, costs for data access, and higher per operation costs.
+
+For example, if you want to archive data or have access to it in case of a disaster recovery event.
+
+Availability of these storage classes varies with Multi-regional having the highest availability of 99.95 percent followed by Regional with 99.9 percent and Nearline and Coldline with 99 percent.
+
+As for pricing, all storage classes incur a cost per gigabyte of data stored per month, with Multi-regional having the highest storage price and Coldline the lowest storage price.
+
+Egress and data transfer charges may also apply.
+
+In addition to those charges, Nearline storage also incurs an access fee per gigabyte of data read and Coldline storage incurs a higher fee per gigabyte of data read.
+
+Regardless of which storage class you choose, there are several ways to bring data into cloud storage.
+
+<br>
+
+<img src="../../assets/cloud_storage_data.png" alt="cloud storage data" width="50%" height="50%"/>
+
+<br>
+
+Many customers simply use `gsutil` which is the cloud storage command from this cloud SDK. You can also move data in with a drag and drop in the GCP console, _if you use the Google Chrome browser_.
+
+But what if you have to upload terabytes or even petabytes of data? Google Cloud platform offers the online storage transfer service and the offline transfer appliance to help.
+
+The storage transfer service lets you schedule and manage batch transfers to cloud storage from another cloud provider, from a different cloud storage region or from an HTTPS endpoint.
+
+The transfer appliance is a rackable, high-capacity storage server that you lease from Google Cloud. You simply connect it to your network, load it with data, and then ship it to an upload facility where the data is uploaded to cloud storage. This service enables you to securely transfer up to a petabyte of data on a single appliance.
+
+*As of this course, it's still beta and it's not available everywhere. So, check the website for details.*
+
+There are other ways of getting your data into cloud storage as this storage option is tightly integrated with many of the Google cloud platform products and services.
+
+For example, you can import and export tables from and to BigQuery as well as Cloud SQL. You can also store App Engine logs, cloud data store backups, and objects used by App Engine applications like images.
+
+Cloud storage can also store instant startup scripts, Compute Engine images, and objects used by Compute Engine applications. In short, cloud storage is often the ingestion point for data being moved into the cloud and is frequently the long-term storage location for data.
+
+<br>
+
+### Cloud Bigtable
+
+Cloud Bigtable is Google's NoSQL, big data database service.
+
+What is NoSQL mean?
+
+Think first of a relational database as offering you tables in which every row has the same set of columns, and the database engine enforces that rule and other rules you specify for each table.
+
+That's called the database schema.
+
+An enforced schema is a big help for some applications and a huge pain for others. Some applications call for a much more flexible approach.
+
+For example, a NoSQL schema.
+
+In other words, for these applications not all the rows might need to have the same columns.
+
+And in fact, the database might be designed to take advantage of that by sparsely populating the rows. That's part of what makes a NoSQL database what it is.
+
+Which brings us to Bigtable.
+
+Your databases in Bigtable are sparsely populated tables that can scale to billions of rows and thousands of columns allowing you to store petabytes of data.
+
+GCP fully manages the surface, so you don't have to configure and tune it. It's ideal for data that has a single lookup key. Some applications developers think of Bigtable as a persistent hash table.
+
+Cloud Bigtable is ideal for storing large amounts of data with very low latency. It supports high throughput, both read and write, so it's a great choice for both operational and analytical applications including Internet of Things, user analytics and financial data analysis.
+
+Cloud Bigtable is offered through the same open source API as `HBase`, which is the native database for the Apache Hadoop project.
+
+Anyway, having the same API enables portability of applications between `HBase` and Bigtable. Given that you could manage your own Apache `HBase` installation, you might ask yourself, why should I choose Bigtable?
+
+Here are a few reasons why you might.
+
+First, scalability. If you manage your own `Hbase` installation, scaling past a certain rate of queries per second is going to be tough, but with Bigtable you can just increase your machine count which doesn't even require downtime.
+
+Also, Cloud Bigtable handles administration tasks like upgrades and restarts transparently.
+
+All data in Cloud Bigtable is encrypted in both in-flight and at rest. You can even use IAM permissions to control who has access to Bigtable data.
+
+One last reference point.
+
+Bigtable is actually the same database that powers many of Google's core services including search, analytics, maps and Gmail.
+
+<br>
+
+<img src="../../assets/cloud_bigtable.png" alt="bigtable access patterns" width="50%" height="50%">
+
+<br>
+
+As Cloud Bigtable is part of the GCP ecosystem, it can interact with other GCP services and third-party clients. From an application API perspective, data can be read from and written to Cloud Bigtable through a data service layer like Managed VMs, the HBase rest server or a Java server using the HBase client.
+
+Typically, this will be to serve data to applications, dashboards and data services.
+
+Data can also be streamed in through a variety of popular stream processing frameworks, like Cloud Dataflow Streaming, Spark Streaming and Storm.
+
+If streaming is not an option, data can also be read from and written to Cloud Bigtable through batch processes like Hadoop map reduce, Dataflow or Spark.
+
+Often summarized or newly calculated data is written back to Cloud Bigtable or to a downstream database.
+
+<br>
+
+### Cloud SQL & Cloud Spanner
+
+A moment ago, I discussed NoSQL databases.
+
+Now, let's turn our attention to relational database services.
+
+Remember, these services use a database schema to help your application keep your data consistent and correct. Another feature of relational database services that helps with the same goal - transactions.
+
+Your application can designate a group of database changes as all or nothing. Either they all get made, or none do.
+
+Without database transactions, your online bank wouldn't be able to offer you the ability to move money from one account to another.
+
+  What if, after subtracting $10,000 from one of your accounts, some glitch prevented it from adding that 10,000 to the destination account?
+
+Your bank would have just misplaced $10,000. Classically, relational databases are a lot of work to set up, maintain, manage, and administer.
+
+If that doesn't sound like a good use of your time but you still want the protections of a relational database, consider Cloud SQL.
+
+It offers you your choice of the MySQL or PostgreSQL database engines as a fully managed service.
+
+Cloud SQL offers both MySQL and PostgreSQL databases that are capable of handling terabytes of storage.
+
+*As of this course, Cloud SQL for PostgreSQL is in beta. So, check the website for details of its status.*
+
+Of course, you could always run your own database server inside a Compute Engine virtual machine, which a lot of GCP customers do.
+
+But there are some benefits of using the Cloud SQL managed service instead.
+
+<br>
+
+<img src="../../assets/cloud_sql.png" alt="" width="50%" height="50%">
+
+<br>
+
+First, Cloud SQL provides several replica services like read, failover, and external replicas. This means that if an outage occurs, Cloud SQL can replicate data between multiple zones with automatic failover.
+
+Cloud SQL also helps you backup your data with either on-demand or scheduled backups. It can also scale both vertically by changing the machine type, and horizontally via read replicas.
+
+From a security perspective, Cloud SQL instances include network firewalls, and customer data is encrypted when on Google's internal networks, and when stored in database tables, temporary files, and backups.
+
+Another benefit of Cloud SQL instances, is they are accessible by other GCP services and even external services.
+
+You can authorize Compute Engine instances for access Cloud SQL instances and configure the Cloud SQL instance to be in the same zone as your virtual machine.
+
+Cloud SQL also supports other applications and tools that you might be used to, like SQL WorkBench, Toad, and other external applications using standard MySQL drivers.
+
+If Cloud SQL does not fit your requirements because you need horizontal scaleability, consider using Cloud Spanner.
+
+It offers transactional consistency at a global scale, schemas, SQL, and automatic synchronous replication for high availability. And, it can provide petabytes of capacity.
+
+Consider using Cloud Spanner if you have outgrown any relational database, or sharding your databases for throughput high performance, need transactional consistency, global data and strong consistency, or just want to consolidate your database.
+
+Natural use cases include, financial applications, and inventory applications.
+
+<br>
+
+### Cloud Datastore
+
+We already discussed one GCP NoSQL database service: Cloud Bigtable.
+
+Another highly scalable NoSQL database choice for your applications is Cloud Datastore.
+
+One of its main use cases is to store structured data from App Engine apps. You can also build solutions that span App Engine and Compute Engine with Cloud Datastore as the integration point.
+
+As you would expect from a fully-managed service, Cloud Datastore automatically handles sharding and replication, providing you with a highly available and durable database that scales automatically to handle load.
+
+Unlike Cloud Bigtable, it also offers transactions that affect multiple database rows, and it lets you do SQL-like queries. To get you started, Cloud Datastore has a free daily quota that provides storage, reads, writes, deletes and small operations at no charge.
+
+<br>
+
+### Comparing Storage Options
+
+<br>
+
+<img src="../../assets/comparing_storage_options.png" alt="" width="50%" height="50%">
+
+<br>
+
+Now that we've covered GCP's core storage options, let's compare them to help you choose the right service for your application or workflow. This table focuses on the technical differentiators of the storage services. Each row has a technical specification and each column is a service. Let me cover each service from left to right. Consider using Cloud Datastore if you need to store unstructured objects or if you require support for transactions and SQL-like queries. This storage service provides terabytes of capacity with a maximum unit size of one megabyte per entity. Consider using Cloud Bigtable if you need to store a large amount of structured objects. Cloud Bigtable does not support SQL's queries nor does it support multi-row transactions. This storage service provides petabytes of capacity with a maximum unit size of 10 megabytes per cell and 100 megabytes per row. Consider using Cloud Storage if you need to store immutable blobs larger than 10 megabytes such as large images or movies. This storage service provides petabytes of capacity with a maximum unit size of five terabytes per object. Consider using Cloud SQL or Cloud Spanner if you need full SQL support for an online transaction processing system. Cloud SQL provides terabytes of capacity, while Cloud Spanner provides petabytes. If Cloud SQL does not fit your requirements because you need horizontal scalability not just through read replicas, consider using Cloud Spanner. We didn't cover BigQuery in this module as it sits on the edge between data storage and data processing, but you will learn more about it in the "Big Data and Machine Learning in the Cloud" Module. The usual reason to store data in BigQuery is to use its big data analysis and interactive query and capabilities. You would not want to use BigQuery, for example, as the backings store for an online application. Considering the technical differentiators of the different storage services, help some people decide which storage service to choose. Others like to consider use cases. Let me go through each service one more time. Cloud Datastore is the best for semi-structured application data that is used in app engines' applications. Bigtable is best for analytical data with heavy read/write events like AdTech, Financial or IoT data. Cloud Storage is best for structured and unstructured, binary or object data like images, large media files and backups. SQL is best for web frameworks and in existing applications like storing user credentials and customer orders. Cloud Spanner is best for large scale database applications that are larger than two terabytes; for example, for financial trading and e-commerce use cases. As I mentioned at the beginning of the module, depending on your application, you might use one or several of these services to get the job done.
+
