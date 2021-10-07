@@ -1185,11 +1185,36 @@ Unlike Cloud Bigtable, it also offers transactions that affect multiple database
 
 ### Comparing Storage Options
 
+Now that we've covered GCP's core storage options, let's compare them to help you choose the right service for your application or workflow.
+
 <br>
 
 <img src="../../assets/comparing_storage_options.png" alt="" width="50%" height="50%">
 
 <br>
 
-Now that we've covered GCP's core storage options, let's compare them to help you choose the right service for your application or workflow. This table focuses on the technical differentiators of the storage services. Each row has a technical specification and each column is a service. Let me cover each service from left to right. Consider using Cloud Datastore if you need to store unstructured objects or if you require support for transactions and SQL-like queries. This storage service provides terabytes of capacity with a maximum unit size of one megabyte per entity. Consider using Cloud Bigtable if you need to store a large amount of structured objects. Cloud Bigtable does not support SQL's queries nor does it support multi-row transactions. This storage service provides petabytes of capacity with a maximum unit size of 10 megabytes per cell and 100 megabytes per row. Consider using Cloud Storage if you need to store immutable blobs larger than 10 megabytes such as large images or movies. This storage service provides petabytes of capacity with a maximum unit size of five terabytes per object. Consider using Cloud SQL or Cloud Spanner if you need full SQL support for an online transaction processing system. Cloud SQL provides terabytes of capacity, while Cloud Spanner provides petabytes. If Cloud SQL does not fit your requirements because you need horizontal scalability not just through read replicas, consider using Cloud Spanner. We didn't cover BigQuery in this module as it sits on the edge between data storage and data processing, but you will learn more about it in the "Big Data and Machine Learning in the Cloud" Module. The usual reason to store data in BigQuery is to use its big data analysis and interactive query and capabilities. You would not want to use BigQuery, for example, as the backings store for an online application. Considering the technical differentiators of the different storage services, help some people decide which storage service to choose. Others like to consider use cases. Let me go through each service one more time. Cloud Datastore is the best for semi-structured application data that is used in app engines' applications. Bigtable is best for analytical data with heavy read/write events like AdTech, Financial or IoT data. Cloud Storage is best for structured and unstructured, binary or object data like images, large media files and backups. SQL is best for web frameworks and in existing applications like storing user credentials and customer orders. Cloud Spanner is best for large scale database applications that are larger than two terabytes; for example, for financial trading and e-commerce use cases. As I mentioned at the beginning of the module, depending on your application, you might use one or several of these services to get the job done.
+This table focuses on the technical differentiators of the storage services.
 
+Each row has a technical specification and each column is a service. Lets cover each service from left to right.
+
+Consider using Cloud Datastore if you need to store structured objects or if you require support for transactions and SQL-like queries.
+
+This storage service provides terabytes of capacity with a maximum unit size of one megabyte per entity.
+
+Consider using Cloud Bigtable if you need to store a large amount of structured objects. Cloud Bigtable does not support SQL's queries nor does it support multi-row transactions. This storage service provides petabytes of capacity with a maximum unit size of 10 megabytes per cell and 100 megabytes per row.
+
+Consider using Cloud Storage if you need to store immutable blobs larger than 10 megabytes such as large images or movies. This storage service provides petabytes of capacity with a maximum unit size of five terabytes per object.
+
+Consider using Cloud SQL or Cloud Spanner if you need full SQL support for an online transaction processing system. Cloud SQL provides terabytes of capacity, while Cloud Spanner provides petabytes. If Cloud SQL does not fit your requirements because you need horizontal scalability not just through read replicas, consider using Cloud Spanner.
+
+We didn't cover BigQuery in this module as it sits on the edge between data storage and data processing, but you will learn more about it in the "Big Data and Machine Learning in the Cloud" Module. The usual reason to store data in BigQuery is to use its big data analysis and interactive querying capabilities. You would not want to use BigQuery, for example, as the backings store for an online application.
+
+Considering the technical differentiators of the different storage services, help some people decide which storage service to choose. Others like to consider use cases. Let me go through each service one more time.
+
+- Cloud Datastore is the best for semi-structured application data that is used in app engines' applications.
+- Bigtable is best for analytical data with heavy read/write events like AdTech, Financial or IoT data.
+- Cloud Storage is best for structured and unstructured, binary or object data like images, large media files and backups.
+- Cloud SQL is best for web frameworks and in existing applications like storing user credentials and customer orders.
+- Cloud Spanner is best for large scale database applications that are larger than two terabytes; for example, for financial trading and e-commerce use cases.
+
+As I mentioned at the beginning of the module, depending on your application, you might use one or several of these services to get the job done.
