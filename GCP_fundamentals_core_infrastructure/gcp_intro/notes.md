@@ -626,7 +626,7 @@ A second note of caution. GCP updates the base images for these software package
 
 <br>
 
-### Demonstration, Lab
+#### Demonstration, Lab
 
 In this demonstration, I'll use Cloud Launcher to deploy a solution on Google Cloud platform. The solution I've chosen is a LAMP stack. LAMP stands for Linux, Apache, MySQL, PHP. It's an easy environment for developing web applications. I'll use Cloud Launcher to deploy that Stack into a Compute Engine Instance. In the GCP Console's Products and Services menu, I click Cloud Launcher.
 
@@ -851,7 +851,7 @@ If these connections have topologies that meet Google's specifications, they can
 
 <br>
 
-### Getting Started with Compute Engine
+#### - Lab: Getting Started with Compute Engine
 
 1. First, create a virtual machine, using the GCP console.
 2. In the Products & services menu, I scroll down to Compute Engine and choose VM instances. I click Create.
@@ -1218,3 +1218,54 @@ Considering the technical differentiators of the different storage services, hel
 - Cloud Spanner is best for large scale database applications that are larger than two terabytes; for example, for financial trading and e-commerce use cases.
 
 As I mentioned at the beginning of the module, depending on your application, you might use one or several of these services to get the job done.
+
+#### Lab: Getting started with Cloud Storage and Cloud SQL
+
+1. First we create a web server. In the GCP Console's Products and Services menu, I scroll down to Compute Engine, and choose VM instances.
+2. I'll create an instance.
+3. I'll name the instance: `bloghost`.
+4. And I'll leave it in the offered zone us-central1-a. I'll take the other defaults. And I'll configure the firewall to allow HTTP traffic in.
+5. I also want to add a startup script. This startup script will install a web server.
+  - `apt-get update`
+  - `apt-get install apache2 php php-mysql -y`
+  - `service apache2 restart`
+6. I click Create, and the Virtual Machine instance is created for me.
+7. Notice its external IP address. We'll need that later.
+8. Now I'm going to make a Cloud Storage bucket using Cloud Shell.
+9. I enter the command: `gsutil mb -l` then I name the location in which I want the bucket to reside. In this case, the US Multi-Region. The name of my Cloud Storage bucket must be globally unique, and the easiest way to make sure of this is to name the bucket after my GCP Project ID, which is also globally unique. In the Cloud Shell, the environment variable `$DEVSHELL_PROJECT_ID` always contains my project ID.
+10. Now I've created my bucket. I'm going to copy a graphical image from another Cloud Storage bucket, this one called: `cloud-training`.
+11. Now I have the graphical image here in my directory, `my-excellent-blog.png`. Now I use the `gsutil cp` command again to upload it to my own Cloud Storage bucket.
+12. can see the resulting file, both from the command line using: `gsutil ls`...
+13. ...and also from the GCP Console's Storage Browser.
+14. There's my bucket, and there's the object I created in the bucket.
+15. Recall that my VM instance is in zone `us-central1-a`. Now we'll create a Cloud SQL instance in the same zone. In the Products and Services menu, we scroll down to SQL. We choose MySQL for our database engine, Second Generation.
+16. We name our instance "blog-db" and we define a root password. We'll place this instance in the same zone as our Compute instance.
+17. When the database instance has been made, we click on its name to configure it. With my database instance finished provisioning, I can click on its name to configure it.
+18. I want to create a MySQL username called: `blogdbuser`.
+19. I'll define a password.
+20. Now I want to configure this database instance so that it can be only contacted from my Virtual Machine instance. So I need to go back to its entry in the VM instance's listing and capture its public IP address.
+21. There it is. We'll copy it.
+22. We return to our SQL instance, click on our instance name, and click Authorization. We wish to authorize a network consisting only of the desired VM instance. We'll name the network: `web front end` and insert the IP address of that instance followed by `/32`.
+23. Now our database instance is protected from broad internet access. Now I'm going to return to my Virtual Machine and configure it to use the resources we've set up.
+24. I'll log into it using SSH.
+25. I'm going to edit its PHP homepage.
+26. I've prepared a page that I can paste in.
+27. I'll fill in my database's IP address and password.
+28. Notice the comment. In a real blog, we would never store the MySQL password anywhere in the document root. Instead, we would store it in a separate configuration file somewhere else in the web server Virtual Machine.
+29. Now let's try it. We'll restart the web server daemon.
+    - `sudo service apache2 restart`
+1.  Now we'll return to the GCP Console's VM instances list and attempt to view the homepage.
+2.  Our database connection succeeded. If this were a real blog, we would now begin to load blog content into our SQL database.
+3.  Now let's enhance our homepage by adding our graphical image to it.
+4.  In the GCP Console, we'll navigate to the Storage Browser and create a public link to our graphical image.
+5.  There's the image. We check the box: Share publicly. That gives us a hyperlink that we can clone.
+6.  Now we return to our PHP homepage and add in an HTML reference to that image.
+7.  Now let's return to our PHP homepage and refresh it. Our page now contains an image hosted in Google Cloud Storage.
+
+<br>
+
+### Containers, Kubernetes & Kubernetes Engine
+
+This module is on software containers and running them using Google Kubernetes Engine.
+
+We've already discussed Compute Engine, which is GCPs Infrastructure as a Service offering, which lets you run Virtual Machine in the cloud and gives you persistent storage and networking for them,and App Engine, which is one of GCP's platform as a service offerings. Now I'm going to introduce you to a service called Kubernetes Engine. It's like an Infrastructure as a Service offering in that it saves you infrastructure chores. It's also like a platform as a service offering, in that it was built with the needs of developers in mind. First, I'll tell you about a way to package software called Containers. I'll describe why Containers are useful, and how to manage them in Kubernetes Engine. Let's begin by remembering that infrastructure as a service offering let you share compute resources with others by virtualizing the hardware. Each Virtual Machine has its own instance of an operating system, your choice, and you can build and run applications on it with access to memory, file systems, networking interfaces, and the other attributes that physical computers also have. But flexibility comes with a cost. In an environment like this, the smallest unit of compute is a Virtual Machine together with its application. The guest OS, that is the operating system maybe large, even gigabytes in size. It can take minutes to boot up. Often it's worth it. Virtual Machine are highly configurable, and you can install and run your tools of choice. So you can configure the underlying system resources such as disks and networking, and you can install your own web server database or a middle ware. But suppose your application is a big success. As demand for it increases, you have to scale out in units of an entire Virtual Machine with a guest operating system for each. That can mean your resource consumption grows faster than you like. Now, let's make a contrast with a Platform as a Service environment like App Engine. From the perspective of someone deploying on App Engine, it feels very different. Instead of getting a blank Virtual Machine, you get access to a family of services that applications need. So all you do is write your code and self-contained workloads that use these services and include any dependent libraries. As demand for your application increases, the platform scales your applications seamlessly and independently by workload and infrastructure. This scales rapidly, but you give up control of the underlying server architecture. That's where Containers come in. The idea of a Container is to give you the independent scalability of workloads like you get in a PaaS environment, and an abstraction layer of the operating system and hardware, like you get in an Infrastructure as a Service environment. What do you get as an invisible box around your code and its dependencies with limited access to its own partition of the file system and hardware? Remember that in Windows, Linux, and other operating systems, a process is an instance of a running program. A Container starts as quickly as a new process. Compare that to how long it takes to boot up an entirely new instance of an operating system. All you need on each host is an operating system that supports Containers and a Container run-time. In essence, you're visualizing the operating system rather than the hardware. The environment scales like PaaS but gives you nearly the same flexibility as Infrastructure as a Service. The container abstraction makes your code very portable. You can treat the operating system and hardware as a black box. So you can move your code from development, to staging, to production, or from your laptop to the Cloud without changing or rebuilding anything. If you went to scale for example a web server, you can do so in seconds, and deploy dozens or hundreds of them depending on the size of your workload on a single host. Well, that's a simple example. Let's consider a more complicated case. You'll likely want to build your applications using lots of Containers, each performing their own function, say using the micro-services pattern. The units of code running in these Containers can communicate with each other over a network fabric. If you build this way, you can make applications modular. They deploy it easily and scale independently across a group of hosts. The host can scale up and down, and start and stop Containers as demand for your application changes, or even as hosts fail and are replaced. A tool that helps you do this well is Kubernetes. Kubernetes makes it easy to orchestrate many Containers on many hosts. Scale them, roll out new versions of them, and even roll back to the old version if things go wrong. First, I'll show you how you build and run containers. The most common format for Container images is the one defined by the open source tool Docker. In my example, I'll use Docker to bundle an application and its dependencies into a Container. You could use a different tool. For example, Google Cloud offers Cloud Build, a managed service for building Containers. It's up to you. Here is an example of some code you may have written. It's a Python web application, and it uses the very popular Flask framework. Whenever a web browser talks to it by asking for its top-most document, it replies "hello world". Or if the browser instead appends/version to the request, the application replies with its version. Great. So how do you deploy this application? It needs a specific version of Python and a specific version of Flask, which we control using Python's requirements.txt file, together with its other dependencies too. So you use a Docker file to specify how your code gets packaged into a Container. For example, Ubuntu is a popular distribution of Linux. Let's start there. You can install Python the same way you would on your development environment. Of course, now that it's in a file, it's repeatable. Let's copy in the requirements.txt file we created earlier, and use it to install our applications dependencies. We'll also copy in the files that make up our application and tell the environment that launches this Container how to run it. Then I use the Docker build command to build the Container. This builds the Container and stores it on the local system as a runnable image. Then I can use the docker run command to run the image. In a real-world situation, you'd probably upload the image to a Container Registry service, such as the Google Container Registry and share or download it from there. Great, we packaged an application, but building a reliable, scalable, distributed system takes a lot more. How about application configuration, service discovery, managing updates, and monitoring? In the next lesson, we'll talk about how a Kubernetes and Kubernetes Engine help us there.
