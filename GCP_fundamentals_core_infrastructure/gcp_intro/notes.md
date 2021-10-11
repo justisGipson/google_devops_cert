@@ -1519,3 +1519,47 @@ The Anthos Configuration Management agents use the policy repository to enforce 
 [__Anthos General Overview__](https://cloud.google.com/anthos/)
 
 [__Anthos Technical Documentation__](https://cloud.google.com/anthos/docs/)
+
+#### Lab Intro - Getting Started with Kubernetes Engine
+
+There are a lot of features in Kubernetes and GKE we haven't even touched on such as:
+- configuring health checks
+- setting session affinity
+- managing different rollout strategies
+- deploying pods across regions for high availability.
+
+But for now that's enough. Let's get some hands-on experience with building and running containerized applications, orchestrating and scaling them on a cluster. Finally, deploying them using rollouts. Lets see how to do this in a demo, and then you'll practice it in a lab exercise.
+
+<br>
+
+#### Demo - Getting Started with Kubernetes Engine
+
+In this demonstration, I'll create a Kubernetes Engine cluster and I'll deploy a load balance service to it. I'll scale the service and we'll see what happens.
+
+1. First, let's use the GCP console to confirm that the APIs we need are enabled. In the Products and Services menu, we scroll down to APIs and Services.
+2. We're looking for the Kubernetes Engine API and the Container Registry API.
+3. There's the Kubernetes Engine API, it's enabled. There's Container Registry. It's also enabled. Now, we're ready to start a cluster. For this activity, we'll use the command line in the Cloud Shell.
+4. For convenience, I'm going to define an environment variable that contains my preferred GCP zone.
+5. Now, I'll launch a Kubernetes cluster in that zone.
+6. The cluster will have two nodes.
+7. Now, the cluster is ready. Let's confirm what version of Kubernetes the cluster is running.
+8. It's version 1.8. When you launch a Kubernetes cluster, you may see a newer version.
+9.  Remember that Kubernetes cluster nodes are Compute Engine virtual machines. Let's go back to the GCP console and view them. In the Products and Services menu, scroll to Compute Engine and click on VM instances. There are cluster nodes.
+10. We can also view the cluster in the Kubernetes Engine console.
+11. The console reports the cluster name, its location and its size.
+12. Now, let's return to Cloud Shell.
+13. Let's run a web server in our cluster.
+14. We've created a Kubernetes deployment called nginx. The deployment consists of a single pod. Let's confirm that it's running.
+15. There's our pod. Now, let's expose the deployment we created so that clients from outside Kubernetes can access it.
+16. Now, let's view the new service.
+17. It takes a moment for an external IP address to be assigned.
+18. Now, an external IP address has been assigned.
+19. Let's attempt to visit this IP address using a web browser.
+20. We see the nginx home page. Our web server running inside of a Kubernetes deployment is accessible from the Internet.
+21. Now, let's scale up our deployment. We would do this if load were rising.
+22. We named the deployment and specified the new number of replicas.
+23. Now, let's look at the new number of pods.
+24. There are additional pods. Now, they're in the running state.
+25. Let's also confirm that the external IP address did not change.
+26. he external IP address is the same. Let's refresh the home page.
+27. We've confirmed that the web server deployment continues to work. In this lab, I created a Kubernetes Engine cluster. I deployed a load balance service to it and we tried the scaling operation, and we saw how seamlessly it worked.
