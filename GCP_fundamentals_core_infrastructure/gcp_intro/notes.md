@@ -38,6 +38,9 @@
   - [Containers, Kubernetes & Kubernetes Engine](#containers-kubernetes--kubernetes-engine)
     - [Introduction to Kubernetes and GKE](#introduction-to-kubernetes-and-gke)
     - [Introduction to Hybrid and Multi-Cloud Computing (Anthos)](#introduction-to-hybrid-and-multi-cloud-computing-anthos)
+      - [Lab Intro - Getting Started with Kubernetes Engine](#lab-intro---getting-started-with-kubernetes-engine)
+      - [Demo - Getting Started with Kubernetes Engine](#demo---getting-started-with-kubernetes-engine)
+  - [Module Introduction - Introduction to App Engine](#module-introduction---introduction-to-app-engine)
 
 ## What is the Cloud?
 
@@ -1563,3 +1566,8 @@ In this demonstration, I'll create a Kubernetes Engine cluster and I'll deploy a
 25. Let's also confirm that the external IP address did not change.
 26. he external IP address is the same. Let's refresh the home page.
 27. We've confirmed that the web server deployment continues to work. In this lab, I created a Kubernetes Engine cluster. I deployed a load balance service to it and we tried the scaling operation, and we saw how seamlessly it worked.
+
+<br>
+
+## Module Introduction - Introduction to App Engine
+
