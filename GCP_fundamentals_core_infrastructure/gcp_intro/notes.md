@@ -41,6 +41,15 @@
       - [Lab Intro - Getting Started with Kubernetes Engine](#lab-intro---getting-started-with-kubernetes-engine)
       - [Demo - Getting Started with Kubernetes Engine](#demo---getting-started-with-kubernetes-engine)
   - [Module Introduction - Introduction to App Engine](#module-introduction---introduction-to-app-engine)
+    - [App Engine Standards Environment](#app-engine-standards-environment)
+    - [App Engine Flexible Environment](#app-engine-flexible-environment)
+    - [Cloud Endpoints & Apigee Edge](#cloud-endpoints--apigee-edge)
+      - [Demonstration & Lab: Getting Started with App Engine](#demonstration--lab-getting-started-with-app-engine)
+    - [Development in the Cloud](#development-in-the-cloud)
+    - [Deployment: Infrastructure as Code](#deployment-infrastructure-as-code)
+    - [Monitoring: Proactive Instrumentation](#monitoring-proactive-instrumentation)
+      - [Demonstration & Lab: Getting Started with Deployment Manager & Stackdriver](#demonstration--lab-getting-started-with-deployment-manager--stackdriver)
+  - [Module Introduction: Introduction to Big Data & Machine Learning](#module-introduction-introduction-to-big-data--machine-learning)
 
 ## What is the Cloud?
 
@@ -1571,3 +1580,131 @@ In this demonstration, I'll create a Kubernetes Engine cluster and I'll deploy a
 
 ## Module Introduction - Introduction to App Engine
 
+So we've discussed two GCP products that provide the compute infrastructure for applications: Compute Engine and Kubernetes Engine.
+
+What these have in common is that you choose the infrastructure in which your application runs. Based on virtual machines for Compute Engine and containers for Kubernetes Engine. But what if you don't want to focus on the infrastructure at all? You just want to focus on your code.
+
+That's what App Engine is for.  I'll tell you more about it in this module.
+
+Let's start with PaaS. Recall that a PaaS is a platform as a service. The App Engine platform manages the hardware and networking infrastructure required to run your code. To deploy an application on App Engine, you just hand App Engine your code and the App Engine service takes care of the rest.
+
+App Engine provides you with a built-in services that many web applications need. NoSQL databases, in-memory caching, load balancing, health checks, logging and a way to authenticate users. You code your application to take advantage of these services and App Engine provides them.
+
+App engine will scale your application automatically in response to the amount of traffic it receives. So you only pay for those resources you use. There are no servers for you to provision or maintain. That's why App Engine is especially suited for applications where the workload is highly variable or unpredictable like web applications and mobile backend.
+
+App Engine offers two environments: standard and flexible. I'll explain what each is and how to choose.
+
+<br>
+
+### App Engine Standards Environment
+
+Of the two App Engine Environments, Standard is the simpler. It offers a simpler deployment experience than the Flexible environment and fine-grained auto-scale. Like the Standard Environment, it also offers a free daily usage quota for the use of some services.
+
+What's distinctive about the Standard Environment though, is that low utilization applications might be able to run at no charge. Google provides App Engine software development kits in several languages, so that you can test your application locally before you upload it to the real App Engine service. The SDKs also provide simple commands for deployment.
+
+Now, you may be wondering what does my code actually run on? I mean what exactly is the executable binary? App Engine's term for this kind of binary is the runtime. In App Engine Standard Environment, you use a runtime provided by Google. We'll see your choices shortly.
+
+App Engine Standard Environment provides runtimes for specific versions of Java, Python, PHP and Go. The runtimes also include libraries that support App Engine APIs. And for many applications, the Standard Environment runtimes and libraries may be all you need. If you want to code in another language, Standard Environment is not right for you. You'll want to consider the Flexible Environment.
+
+The Standard Environment also enforces restrictions on your code by making it run in a so-called "Sandbox." That's a software construct that's independent of the hardware, operating system, or physical location of the server it runs on. The Sandbox is one of the reasons why App Engine Standard Environment can scale and manage your application in a very fine-grained way. Like all Sandboxes, it imposes some constraints. For example, your application can't write to the local file system. It'll have to write to a database service instead if it needs to make data persistent.
+
+Also, all the requests your application receives has a 60-second timeout, and you can't install arbitrary third party software. If these constraints don't work for you, that would be a reason to choose the Flexible Environment.
+
+<br>
+
+<img src="../../assets/app_engine_standard.png" alt="app engine standards environment" width="50%" height="50%">
+
+<br>
+
+Here's a diagram of how you'll use App Engine Standard Environment in practice. You'll develop your application and run a test version of it locally using the App Engine SDK. Then when you're ready, you'll use the SDK to deploy it. Each App Engine application runs in a GCP project. App Engine automatically provisions server instances and scales and load balances them. Meanwhile, your application can make calls to a variety of services using dedicated APIs. Here are a few examples: a NoSQL data store to make data persistent, caching of that data using Memcache, searching logging, user logging, and the ability to launch actions not triggered by direct user requests, like task queues and a task scheduler.
+
+<br>
+
+### App Engine Flexible Environment
+
+Suppose you've decided that the restrictions of App Engine standard environment's sandbox model don't work for you, but you still want to take advantage of the benefits of App Engine. That's what App Engine flexible environment is for.
+
+Instead of the sandbox, App Engine flexible environment lets you specify the container your App Engine runs in. Yes, containers. Your application runs inside Docker containers on Google Compute Engine Virtual Machines, VMs. App Engine manages these Compute Engine machines for you. They're health checked, healed as necessary, and you get to choose which geographical region they run in, and critical backward-compatible updates to their operating systems are automatically applied. All this so that you can just focus on your code.
+
+App Engine flexible environment apps use standard run times, can access App Engine services such as data store, memcached, task queues, and so on.
+
+<br>
+
+<img src="../../assets/app_engine_comparisons.png" alt="app engine comparisons" width="50%" height="50%">
+
+<br>
+
+Here's a side-by-side comparison of Standard and Flexible. Notice that Standard environment starts up instances of your application faster, but that you get less access to the infrastructure in which your application runs. For example, Flexible environment lets you SSH into the virtual machines on which your application runs. It lets you use local disk for scratch space, it lets you install third-party software, and it lets your application make calls to the network without going through App Engine.
+
+On the other hand, Standard environment's billing can drop to zero for the completely idle application. Because we mentioned App Engine's use of Docker containers, you may be wondering how App Engine compares to Kubernetes Engine.
+
+<br>
+
+<img src="../../assets/app_engine_vs_k8s.png" alt="app engine vs kubernetes" width="50%" height="50%">
+
+<br>
+
+Here's a side-by-side comparison of App Engine with Kubernetes Engine. App Engine standard environment is for people who want the service to take maximum control of their application's deployment and scaling. Kubernetes Engine gives the application owner the full flexibility of Kubernetes. App Engine flexible edition is somewhere in between.
+
+Also, App Engine environment treats containers as a means to an end, but for Kubernetes Engine, containers are a fundamental organizing principle.
+
+<br>
+
+### Cloud Endpoints & Apigee Edge
+
+We've mentioned Application Programming Interfaces, APIs, several times in this course. Let's be precise about what an API is.
+<br>
+
+<img src="../../assets/api.png" alt="API" width="50%" height="50%">
+
+<br>
+
+A software services implementation can be complex and changeable. What if to use that service, other pieces of software had to know internal details about how they worked? That would be a mess. So instead application developers structure the software they write so that it presents a clean, well-defined interface that abstracts away needless details and then they document that interface. That's an API.
+
+The underlying implementation can change as long as the interface doesn't and other pieces of software that use the API don't have to know or care. Sometimes you have to change an API, say to add or deprecate a feature. To make this kind of API change cleanly, developers version their APIs. Version two of an API might contain calls that version one does not. Programs that consume the API can specify the API version that they want to use in their calls.
+
+Supporting an API is a very important task and Google Cloud platform provides two API management tools. They approach related problems in a different way and each has a particular strength. Suppose you're developing a software service and one of GCP's backends. You'd like to make it easy to expose this API. You'd like to make sure it's only consumed by other developers whom you trust. You'd like an easy way to monitor and log its use. You'd like for the API to have a single coherent way for it to know which end user is making the call.
+
+That's when you use Cloud Endpoints. It implements these capabilities and more using an easy to deploy proxy in front of your software service, and it provides an API console to wrap up those capabilities in an easy-to-manage interface.
+Cloud Endpoints supports applications running in GCP's compute platforms in your choice of languages and your choice of client technologies.
+
+Apigee Edge is also a platform for developing and managing API proxies. It has a different orientation though. It has a focus on business problems like rate limiting, quotas, and analytics. Many users of Apigee Edge are providing a software service to other companies and those features come in handy. Because of the backend services for Apigee Edge need not be in GCP, engineers often use it when they are "taking apart" a legacy application. Instead of replacing a monolithic application in one risky move, they can instead use Apigee Edge to peel off its services one by one, standing up microservices to implement each in turn, until the legacy application can be finally retired.
+
+<br>
+
+#### Demonstration & Lab: Getting Started with App Engine
+
+In this demonstration, I'll create a simple app engine application using the Cloud Shell local development environment. And then I'll deploy that application to App Engine so we can play with it. Let's start working with App Engine using Cloud Shell.
+
+1. I'll start by cloning the source code for a simple app engine application from Github.
+2. Now that I have the source code, lets go into the tree in which it is stored.
+3. Let's examine the file app.yaml.
+4. This file specifies the configuration of the application. The app.yaml file specifies the runtime for this application, as well as handlers and required libraries. Handlers are the URLs on which it responds. Let's run the application locally here in Cloud Shell, using the built-in app engine development environment.
+5. Now, the application is running locally. Let's use Cloud Shell's built-in preview and capability to preview it.
+6. Here's a local instance of our application. It appears to work. Recall that the application is running locally here in Cloud Shell. We can confirm that by going to the App Engine dashboard. In the Products and Services menu, we scroll down to App Engine and choose Dashboard.
+7. Notice that no applications are deployed. Let's return to Cloud Shell now. We'll press "Control C" to abort the development server. Now, we're ready to deploy our application to the real App Engine service. We're prompted for the region. We'll choose the one that's geographically close to us.
+8. We're asked to confirm the deployment. App Engine files are stored in Google Cloud Storage.
+9. Now, lets go back to the App Engine dashboard. Let's refresh. Here's a link to our application, top right. This is the deployed version of the application.
+10. When we're done with this application, we can disable it. Using the App Engine console, we scroll down to Settings and click "disable application."
+11. We're asked to confirm the application's ID.
+12. Now the application has been disabled. In this demonstration, I created a simple app engine application. I started off in the Cloud Shell local development environment and then I deployed it to App Engine so we could see it in the management interface.
+
+<br>
+
+### Development in the Cloud
+
+<br>
+
+### Deployment: Infrastructure as Code
+
+<br>
+
+### Monitoring: Proactive Instrumentation
+
+<br>
+
+#### Demonstration & Lab: Getting Started with Deployment Manager & Stackdriver
+
+<br>
+
+## Module Introduction: Introduction to Big Data & Machine Learning
