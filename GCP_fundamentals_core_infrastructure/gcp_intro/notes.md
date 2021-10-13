@@ -1693,17 +1693,123 @@ In this demonstration, I'll create a simple app engine application using the Clo
 
 ### Development in the Cloud
 
+People create great applications in the Google Cloud. Popular tools for development, deployment and monitoring just work in GCP. You also have options for tools that are tightly integrated with GCP and in this module, I'll explain them.
+
+Let's start with talking about development.
+
+Lots of GCP customers use Git to store and manage their source code trees. That means, running their own Git instances or using a hosted Git provider. Running your own is great because you have total control. Using a hosted Git provider is great because it's less work.
+
+What if there were a third way? Maybe a way to keep code private to a GCP project and use IAM permissions to protect it, but not have to maintain the Git instance yourself. That's what Cloud Source Repositories is.
+
+It provides Git version control to support your team's development of any application or service, including those that run on App Engine, Compute Engine, and Kubernetes Engine. With Cloud Source Repositories, you can have any number of private Git repositories, which allows you to organize the code associated with your cloud project in whatever way works best for you.
+
+Cloud Source Repositories also contains a source viewer so that you can browse and view repository files from within the GCP console.
+
+Many applications contain event-driven parts. For example, maybe you have an application that lets users upload images. Whenever that happens, you need to process that image in various ways: convert it to a standard image format, thumbnail into various sizes, and store each in a repository. You could always integrate this function into your application, but then you have to worry about providing compute resources for it, no matter whether it happens once a day or once a millisecond.
+
+What if you could just make that provisioning problem go away? It would be great if you could write a single purpose function that did the necessary image manipulations and then arrange for it to automatically run whenever a new image gets uploaded.
+
+That's exactly what Cloud Functions lets you do.
+
+You don't have to worry about servers or runtime binaries. You just write your code in JavaScript for a Node.js environment that GCP provides and then configure when it should fire. There's no need for you to pay for servers either. You just pay whenever your functions run, in 100 millisecond intervals.
+
+Cloud Functions can trigger on events in Cloud Storage, Cloud Pub/Sub, or in HTTP call.
+
+Here's how setting up a Cloud Function works. You choose which events you care about. For each event type, you tell Cloud Functions you're interested in it. These declarations are called triggers. Then you attach JavaScript functions to your triggers. From now on, your functions will respond whenever the events happen. Some applications, especially those that have microservices architecture, can be implemented entirely in Cloud Functions. People also use Cloud Functions to enhance existing applications without having to worry about scaling.
+
 <br>
 
 ### Deployment: Infrastructure as Code
+
+Setting up your environment in GCP can entail many steps: setting up compute network and storage resources, and keeping track of their configurations. You can do it all by hand if you want to, taking an imperative approach.
+
+In other words, you figure out the commands you need to set up your environment the way you want. If you want to change your environment, you figure out the commands to change it from the old state to the new. If you want to clone your environment, you do all those commands again.
+
+This is a lot of work.
+
+It's more efficient to use a template. That means a specification of what the environment should look like. It's declarative rather than imperative.
+
+GCP provides Deployment Manager to let you do just that. It's an Infrastructure Management Service that automates the creation and management of your Google Cloud Platform resources for you.
+
+To use it, you create a template file using either the YAML markup language or Python that describes what you want the components of your environment to look like. Then, you give the template to Deployment Manager, which figures out and does the actions needed to create the environment your template describes.
+
+If you need to change your environment, edit your template and then tell Deployment Manager to update the environment to match the change.
+
+Here's a tip: you can store and version control your Deployment Manager templates in Cloud Source repositories.
 
 <br>
 
 ### Monitoring: Proactive Instrumentation
 
+You can't run an application stably without monitoring. Monitoring lets you figure out whether the changes you made were good or bad. It lets you respond with information rather than with panic, when one of your end users complains that your application is down.
+
+Stackdriver is GCP's tool for monitoring, logging and diagnostics.
+
+<br>
+
+<img src="../../assets/stackdriver_1.png" alt="stackdriver" width="50%" height="50%">
+
+<br>
+
+Stackdriver gives you access to many different kinds of signals from your infrastructure platforms, virtual machines, containers, middleware and application tier, logs, metrics and traces. It gives you insight into your application's health, performance and availability. So if issues occur, you can fix them faster.
+
+Here are the core components of Stackdriver: Monitoring, Logging, Trace, Error Reporting and Debugging.
+
+<br>
+
+<img src="../../assets/stackdriver_features.png" alt="" width="50%" height="50%">
+
+<br>
+
+Stackdriver Monitoring checks the endpoints of web applications and other Internet accessible services running on your cloud environment. You can configure uptime checks associated with URLs, groups or resources such as Instances and load balancers. You can set up alerts on interesting criteria, like when health check results or uptimes fall into levels that need action.
+
+You can use Monitoring with a lot of popular notification tools. And you can create dashboards to help you visualize the state of your application.
+
+Stackdriver Logging lets you view logs from your applications and filter and search on them. Logging also lets you define metrics, based on log contents that are incorporated into dashboards and alerts. You can also export logs to BigQuery, Cloud Storage and Cloud Pub/Sub.
+
+Stackdriver Error Reporting tracks and groups the errors in your cloud applications. And it notifies you when new errors are detected.
+
+With Stackdriver Trace, you can sample the latency of app engine applications and report Per-URL statistics.
+
+How about debugging? A painful way to debug an existing application is to go back into it and add lots of logging statements. Stackdriver Debugger offers a different way. It connects your applications production data to your source code. So you can inspect the state of your application at any code location in production. That means you can view the application stage without adding logging statements. Stackdriver Debugger works best when your application source code is available, such as in Cloud Source repositories. Although it can be in other repositories too.
+
 <br>
 
 #### Demonstration & Lab: Getting Started with Deployment Manager & Stackdriver
+
+In this demonstration, I'll use Deployment Manager to create a GCP deployment and maintain it. I'll also view resource usage in a virtual machine using Google Stackdriver.
+
+1. I'll work with Deployment Manager using Cloud Shell.
+2. For the sake of convenience, I'm going to define an environment variable containing my preferred GCP zone.
+3. I already have an environment variable containing my GCP Project ID.
+4. Now, I will create my Deployment Manager template using a text editor.
+5. I've created my template in another window, and I'll paste it in here. Now, let's take a look at what we have.
+6. This template defines a virtual machine as a resource. It's named My VM. This virtual machine is defined to have a startup script apt get update which calls for its database of the applications to be updated. Be aware that the SIM tags of Deployment Manager requires you to specify the preferred zone in a few places and the GCP project ID in a few places. We'll substitute them into this file using the `sed` to command or write my file out to disk.
+7. Now, let's use `sed` to substitute in our project ID. The `sed` command has no output when it is successful.
+8. Similarly, we'll use the `sed` command to substitute in our preferred zone.
+9. Let's look at the file again and see our results.
+10. Our GCP zone has been substituted into the template as has our GCP project ID.
+11. Now, we're ready to build a deployment from this template.
+12. The template will create a new deployment and compute engine. It will be called `My First Depl`, and it will use the template `mydeploy.yaml`. It's done. We can confirm his status using the `gcloud` command.
+13. There's our deployment, `My First Depl`. Now, let's look at the resulting virtual machine.
+14. We'll go to the computer engine VM instances page. There's our virtual machine `My-VM`. We click on its name to open its details and scroll down, and there's it's startup script apt get update.
+15. Now, let's make a change to our template.
+16. I'm going to add a command to the startup script.
+17. This new command installs the nginx light web server.
+18. Now, we'll update our deployment.
+19. Now that the update is complete, let's go back to our virtual machine instance detail page and now look again at the startup script. The startup script has been updated.
+20. Now, let's put some CPU load on the VM we created and monitor it using Stackdriver. First, we'll log into the virtual machine by connecting to it using SHH.
+21. This Linux command creates an artificial CPU load on the virtual machine. In essence, it forces the CPU to continuously attempt to compress random data.
+22. Now, let's return to the GCP console and set up Stackdriver Monitoring.
+23. In the products and services menu, we scroll down to Stackdriver Monitoring.
+24. We confirmed that we want to create an account
+25. and we'll confirm that we wish to monitor our GCP project.
+26. We don't want to monitor any AWS accounts, so we'll click Skip AWS Set Up. For this particular activity, there is no need to install the Stackdriver Monitoring Agent, so we just click Continue.
+27. We don't need to get reports by email for this demonstration, so we click No Reports.
+28. Now, we click launch monitoring.
+29. We'll click Continue with the Trial.
+30. Notice that our CPU utilization increased sharply a few minutes ago when we started our artificial load.
+31. In this demonstration, I used two GCP services, Deployment Manager, and Google Stackdriver. Using Deployment Manager, I created a deployment and I maintained it. Using Google Stackdriver, I viewed resource usage inside of a virtual machine.
 
 <br>
 
