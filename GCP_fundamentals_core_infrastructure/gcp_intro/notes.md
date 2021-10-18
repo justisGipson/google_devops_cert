@@ -50,6 +50,15 @@
     - [Monitoring: Proactive Instrumentation](#monitoring-proactive-instrumentation)
       - [Demonstration & Lab: Getting Started with Deployment Manager & Stackdriver](#demonstration--lab-getting-started-with-deployment-manager--stackdriver)
   - [Module Introduction: Introduction to Big Data & Machine Learning](#module-introduction-introduction-to-big-data--machine-learning)
+    - [Google Cloud Big Data Platform](#google-cloud-big-data-platform)
+      - [Cloud Dataflow](#cloud-dataflow)
+      - [BigQuery](#bigquery)
+      - [Cloud Pub/Sub and Cloud Datalab](#cloud-pubsub-and-cloud-datalab)
+    - [Google Cloud Machine Learning Platform](#google-cloud-machine-learning-platform)
+      - [Machine Learning APIs](#machine-learning-apis)
+      - [Demonstration & Lab: Getting Started with BigQuery](#demonstration--lab-getting-started-with-bigquery)
+  - [Course Review](#course-review)
+  - [Next Steps](#next-steps)
 
 ## What is the Cloud?
 
