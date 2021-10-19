@@ -573,6 +573,7 @@ Continuous integration, usually refers to building, integrating, and testing cod
 Continuous delivery just means that you can deploy to production frequently, but may choose not to, usually due to businesses preferring a slower rate of deployment. This stage involves continuous integration, testing automation, and deployment automation.
 
 If you think of software development as a process, you can divide it into these categories:
+
 - code
 - build
 - integrate
@@ -724,65 +725,500 @@ In the next video, you'll learn about the psychology of and resistance to change
 
 ### Psychology of Change
 
-When you start to implement the SRE practice of automation to eliminate toil, some individuals will probably begin to resist. It's important to acknowledge that people react to a push for automation in different ways, and that some may resist it more than others. Individuals may feel as though their jobs are in jeopardy, or they may disagree that certain tasks are toil, and don't need to be automated. Because of this, it's important to understand how to address resistance to change in your organization. But first, let's start with the psychology of change, change elicits emotions, there are hundreds of different types of reactions and emotions. You should always expect to get positive and negative reactions, even if the change is for the good. Broadly, people and their emotions fall into four categories, let's talk about each group and how you can support them. Navigators, these are the people who will make teams and businesses successful, as leaders, spot them and celebrate their behaviors, use them as champions for the change.
+When you start to implement the SRE practice of automation to eliminate toil, some individuals will probably begin to resist. It's important to acknowledge that people react to a push for automation in different ways, and that some may resist it more than others. Individuals may feel as though their jobs are in jeopardy, or they may disagree that certain tasks are toil, and don't need to be automated. Because of this, it's important to understand how to address resistance to change in your organization.
 
-Critics, these are the second type of individuals that you should care about, they have passion and energy, critics care, and they have valid fears, so it's important not to ignore them. Spend time with them, because they will be very powerful advocates if you can persuade them.
+But first, let's start with the psychology of change. Change elicits emotions, there are hundreds of different types of reactions and emotions. You should always expect to get positive and negative reactions, even if the change is for the good. Broadly, people and their emotions fall into four categories, let's talk about each group and how you can support them.
 
-Victims, often this type of individual just needs to get their emotions out, victims tend to take organizational change very personally. Your role as a leader is to listen to them and empathize, once they feel heard, then they can start to listen. By standards, these people are tricky because you never know what they are thinking. Often, bystanders have no idea what's going on, and they will just continue as if nothing or no change is happening, you should try to communicate with them, to ascertain their feelings. Sometimes one person can fall into several categories, remember that it's likely you've experienced all these phases of change at some point in your career. As a leader, the way you navigate your own emotions to change will highly impact the teams you lead, teams look to their leaders to get signals on how to react to change.
+1. Navigators, these are the people who will make teams and businesses successful, as leaders, spot them and celebrate their behaviors, use them as champions for the change.
 
-Brains are hard wired to reflect emotions, people experience reactions to change not because they're trying to be difficult, but because it's natural. Take a look at how the brain responds to change biologically. When you experience the feeling of being excluded from something, it triggers response in the anterior cingulate, which is the same part of the brain that deals with physical pain. When you realize that something you were told in the past is unrealistic or untrue, the prefrontal cortex switches to high alert, looks for other signs of deception, and triggers feelings of heightened anxiety. When you solve your own problems, you get a rush of adrenaline. The prefrontal cortex can only deal with a few concepts at a time, when you are overwhelmed by unfamiliar concepts, your amygdala is triggered, making you feel anxious, afraid, depressed, tired, or angry. When you pay a greater amount of attention to something, you find it easier to adapt, habitual tasks feel easy and comfortable, because they are hardwired and require little conscious thought. So how can you address these responses? Google has some recommended ways to manage and account for people's reactions to change in the teams you lead, exclusion is painful, involve people in the change. Deception anxiety, set realistic expectations. Self-solve adrenaline, identify opportunities for co creation and provide coaching rather than solutions. Amygdala hijack, simplify messaging, and focus on key concepts per user group. Attention density, ensure that communications are engaging and training is interactive. Unconscious habit, allow people time to build new habits, keeping the neuroscience of change in mind, let's discuss the stages of transition the individuals experience when going through change. There are different versions of the change curve, but this is the way we'll look at it today. As you can see, there is a beginning, middle and an end, yet it is completely normal for people to move backward and forward, at different times. It's important to understand how to support your teams in each stage, remember to present change as an opportunity, not a threat to your teams. To do this, you'll want to connect with individuals on three levels. Head, which is rational heart, which is emotional, and feet, which is behavioral. For the head, talk about why the change is happening and the strategic mission, vision and rationale behind it. For the heart talks about why people should care, remember that people can be egotistical and self motivated, address how the change will affect them personally in their day to day role, and how it will impact them positively. Find a way to make them feel like they are part of the change, people often just want to feel like they are part of something. And lastly, for the feet, talk about the knowledge, skills and resources you will provide to make sure they're successful in this change. Teams need support to make sure they are and feel competent when asked to change what they know. Now that you've learned some ways to address change in your organization, let's look at how to handle a resistance to change. Research has shown that resistance is the primary reason changes fail in businesses. Resistance to change is usually fear of loss, specifically, people fear losing security or control, competence, relationships or sense of direction. Human reaction to loss is much stronger than human reaction to gain, so how can you handle resistance to change? Keep this checklist in mind as you navigate your business's adoption of SRT practices, are all your leaders and managers role modeling the new processes and behaviors? Do people understand the reason for the change? Do people care about the change being successful? Do people have the knowledge and ability to be successful in your new world?
+2. Critics, these are the second type of individuals that you should care about, they have passion and energy, critics care, and they have valid fears, so it's important not to ignore them. Spend time with them, because they will be very powerful advocates if you can persuade them.
 
-Are the right reinforcement and recognition programs in place? If the answers to any of these are no, we recommend that your leadership teams brainstorm how to address them, because all of these pieces need to happen for any successful organizational changes. Let's look at how one of our customers experience resistance to change. One of the leading commercial banks in Spain identified a number of processes that they wanted to automate. Their VP of engineering, and the executive sponsor of SRE implementation, was eager to showcase the benefits of the project to the business by investing in automation. The teams on the ground were very reluctant and skeptical about automating the earlier identified processes. It turned out that they had perceived automation as a direct threat to their jobs. Because they hadn't been supported during the SRE implementation with a proper explanation of what the changes entailed and the impact changes would have on their projects, their resistance was prominent. Now that we've covered the SRE concepts that help organizations make their tomorrow better than today, the next module will cover the last step of the SRE journey, regulating workload.
+3. Victims, often this type of individual just needs to get their emotions out, victims tend to take organizational change very personally. Your role as a leader is to listen to them and empathize, once they feel heard, then they can start to listen.
+
+4. Bystanders, these people are tricky because you never know what they are thinking. Often, bystanders have no idea what's going on, and they will just continue as if nothing or no change is happening, you should try to communicate with them, to ascertain their feelings.
+
+Sometimes one person can fall into several categories, remember that it's likely you've experienced all these phases of change at some point in your career. As a leader, the way you navigate your own emotions to change will highly impact the teams you lead, teams look to their leaders to get signals on how to react to change.
+
+Brains are hard wired to reflect emotions, people experience reactions to change not because they're trying to be difficult, but because it's natural.
+
+<br>
+
+<img src="../../assets/brain.png" alt="change responses in the brain" width="50%" height="50%">
+
+<br>
+
+Take a look at how the brain responds to change biologically. When you experience the feeling of being excluded from something, it triggers response in the anterior cingulate, which is the same part of the brain that deals with physical pain. When you realize that something you were told in the past is unrealistic or untrue, the prefrontal cortex switches to high alert, looks for other signs of deception, and triggers feelings of heightened anxiety. When you solve your own problems, you get a rush of adrenaline. The prefrontal cortex can only deal with a few concepts at a time, when you are overwhelmed by unfamiliar concepts, your amygdala is triggered, making you feel anxious, afraid, depressed, tired, or angry. When you pay a greater amount of attention to something, you find it easier to adapt, habitual tasks feel easy and comfortable, because they are hardwired and require little conscious thought. So how can you address these responses?
+
+<br>
+
+<img src="../../assets/brain2.png" alt="manage change responses" width="50%" height="50%">
+
+<br>
+
+Google has some recommended ways to manage and account for people's reactions to change in the teams you lead, exclusion is painful, involve people in the change. Deception anxiety, set realistic expectations. Self-solve adrenaline, identify opportunities for co creation and provide coaching rather than solutions. Amygdala hijack, simplify messaging, and focus on key concepts per user group. Attention density, ensure that communications are engaging and training is interactive.
+
+Unconscious habit, allow people time to build new habits, keeping the neuroscience of change in mind, let's discuss the stages of transition the individuals experience when going through change. There are different versions of the change curve, but this is the way we'll look at it today.
+
+<br>
+
+<img src="../../assets/change_curve.png" alt="change curve" width="50%" height="50%">
+
+<br>
+
+As you can see, there is a beginning, middle and an end, yet it is completely normal for people to move backward and forward, at different times. It's important to understand how to support your teams in each stage, remember to present change as an opportunity, not a threat to your teams. To do this, you'll want to connect with individuals on three levels.
+
+1. Head, which is rational
+2. heart, which is emotional
+3. feet, which is behavioral.
+
+For the head, talk about why the change is happening and the strategic mission, vision and rationale behind it.
+
+For the heart talks about why people should care, remember that people can be egotistical and self motivated, address how the change will affect them personally in their day to day role, and how it will impact them positively. Find a way to make them feel like they are part of the change, people often just want to feel like they are part of something.
+
+And lastly, for the feet, talk about the knowledge, skills and resources you will provide to make sure they're successful in this change. Teams need support to make sure they are and feel competent when asked to change what they know.
+
+Now that you've learned some ways to address change in your organization, let's look at how to handle a resistance to change. Research has shown that resistance is the primary reason changes fail in businesses. Resistance to change is usually fear of loss, specifically, people fear losing security or control, competence, relationships or sense of direction. Human reaction to loss is much stronger than human reaction to gain, so how can you handle resistance to change? Keep this checklist in mind as you navigate your business's adoption of SRE practices:
+
+- Are all your leaders and managers role modeling the new processes and behaviors?
+- Do people understand the reason for the change?
+- Do people care about the change being successful?
+- Do people have the knowledge and ability to be successful in your new world?
+- Are the right reinforcement and recognition programs in place?
+
+If the answers to any of these are no, we recommend that your leadership teams brainstorm how to address them, because all of these pieces need to happen for any successful organizational changes.
+
+Let's look at how one of our customers experience resistance to change.
+
+One of the leading commercial banks in Spain identified a number of processes that they wanted to automate. Their VP of engineering, and the executive sponsor of SRE implementation, was eager to showcase the benefits of the project to the business by investing in automation. The teams on the ground were very reluctant and skeptical about automating the earlier identified processes.
+
+It turned out that they had perceived automation as a direct threat to their jobs.
+
+Because they hadn't been supported during the SRE implementation with a proper explanation of what the changes entailed and the impact changes would have on their projects, their resistance was prominent.
+
+Now that we've covered the SRE concepts that help organizations make their tomorrow better than today, the next module will cover the last step of the SRE journey, regulating workload.
 
 <br>
 
 #### Module 4 Exercise - Reading
 
+1. Glossary
+
+- Continuous integration: Building, integrating, and testing code within the development environment.
+- Continuous delivery: Deploying to production frequently, or at the rate the business chooses.
+- Canarying: Deploying a change in service to a group of users who don’t know they are receiving the change, evaluating the impact to that group, and then deciding how to proceed.
+- Toil: Work directly tied to a service that is manual, repetitive, automatable, tactical, or without enduring value, or that scales linearly as the service grows.
+
+2. Key Points
+
+- Change is best when small and frequent.
+- Design thinking methodology has five phases: empathize, define, ideate, prototype, and test.
+- Prototyping culture encourages teams to try more ideas, leading to an increase in faster failures and more successes.
+- Excessive toil is toxic to the SRE role.
+- By eliminating toil, SREs can focus the majority of their time on work that will either reduce future toil or add service features.
+- Resistance to change is usually a fear of loss
+- Present change as an opportunity, not a threat.
+- People react to change in many ways, and IT leaders need to understand how to communicate with and support each group.
+
+3. Reflection Activity
+
+1. Think about work your IT teams do that could be considered toil. How much of that toil is bad? How much is good? Write down your thoughts about the type of toil that you would consider automating, and the toil that you would consider keeping.
+2. How might you present adoption of SRE culture and practices as an opportunity to your IT teams and other leadership? Brainstorm some ideas.
 
 <br>
 
 ## Regulate Workload - Module Intro
 
+The final step on the journey to SRE is regulating workload.
+
+In this module, you'll learn about the SRE practices related to measuring everything, specifically reliability and toil and the concept of monitoring. We'll also cover the cultural fundamentals of goal-setting, transparency, and making data-driven decisions.
+
+As we discuss the cultural concepts, you'll start to see some overlaps with the other DevOps pillars. This module will connect together what you've learned as measurement truly applies to all the SRE practices discussed in this course.
 
 <br>
 
 ### Toil & Reliability
 
+The last pillar of DevOps philosophy we will look at is measuring everything. Measurement helps you clearly see what's happening with your services. At Google, we believe there are three main goals of measuring everything.
+
+First, the IT team in the business can understand the current status of the service objectively. You've already learned how you can measure reliability with SLIs and SLOs.
+
+Second, the team can analyze the data and identify necessary actions to improve the status.
+
+And third, the IT team can collaborate with the business to start making better decisions and impact across the broader organization.
+
+Measuring everything with these goals in mind makes your business data driven and ultimately helps you make better decisions based on operational data you're collecting.
+
+You can't improve what you don't measure. In Site Reliability Engineering, there are three core practices that align to this pillar, measuring reliability, measuring toil, and monitoring. Let's start with reliability. In an earlier module, you learned about quantifying reliability with error budgets, SLIs, and SLOs.
+
+Recap from earlier:
+
+> An error budget is what you deem an acceptable level of unreliability that you can allocate other engineering work to. Product and engineering teams decide what the reliability target is together. Engineering teams inform the target, while product management defines it. This is not really a technical decision, but instead is defined by customer expectations, the competitive landscape, and the position you have in the market.
+
+An SLI is a quantifiable measure of a single aspect of service reliability that ideally has a close linear relationship with your users’ experience with your service.
+
+An SLO combines an SLI with a target reliability—that is, it’s the threshold that, if crossed, turns happy customers into unhappy customers.
+
+Choosing good SLIs is key to measuring reliability. You are making a connection between your SLIs and your user's experience so you'll want to decide what to measure based on their perspective.
+
+For example, it doesn't matter to a user whether your database is down or if your load balancers are sending requests to bad backends. They experience a slowly loading web page, and that makes them unhappy.
+
+If you can quantify slowness, you can then tell how unhappy your users are in aggregate, which lets you define your SLO.
+
+So what should you measure? CPU utilization? Memory usage? Load average? Well, as we just mentioned, these metrics don't necessarily reflect whether your users are happy.
+
+To illustrate the difference, let's look at the signal from these two metrics for the same outage in your service.
+
+<br>
+
+<img src="../../assets/metrics.png" alt="unhappy metrics" width="50%" height="50%">
+
+<br>
+
+If you assume that you have some way of knowing that your users were too unhappy with your service and that this time period is represented by the red area on these two graphs, then you can show that the metric on the right is a far more useful representation of user happiness.
+
+Your bad metric does show an obvious downward slope during the outage period, but there is a large amount of variance. The expected range of values seen during normal operation, shown in blue to the left, has a lot of overlap with the expected range of values seen during an outage shown in red on the right.
+
+This makes the metric a poor indicator of user happiness.
+
+On the other hand, your good metric has a noticeable dip that matches closely to the outage period. During normal operation, it has a narrow range of values that are quite different from the narrow range of values observed during an outage. The stability of the signal makes overall trends more visible and meaningful. This makes the metric a much better indicator of user happiness.
+
+SLIs need to provide a clear definition of good and bad events and a metric with a lot of variance and poor correlation with user experience is much harder to set a meaningful threshold for. Because the bad metric has a large overlap in the range of values, our choices are to set a tight threshold and run the risk of false positives or to set a loose threshold and risk false negatives. Choosing the middle ground also means accepting both risks.
+
+The good metric is much easier to set a threshold for because there is no overlap at all. The biggest risk you have to contend with is that perhaps the SLI doesn't recover after the outage as quickly as you might have hoped for. The second aspect to measure is toil.
+
+As you've learned, toil is work that is directly tied to running a service that is manual, repetitive, automatable, tactical, and without enduring value.
+
+You can measure toil in three steps.
+
+First, identify it. Who is best positioned to identify toil depends on your organization. Ideally, these people are stakeholders and those who perform the actual work.
+
+Next, select an appropriate unit of measure. This unit needs to express the amount of human effort applied to this toil.Minutes and hours are a good choice because they are objective and universally understood.
+
+And third, track the measurements continuously. Do this before, during, and after toil reduction efforts. Streamline the measurement process using tools or scripts so that collecting these measurements doesn't create additional toil.
+
+Start simple, count the number of tickets you receive, count the number of alerts, collect alert stats on cause and action.
+
+These can prove useful in identifying the source of toil. You can measure actual human time spent on toil by collecting data, either in the ticketing system directly or by asking your team to estimate the time spent on toil every day or week.
+
+There are clear benefits of measuring reliability of your services. But you may be wondering what the benefits of measuring toil are. First, it triggers a reduction effort. Identifying and quantifying toil can lead to eliminating it at its source. And second, it empowers your teams to think about toil. A toil-laden team should make data driven decisions about how best to spend their time and engineering efforts.
+
+Additional benefits include:
+
+- growth in engineering project work over time, some of which will further reduce toil
+- increase team morale and decrease team attrition and burnout
+- less context switching for interruptions, which raises team productivity
+- increased process clarity and standardization
+- enhanced technical skills and career growth for team members
+- reduced training time
+- fewer outages attributable to human errors
+- improved security
+- shorter response times for user requests
+
+Finally, measuring everything involves monitoring. Monitoring allows you to gain visibility into a system, which is a core requirement for judging service health and diagnosing your service when things go wrong.
+
+Let's first look at what you should monitor. It's best practice to alert on symptoms rather than causes. Users don't care whether they can't get to your website because your router is rebooting or because the database is overloaded. Similarly, they don't care if CPU utilization is very high if they can still access the system and it feels fast.
+
+Creating a separate alert for each cause typically results in a lot of spam alerts. It's better to have fewer symptom-based alerts combined with good debugging tools, like dashboards that will allow responders to more easily identify specific cause. Ideally, Google recommends alerting based on error budget burn. You might page someone when you are consuming your error budget very quickly.
+
+For example, when you spend ten hours worth of error budget within one hour, you might just create a ticket for a lower burn rate. For example, if you spent three days worth of budget within three days, basically only escalate to a human if you risk dropping below the SLO for the month. If your SLO is set correctly, you won't be paging people for problems that users don't care about.
+
+There are exceptions to this rule of course, because there might be a problem that does not result in user-visible symptoms.
+
+Capacity alerts can be an example of this. If you know you will exhaust a particular limit soon, it wants an alert even if there is no user-visible symptom yet.
+
+To simplify things, Google recommends monitoring for the four golden signals:
+1. latency
+1. traffic
+1. errors
+1. saturation
+
+You can see how measurement and monitoring are important SRE practices that allow your development teams to focus on business critical work.
+
+In the next video, we'll discuss the cultural concepts of goal setting, transparency, and database decision-making, and how supporting these practices is important for measurement.
 
 <br>
 
 ### Goal Setting
 
+As we discussed, an important SRE practice is to measure everything, specifically reliability and toil. However, in order to measure everything, you need to ensure that you have a culture of goal setting, transparency, and data-driven decision making in your organization.
+
+So how can you achieve this?
+
+Let's start with goal setting. For this, you'll want to create a data-driven goal setting process. You should look at KPIs for who and for what you are measuring and an approach, what to measure and how?
+
+As you learned in an earlier module, Google uses OKRs, objectives and key results, as KPIs.
+
+OKRs are usually graded on a scale of 0.0 to 1.0, where 1.0 indicates a fully achieved objective. Consider these things when grading OKRs. The optimal point for an OKR grade is 60 to 70%. Think big when developing your OKRs. OKRs are not synonymous with performance evaluation, instead they show individuals' contributions and impact.
+
+Organizational OKRs are graded publicly, so everyone can see their progress. Frequent check-ins throughout the quarter help teams and individuals maintain progress.
+
+Next, you want your organization to embrace transparency. Laszlo Bock, the former SVP of People Operations at Google, once said that transparency is the only way to demonstrate to your employees that you believe they are trustworthy adults and have good judgment. And giving them more context about what is happening, and how and why, will enable them to do their jobs more effectively.
+
+In terms of SRE practice and culture, there are some specific ways of promoting transparency, sharing monitoring tools and sharing communications and feedback loops. In terms of tools, Google uses an issue tracker called Organizer.
+
+Everyone in the company can access this tool.
+
+Specifically, the development and operations teams can review issues and see progress towards their resolutions. Shared tools for development and operations teams promote transparency.
+
+However, it's not just tool sharing that will help your organization maintain transparency. A culture of sharing information needs to come from your systems as well. In communication transparency it's important to remember feedback loops. Feedback loops are simple to understand. You produce something, measure information on the production, and use that information to improve production. It is a constant cycle of monitoring and improvement. IT leaders need to make it a priority in their organizations. To do this, think about the head, heart, feet model you learned about in the previous lesson about resistance to change.
+
+Data-driven decision making is another important aspect of SRE culture. To make truly data-driven decisions, you need to remove any unconscious biases. Unconscious biases or social stereotypes about particular groups that people form without realization. There are several common biases that show up in organizations and influence the way decisions are made.
+
+- Affinity bias, this is a bias towards those who are similar to you. This could mean similar in many different ways, such as race, gender, socioeconomic background, or education level. People tend to gravitate towards those who are like them.
+- Confirmation bias, this bias is the tendency to find information, input, or data that supports your preconceived notions.
+- Labeling bias, this bias is making opinions based on how people look, dress, or show up externally.
+- Selective attention bias, this bias is when you pay attention to things, ideas, and input from people you tend to gravitate toward.
+
+All of these biases can create environments that are not very diverse or inclusive. They can also impact the creativity, innovation, morale, engagement, and turnover in an organization. When employees see decisions being made based on any of these biases, it corrupts their work environment.
+
+So how can you help remove these unconscious biases? First, question your first impressions. Don't stop with the first decision that comes to your mind, especially when you're determining whom to promote, hire, or add to the team.
+
+Next, justify your decisions, if you're held accountable, you'll be less unconsciously biased. Tell people why you decided what you did, if no one will listen to you, write it down.
+
+Lastly, make decisions collectively, ask people to repeat back what they heard, and keep each other's unconscious biases in check. Calling out unconscious bias can be a learning moment, so when you think you see it, speak up.
+Sometimes you'll be wrong, and that's okay.
+
+When you create a culture of data-driven decision making and removing unconscious bias, it makes decision making easier. Teams can look at the data objectively and decide what should be done without bias.
+
+Even if there is bias, you have empowered people to call it out when they believe it's influencing decisions. You've now learned about Google's SRE technical and cultural fundamentals, and how they fit into an organization's journey to SRE adoption.
+
+In the next module, we'll discuss how you can apply SRE in your organization by upscaling and hiring team members, understanding various SRE team implementations, and engaging with Google Cloud's Professional Services Organization.
 
 <br>
 
 #### Module 5 Exercise - Reading
 
+1. Glossary
+
+- Affinity bias: Tendency to gravitate toward those who are similar to you, such as with race, gender, socioeconomic background, or education level.
+- Confirmation bias: Tendency to find information, input, or data that supports your preconceived notions.
+- Selective attention bias: Tendency to pay attention to things, ideas, and input from people whom you tend to gravitate toward.
+- Labeling bias: Tendency to form opinions based on how people look, dress, or appear externally.
+
+2. Key Points
+
+- Measure reliability with good service level indicators (SLIs).
+- A good SLI correlates with user experience with your service; that is, a good SLI tells you when users are happy or unhappy.
+- Measure toil by identifying it, selecting an appropriate unit of measure, and tracking the measurements continuously.
+- Monitoring allows you to gain visibility into a system, which is a core requirement for judging service health and diagnosing your service when things go wrong.
+- Goal-setting, transparency, and data-driven decision making are key components of SRE measurement culture.
+- To make truly data-driven decisions, you need to remove any unconscious biases.
+
+3. Reflection Activity
+
+1. Think about how your IT teams work. What are some things you know they are already measuring? What are some things you think they should measure that they don’t already measure?
+2. How do you currently set and measure goals in your organization? Is there anything you think you could improve about the process?
 
 <br>
 
-## Apply SRE in Your Organization - MOdule Intro
+## Apply SRE in Your Organization - Module Intro
 
+Throughout the last several modules, you've learned about Google's SRE practical and cultural fundamentals, and ways you can adopt them in your own organization. Before you can start employing many of these technical principles, it's important to understand a few additional points.
+
+In this module, we'll discuss how you can assess and understand your organization's maturity and readiness for adopting SRE principles, practices, and culture.
+
+You'll also learn what skills are necessary in an SRE and how to train your current workforce.
+
+Lastly, we'll provide examples of SRE team implementations, and the additional support our Google Cloud Professional Services teams can provide as you continue on your journey to SRE.
 
 <br>
 
 ### Organizational Maturity
 
+It's important that you assess your organization's maturity level for adopting SRE, before you implement the various principles.
+
+We've looked at site reliability engineering as a three-part journey;
+
+- SLOs with consequences
+- make tomorrow better than today
+- regulate workload.
+
+Organizational maturity is considered low if your organization has not yet adopted SRE principles, practices, and culture. Organizational maturity is considered high if you have a well-established SRE team, or if SRE principles, practices, and culture are widely understood, implemented, and embraced.
+
+An organization with high SRE maturity is expected to have the following.
+
+- Well-documented and user-centric SLOs, where a target level of reliability is ideally correlated with customer happiness.
+- Error budgets, which are budgets for failure. The error budget is the difference between perfection and your SLO. They allow IT teams to move fast as long as the budget is not exhausted, but with defined actions to improve reliability if the production service fails.
+- A blameless postmortem culture. This culture recognizes that things will go wrong and that human errors are really systems problems.
+- A low tolerance for toil. Again, toil is work that tends to be manual, repetitive, automatable, tactical, and devoid of enduring value, and that scales linearly as a service grows.
+
+These principles can be adopted by any team responsible for production systems regardless of its name before and in parallel to staffing in SRE team. As you can see, these are many of the technical principles we've discussed throughout the course.
+
+At Google, we believe that we can achieve the business goals mentioned earlier, such as aligning development and operations incentives, balancing feature velocity with reliability, and fostering effective collaboration without first defining SLOs and error budgets and setting policies around them.
+
+It's possible that your journey to SRE may have a different first step based on your organizational culture and business needs. However, these are the Google recommended first steps.
+
+After setting up your SLOs, error budgets, and postmortem culture, you will be better prepared to start defining and organizing your SRE teams. After that, you can start implementing practices for automation and regulating workload.
+
+You can also use this tool called the DORA DevOps Quick Check for a recommendation on how to get started. It's a quick five question assessment about your current engineering practices.
+
+Access the tool [here](https://www.devops-research.com/quickcheck.html)
+
+Work with your engineering and operations teams to understand where your organization fits into this journey. Your organization might not use SRE principles yet, and that's okay.
+
+Hopefully you now have a clearer understanding of the principles to start with.
+
+We at Google want to help you get started. We'll talk about how this works at the end of this module.
+
+In the next video, we'll talk about the types of skills site reliability engineers need to have and develop, to make your SRE team productive and successful.
 
 <br>
 
 ### Skills & Training
 
+In addition to understanding the practical and cultural fundamentals that we've discussed so far in this course, SRE should have several skills to support your organization's adoption of site reliability engineering.
+
+Who to hire. As you've learned, in SRE, is an engineer who also runs operations. Unless you're hiring an engineer who has already worked as an SRE, you'll likely need to upskill any current or new engineers you put into the role. SRE concepts are not often taught in school or university. At Google, we also hire SREs that were systems administrators, who have worked operations, and who also have some scripting experience. We offer them software engineering training to improve their engineering skills.
+
+Since you're making a large organizational shift to SRE, it's important to understand that you'll need to provide necessary training and resources for people moving into SRE roles. It's an investment that will benefit your organization in the long run.
+
+What skills to train and hire. At Google, we've discovered that there are particular skills to focus on when training and hiring new SREs. This is by no means a comprehensive list, but it's what Google recommends as essentials when getting started.
+
+- Operations and software engineering. Running applications and production gives invaluable insights that can not be easily gained otherwise. So engineers with little or no experience in operation will need to be upskilled. Additionally, systems administrators or other operators can also make great SREs. So they'll need to understand the software they are supporting and be empowered to improve it.
+- Monitoring systems. SRE principles require SLOs that can be measured and accounted for so that understanding of monitoring systems is necessary.
+- Production automation. Scaling operations requires automation. Your SREs will need an understanding of how to automate processes.
+- System architecture. Scaling an application requires good architecture. So SREs should have a skill set that includes understanding system architecture and how to work with and create it.
+- Troubleshooting, SREs are regularly on call, and therefore requires sharp troubleshooting skills. They should be inquisitive and follow an analytical approach to solving problems.
+- Culture of trust. Because SREs and developers share ownership of services and what customers experience, they need to have a good relationship. At Google, we've learned that the top three characteristics of a healthy culture between SREs and developers are communication, agreement, and trust. It's important to extend this culture to other teams as well, such as security and privacy teams.
+- Incident management. Incident management has two sides; technical troubleshooting and communication framework. For timely resolution for incidents, SREs will need to both technically resolve problems and interact with many other people. They should be adept and explicit and clear communication, time and task management, and record keeping, to name a few skills.
+
+As you build out your SRE team, you should remember that these individuals will be in a difficult and ambiguous position between feature velocity and reliability goals. Important character traits to look for are resilience and flexibility, because SREs will need to provide the right balance between enabling product development and doing what's right for your customers.
+
+If you start with these skills and begin adopting the practices at SLOs, error budgets, and post-mortems, you'll be well-prepared to start implementing your first SRE team. In the next video, we'll give you an overview of several different types of SRE teams that you can consider for your organization.
 
 <br>
 
 ### SRE Teams
 
+Once you've established some key practices and have begun training and hiring for the SRE role in your organization, you can start thinking about how to implement your SRE team. This implementation can, and will look different depending on the size of your organization, and where you are on your SRE journey.
+
+In this video, we'll give you an overview of the different types of implementations, and the benefits, and disadvantages of each.
+
+We've categorized the recommended implementations into six different categories.
+- Kitchen sink or everything SRE
+- infrastructure
+- tools
+- product/application
+- embedded
+- consulting
+
+The first is kitchen sink or everything SRE. Scope is usually unbounded with this type of team. If you've never created an SRE team, this is a good place to start. We recommend this approach for organizations that have few applications and user journeys. Where the scope is small enough that only one team is necessary, but a dedicated SRE team is needed in order to implement its practices.
+
+There are several benefits to kitchen sink implementation. There are no coverage gaps between SRE teams given that only one team is in place.
+
+It's easy to spot patterns and draw similarities between services and projects. SREs tend to act as glue between disparate developer teams, creating solutions at a distinct pieces of software. There are also several disadvantages. There's usually a lack of an SRE team charter, or the charter states that everything in the company can be in scope, running the risk of overloading the team.
+
+As the company and system complexity grows, the team tends to move from having a deep positive impact on everything, to making more shallow contributions. And issues involving a team may negatively impact your entire business.
+
+The second implementation, is infrastructure. This type of team focuses on behind the scenes tasks, that help make other team's jobs easier and faster. They work on maintaining shared services and components related to infrastructure, versus an SRE team dedicated to working on services related to products, like customer facing code. We recommend this implementation for a company with several development teams since they probably need to staff an infrastructure team to define common standards and practices.
+
+It is common for large companies to have both an infrastructure DevOps team and SRE team, where the DevOps team focuses on features, and SRE focuses on reliability.
+
+A benefit of the infrastructure implementation is that it allows product developers to use DevOps practices to maintain user facing products, without divergence in practice across the business. Additionally, SREs can focus on providing a highly reliable infrastructure. They will often define production standards as code, and work to smooth out any sharp edges to greatly simplify things for the product developers running their own services.
+
+However, there are some disadvantages. Depending on the scope of infrastructure, issues involving such a team may negatively impact your entire business. Similar to an everything SRE team implementation.
+
+Lack of direct contact with your company's customers can lead to a focus on infrastructure improvements, that are not necessarily tied to the customer experience.
+
+As the company and system complexity grows, you may be required to split infrastructure teams, which can lead to duplication of base infrastructure, or divergence of practices between teams. Which is inefficient and limits knowledge sharing and mobility.
+
+Third is a tools-focused SRE team. This type of SRE team tends to focus on building software to help their developer counterparts measure, maintain, and improve system reliability or other aspects of SRE work, such as capacity planning.
+
+A tooling SRE team risks solving the wrong problems for the business. So it needs to stay aware of the practical problems frontline reliability teams are addressing. This kind of team is recommended for any organization that needs a highly specialized reliability-related tooling.
+
+The benefits and disadvantages of infrastructure in tools SRE teams tend to be similar. Additional disadvantages for tools teams include, ensuring that the team doesn't unintentionally turn into an infrastructure team and vice versa.
+
+Running the risk of an increase of toil and overall workload. This is usually contained by establishing a team charter that business leaders approve.
+
+The next implementation is product/application. This kind of SRE team works to improve the reliability of a critical application or business area. We recommend this implementation for organizations that already have a kitchen sink, infrastructure, or tools-focused SRE team, and have a key user facing application with high reliability needs. Having each of these aspects, justifies the relatively large expense of a dedicated set of SREs.
+
+The benefit of this approach, is that it provides a clear focus for the team's effort, and creates a clear link between business priorities and where the team spends effort.
+
+The disadvantage is that as the company and system complexity grow, the organization will require new product application teams. As with an infrastructure team, the focus of each team can lead to duplication of base infrastructure or divergence of practices which is inefficient and limits knowledge sharing and mobility.
+
+The fifth type of SRE team implementation is an embedded team. This team has SREs embedded with their developer counterparts, usually one developer team in scope. And embedded SRP usually shares an office with a developer, but the embedded arrangement can be remote. The work relationship between the embedded SREs and developers tends to be project or time-bounded. During embedded engagements, the SREs are usually very hands-on, performing work like changing code, and configuration of the services and scope.
+
+We recommend this implementation to either start an SRE function, or scale another implementation. This model is useful when you've had a project or team that needs SRE for a period of time.
+
+This type of team can also augment the impact of the tools or infrastructure team by driving adoption.
+
+A benefit of an embedded SRE team is that focused SRE expertise can be directed to specific problems or teams. It also allows side-by-side demonstration of SRE practices, which can be a very effective teaching method.
+
+Disadvantages are that it may result in a lack of standardization between teams, or divergence in practice. And SREs may not have the chance to spend time with peers to mentor them.
+
+Our last recommended SRE implementation is consulting. This implementation is very similar to embedded implementation. The difference is that consulting SREs are less hands-on. These SRE's tend to avoid changing customer code and configuration of the services and scope. However, they may write code and configuration to build and maintain tools for themselves or their developer counterparts. Which is a hybrid of the consulting and tools-focused SRE role.
+
+We recommend waiting to staff a dedicated SRE team of consultants, until your organization, or complexity is considered to be large. And when demands have outgrown what can be supported by existing SRE team implementations. We also recommend staffing one or two part-time consultants before you staff your first SRE team.
+
+The benefit of a consulting SRE team is that it can help with additional scaling of an existing SRE team's positive impact, by being decoupled from directly changing code and configuration.
+
+The disadvantage is that consultants may lack sufficient context to offer useful advice. Additionally, a common risk for consulting SRE teams is being perceived as hands-off. Given that they typically don't change code and configuration, even though they are capable of having indirect technical impact.
+
+Do one or any of these SRE team implementations resonate or appeal to you for your organization?
+
+Remember that it's important to assess your organization's maturity for SRE adoption, and identify areas for training before creating your first SRE team.
+
+In the next and final video, you'll learn how Google can help your organization get started with SRE.
+
+<br>
+
+### Getting Started
+
+So you see the value of implementing SRE practices in teams in your organization, what now? Google Cloud is here to support you. We want to make sure we provide valuable experience to our customers.
+
+Google Cloud's Professional Services team specializes in supporting organizations like yours in jump starting its SRE journey. To request Google Cloud's Professional Services consultation, be sure to reach out to your account director or account executive to start the conversation.
+
+Thank you so much for coming along this SRE journey with us.
+
+We hope you've gained valuable insights into Google SRE culture, and how it can benefit your IT operations and your business.
+
+To make sure you fully grasped the SRE concepts we've covered, and to get credit for this course, complete the final assessment in the last module.
+
+Finally, please be sure to review the resources section at the end of this course for additional materials on Google SRE. You can also find these resources in your learner workbook. Good luck on your SRE journey, we hope to hear from you soon.
 
 <br>
 
 #### Module 6 Exercise - Reading
 
+1. Key Points
+
+- Kitchen Sink/”Everything SRE” team: We recommend this approach for organizations that have few applications and user journeys and where the scope is small enough that only one team is necessary, but a dedicated SRE team is needed in order to implement its practices.
+- Infrastructure team: This type of team focuses on maintaining shared services and components related to infrastructure, versus an SRE team dedicated to working on services related to products, like customer-facing code.
+- Tools team: This type of SRE team tends to focus on building software to help their developer counterparts measure, maintain, and improve system reliability or other aspects of SRE work, such as capacity planning.
+- Product/Application team: This type of SRE team works to improve the reliability of a critical application or business area. We recommend this implementation for organizations that already have a Kitchen Sink, Infrastructure, or Tools-focused SRE team and have a key user-facing application with high reliability needs
+- Embedded team: This team has SREs embedded with their developer counterparts, usually one per developer team in scope. The work relationship between the embedded SREs and developers tends to be project- or time-bounded and usually very hands-on, where they perform work like changing code and configuration of the services in scope.
+- Consulting team: This implementation is very similar to the embedded implementation, except SRE are usually less hands-on. We recommend staffing one or two part-time consultants before you staff your first SRE team.
+
+- Organizations with high SRE maturity have well-documented and user-centric SLOs, error budgets, blameless postmortem culture, and a low tolerance for toil.
+- Engineers with operations experience and systems administrators with scripting experience are good first SREs to hire.
+- Upskill current team members with necessary SRE skills such as operations and software engineering, monitoring systems, production automation, system architecture, troubleshooting, culture of trust, and incident management.
+- Contact your Account Executive or Account Director to learn how the Google Cloud Professional Services team can support your organization’s adoption of SRE.
+
+2. Reflection Activity
+
+1. What do you think is your organization’s maturity level for adopting SRE? Where does it fit into the SRE journey? Write down your ideas.
+2. Think about your IT team composition. Are there already employees with the skillset for SRE? How might you quickly upskill and train these employees to move into the SRE role?
+
 
 <br>
 
+## [SRE Learner Workbook](../../assets/SRE_learner-workbook.pdf)
+
+## Resources
+
+[Site Reliability Engineering](https://landing.google.com/sre/sre-book/toc/)
+Members of the SRE team explain how their engagement with the entire software lifecycle has enabled Google to build, deploy, monitor, and maintain some of the largest software systems in the world.
+
+[The Site Reliability Workbook](https://landing.google.com/sre/workbook/toc/)
+The Site Reliability Workbook is the hands-on companion to the bestselling Site Reliability Engineering book and uses concrete examples to show how to put SRE principles and practices to work. This book contains practical examples from Google’s experiences and case studies from Google’s Cloud Platform customers. Evernote, The Home Depot, The New York Times, and other companies outline hard-won experiences of what worked for them and what didn’t.
+
+[Google Cloud Consulting Services](https://cloud.google.com/consulting/?utm_source=google&utm_medium=cpc&utm_campaign=emea-gb-all-en-dr-bkws-all-solutions-trial-e-gcp-1008073&utm_content=text-ad-none-any-DEV_c-CRE_340468586137-ADGP_Hybrid+%7C+AW+SEM+%7C+BKWS+~+EXA_1:1_EMEA_EN_VM+migration_gcp+professional+services-KWID_43700042357065337-kwd-380758056939-userloc_1006886&utm_term=KW_gcp%20professional%20servicesg&ds_rl=1242853&ds_rl=1245734&ds_rl=1245734&gclid=Cj0KCQjw9ZzzBRCKARIsANwXaeIPLV6niFcKgzkeOSZH5z6fj95vu61t48KjkwKY_Q1gXJY7_mUVCXcaAvN9EALw_wcB)
+When you choose a Google Cloud consultant, you’ll be working hand in hand with experts who will educate your team on best practices and guiding principles for a successful implementation. Our deep technical expertise and services help you unlock business value from the cloud across a range of solutions—including infrastructure, application modernization, data management and analytics, machine learning, and security.
+
+[Site Reliability Engineering: Measuring and Managing Reliability](https://www.coursera.org/learn/site-reliability-engineering-slos/home/welcome)
+This course teaches the theory of service level objectives (SLOs), a principled way of describing and measuring the desired reliability of a service. Upon completion, learners should be able to apply these principles to develop the first SLOs for services they are familiar with in their own organizations. Learners will also learn how to use service level indicators (SLIs) to quantify reliability and error budgets to drive business decisions around engineering for greater reliability. The learner will understand the components of a meaningful SLI and walk through the process of developing SLIs and SLOs for an example service.
+
+[DORA DevOps Quick Check](https://www.devops-research.com/quickcheck.html)
+Measure your team's software delivery performance and compare it to the rest of the industry by responding to five multiple-choice questions. The quick check takes less than a minute to complete, and we don't store your answers or personal information. Immediately compare your team's performance to others.
+
+<br>
