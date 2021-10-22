@@ -706,4 +706,377 @@ Representation of a resource between client and services are usually achieved us
 
 ### HTTP
 
-A client accessing HTTP service forms an HTTP request. HTTP requests are built in three parts. The request line, header variables and request body. The request line has the HTTP verb, GET, POST, PUT, etc, the requested URI and the protocol version. The header variables contain key value pairs. Some of these are standards such as user-agent, which helps the receiver identify the requesting software agent. Metadata about the message format or preferred message formats is also included here for HTTPS based REST services. You can add custom headers here. The request body contains data to be sent to the server and is only relevant for HTTP commands that send data such as POST and PUT. Here we see two examples of HTTP client text-based messages. The first example shows an HTTP get request to the URL using HTTP version 1.1. There's one request header variable named host with the value pets.drehnstron.com. The second example shows an HTTP POST request to the URL/add using HTTP version 1.1. There are three request header variables, host, content-type set to JSON, content length set to 35 bytes. There is a request body which has the JSON document name Noir, breed, schnoodle. This is the representation of the pet being added. As part of a request, the HTTP verb tells the server the action to be performed on a resource. HTTP as a protocol provides nine verbs, but usually only the four listed here are used in REST. GET is used to retrieve resources. POST is used to request the creation of a new resource. The service then creates the resource and usually returns the unique ID generated for the new resource to the client. PUT is used to create a new resource or make a change to an existing resource. PUT request should be idempotent, which means that no matter how many times the request is made by the client to a service, the effects on the resource are always exactly the same. Finally, a DELETE request is used to remove a resource. HTTP services return responses in a standard format defined by HTTP. These HTTP responses are built in three parts. The response line, header variables, and response body. The response line has the HTTP version and a response code. The response codes are broken on boundaries around the hundreds. The 200 range means okay. For example, 200 is okay. 201 means a resource has been created. The 400 range means the client request is an error. For example, 403 means forbidden due to request or not having permission. 404 means requested resource not found. The 500 range means the server encountered an error and cannot process the request. For example, 500 is internal server error. 503 is not available usually because the server is overloaded. The response header is a set of key value pairs, such as content type, which indicates to the receiver the type of the content the response body contains. The response body has the resource representation requested in the format specified in the content type header and can be JSON, XML, HTML, etc. The guidelines listed here focus on achieving consistency on the API. Singular nouns should be used for individual resources and plural nouns for collections or sets. For an example, consider the following URI/pet. Then a GET request for URI/pet/1 should fetch a pet with ID one, whereas GET/pets should fetch all the pets. Do not use URIs such as GET/GET pets. The URI should refer to the resource, not the action on the resource. That is the rule of the verb. Remember that URIs are case insensitive and that they include version information. It is a good practice to diagram services. This diagram shows that there is a service that provides access to the resource known as pets. The representation of the resource is the pet. When a request is made for the resource via the service, one or more representations of a pet are returned.
+<br>
+
+<img src="../assets/http_requests.png" alt="http requests" width="50%" height="50%">
+
+<br>
+
+A client accessing HTTP service forms an HTTP request. HTTP requests are built in three parts.
+
+The request line, header variables and request body.
+
+The request line has the HTTP verb, `GET`, `POST`, `PUT`, etc, the requested URI and the protocol version.
+
+The header variables contain key value pairs. Some of these are standards such as user-agent, which helps the receiver identify the requesting software agent. Metadata about the message format or preferred message formats is also included here for HTTPS based REST services. You can add custom headers here.
+
+The request body contains data to be sent to the server and is only relevant for HTTP commands that send data such as POST and PUT.
+
+Here we see two examples of HTTP client text-based messages.
+
+<br>
+
+<img src="../assets/http_examples.png" alt="http examples" width="50%" height="50%">
+
+<br>
+
+The first example shows an HTTP get request to the URL using HTTP version 1.1. There's one request header variable named `host` with the value `pets.drehnstron.com`.
+
+The second example shows an HTTP POST request to the URL/add using HTTP version 1.1. There are three request header variables, `host`, `content-type` set to JSON, `content-length` set to 35 bytes. There is a request body which has the JSON document name Noir, breed, schnoodle. This is the representation of the pet being added.
+
+<br>
+
+<img src="../assets/http_verbs.png" alt="http verbs" width="50%" height="50%">
+
+<br>
+
+As part of a request, the HTTP verb tells the server the action to be performed on a resource. HTTP as a protocol provides nine verbs, but usually only the four listed here are used in REST.
+
+`GET` is used to retrieve resources.
+`POST` is used to request the creation of a new resource. The service then creates the resource and usually returns the unique ID generated for the new resource to the client.
+`PUT` is used to create a new resource or make a change to an existing resource. `PUT` request should be idempotent, which means that no matter how many times the request is made by the client to a service, the effects on the resource are always exactly the same.
+Finally, a `DELETE` request is used to remove a resource.
+
+<br>
+
+<img src="../assets/http_responses.png" alt="http responses" width="50%" height="50%">
+
+<br>
+
+HTTP services return responses in a standard format defined by HTTP. These HTTP responses are built in three parts.
+
+The response line, header variables, and response body.
+
+The response line has the HTTP version and a response code. The response codes are broken on boundaries around the hundreds. The 200 range means okay. For example, 200 is okay. 201 means a resource has been created. The 400 range means the client request is an error. For example, 403 means forbidden due to request or not having permission. 404 means requested resource not found. The 500 range means the server encountered an error and cannot process the request. For example, 500 is internal server error. 503 is not available usually because the server is overloaded.
+
+The response header is a set of key value pairs, such as `content-type`, which indicates to the receiver the type of the content the response body contains.
+
+The response body has the resource representation requested in the format specified in the `content-type` header and can be JSON, XML, HTML, etc.
+
+<br>
+
+<img src="../assets/uri.png" alt="uri" width="50%" height="50%">
+
+<br>
+
+The guidelines listed here focus on achieving consistency on the API. Singular nouns should be used for individual resources and plural nouns for collections or sets. For an example, consider the following URI `/pet`. Then a GET request for URI `/pet/1` should fetch a pet with ID one, whereas GET `/pets` should fetch all the pets. Do not use URIs such as GET `/GET pets`. The URI should refer to the resource, not the action on the resource. That is the rule of the verb. Remember that URIs are case insensitive and that they include version information.
+
+<br>
+
+<img src="../assets/diagramming_services.png" alt="diagramming services" width="50%" height="50%">
+
+<br>
+
+It is a good practice to diagram services. This diagram shows that there is a service that provides access to the resource known as pets. The representation of the resource is the pet. When a request is made for the resource via the service, one or more representations of a pet are returned.
+
+<br>
+
+### APIs
+
+Let's move on to the API design.
+
+<br>
+
+<img src="../assets/api_design.png" alt="API design" width="50%" height="50%">
+
+<br>
+
+It is important to design consistent APIs for Services, Google provides an API design guide with recommendations on items such as names, error handling documentation, versioning, and compatibility. This guide and the API style book are linked in the slides.
+
+For examples of best practices, it is useful to examine the Google Cloud APIs. Each Google Cloud Service exposes a rest API.
+
+Functions are defined in the form `service.collection.verb`. The service represents the service endpoint example for the Compute Engine API, the service endpoint is `compute.googleapis.com`.
+
+Collections include instances, instance groups, and instance tablets. The verbs then include `list`, `get` and `insert`, for example, to see all your Compute Engine instances make a get request to the link shown on the slide.
+
+Parameters are passed either in the URL or on the request body in JSON format.
+
+<br>
+
+<img src="../assets/openAPI.png" alt="OpenAPI" width="50%" height="50%">
+
+<br>
+
+Open API is an industry standard for exposing APIs to clients.
+
+Version 2.0 of the specification was known as Swagger.
+
+Swagger is now a set of open source tools built around open API that with associated tooling supports designing, building, consuming, and documenting APIs.
+
+Open API supports an API first approach.
+
+Designing the API through open API can provide a single source of truth from which source code for client Libraries and server stubs can be generated automatically, as well as API user documentation. Open API is supported by Cloud Endpoints and Apigee.
+
+The example document shows a sample of an open API specification of a pet store service.
+
+The URI is `petstore.swagger.io/v1`. Note the version in the URI here. The example then shows an endpoint slash pets which is accessed using the HTTP `GET` and will provide a list of all pets.
+
+<br>
+
+<img src="../assets/gRPC.png" alt="gRPC" width="50%" height="50%">
+
+<br>
+
+Developed at Google gRPC is a binary protocol that is extremely useful for internal microservices communication.
+
+It provides support for many programming languages, has strong support for loose coupling via contracts defined using protocol buffers and is high-performing because it's a binary protocol.
+
+It is based on HTTP2 and supports both client and server streaming. The protocol is supported by many Google Cloud services, such as the global load balancer and Cloud Endpoints for microservices, as well as on GKE by using an envoy Proxy.
+
+<br>
+
+<img src="../assets/gcp_endpoint_management.png" alt="GCP endpoint management" width="50%" height="50%">
+
+<br>
+
+Google Cloud provides two tools for managing APIs.
+
+Cloud Endpoints and Apigee.
+
+Cloud Endpoints is an API management gateway which helps you develop, deploy, and manage APIs on any Google Cloud Backend. It runs on Google Cloud and leverages a lot of Google's underlying infrastructure.
+
+Apigee is an API management platform built for enterprises with deployment options on Cloud, on-premises or hybrid. The feature set includes an API Gateway, customizable portal for onboarding partners and developers, monetization and deep analytics around APIs. You can use Apigee for any HTTP/HTTPS back ends, no matter where they are running on-premises, any public cloud, et cetera.
+
+Boot solutions provide tools for services such as user authentication, monitoring and securing, and also for OpenAPI and gRPC.
+
+<br>
+
+### Activity Intro - Designing REST APIs
+
+You will now design the APIs for the microservices identified for your application.
+
+The aim of this activity is to gain experience designing the APIs and considering aspects such as the API URL structure, the message request response formats and versioning.
+
+Let's say we were defining an API for an online store. The API might look similar to what's shown here. Whether a service provides a user interface or some back-end functionality, it requires a programmatic interface that is callable via HTTPS.
+
+The only difference between a website and a web service is the format of the data that is returned. For a UI service, we might return HTML but a back-end service might return JSON or XML.
+
+Use the principles we have discussed in this module so far and refer to Activity five in the design workbook.
+
+<br>
+
+### Activity Review - Designing REST APIs
+
+In this activity, you were asked to design a RESTful API for the microservices used in your case study.
+
+Here's an example for our online travel portal.
+
+Obviously, our API would be larger than this, but in a way, the APIs are all more of the same. Each service manages and makes available some collection of data. For any collection of data, there are a handful of typical operations we do with that data.
+
+This is similar to Google Cloud APIs. For example, in Google Cloud, we have a service called Compute Engine, which is used to create and manage virtual machines, networks, and the like. The Compute Engine API has collections like instances, instance groups, networks, sub-networks, and many more. For each collection, various methods are used to manage the data.
+
+<br>
+
+<img src="../assets/compute_api_example.png" alt="Cloud Compute API Example" width="50%" height="50%">
+
+<br>
+
+For example, here are the methods for adding, managing, and deleting firewalls. When you're designing your APIs, you should strive to be as consistent as possible. This will make development easier and will also make it easier for clients to learn to use your APIs.
+
+<br>
+
+### Review
+
+In this module, we focused on microservice design and architecture.
+
+We started out defining what a microservice architecture is and the advantages and disadvantages of using microservices. We also enumerated some microservice best practices.
+
+Then we covered how to design service APIs and implement a rest style architecture.
+
+<br>
+
+## Module Overview: DevOps Automation
+
+This module introduces DevOps automation, a key factor in achieving consistency, reliability, and speed of deployment.
+
+Specifically, we will talk about services that support continuous integration and continuous delivery practices; part of DevOps way of working.
+
+With DevOps and microservices, automated pipelines for integrating, delivering, and potentially deploying code are required. These pipelines ideally run on on-demand provisioned resources.
+
+This module introduces the Google Cloud tools for developing code and creating automated delivery pipelines that are provisioned on-demand.
+
+We will talk about using Cloud Source Repositories for source and version control.
+
+Cloud Build, including build triggers for automating builds and managing containers with Container Registry.
+
+We will finish by reviewing infrastructure as code tools like Deployment Manager and Terraform.
+
+<br>
+
+### Continuous Integration Pipelines
+
+Let's begin by talking about continuous integration pipelines.
+
+<br>
+
+<img src="../assets/ci_pipeline.png" alt="CI Pipeline" width="50%" height="50%">
+
+<br>
+
+Continuous integration pipelines, automate building applications. This graphic shows a very simplistic view of a pipeline which would be customized to meet your requirements.
+
+The process starts with checking code into a repository where all the unit tests are run. On successful passing of the tests, a deployment package is built as a docker image. This image is then saved in a container registry from where it can be deployed.
+
+Each micro service should have its own repository. Typical extra steps include linting of code, quality analysis by tools such as sonarqube, integration tests, generating test reports and image scanning. Google Cloud provides the components required to build a continuous integration pipeline.
+
+Let's go through each of these.
+
+<br>
+
+<img src="../assets/ci_services.png" alt="GCP CI services" width="50%" height="50%">
+
+<br>
+
+The Cloud Source Repository Service provides private Git repositories hosted on Google Cloud. These repositories let you develop and deploy an app or service in a space that provides collaboration and working control for your code. Cloud source repositories is integrated with Google Cloud so it provides a seamless developer experience.
+
+Cloud Build executes your builds on Google cloud infrastructure. It can import source code from cloud storage, cloud source repositories, GitHub or Bitbucket, execute a build to your specification and produce artifacts such as docker containers or Java archives. Cloud Build executes your build as a series of build steps where each build step is run in a docker container. A build step can do anything that can be done from a container irrespective of the environment. There are standard steps or you can define your own steps.
+
+A Cloud Build trigger automatically starts a build whenever you make any changes to your source code. You can configure the trigger to build your code on any changes to the source repository or only changes that match the certain criteria.
+
+Container registry is a single place for your team to manage docker images or deployment packages, perform vulnerability analysis and decide who can access what with fine grained access controls.
+
+Let's go through each of these services in more detail.
+
+<br>
+
+<img src="../assets/cloud_source_repo.png" alt="Cloud Source Repositories" width="50%" height="50%">
+
+<br>
+
+Clouds source repositories provide managed Git repositories. You can use Cloud IAM to add team members to your project and to grant them permissions to create, view and update repositories. Repositories can be configured to publish messages to a specific Pub/Sub topic. Messages can be published when a user creates or deletes a repository or pushes a comment. Some other features of cloud source repositories include the ability to debug in production using cloud debugger, audit logging to provide insights into what actions were performed where and when? And direct deployment to app engine. It is also possible to connect an existing Git hub orbit bucket repository to cloud source repositories. Connected repositories are synchronized with clouds source repositories automatically.
+
+<br>
+
+<img src="../assets/cloud_build.png" alt="Cloud Build" width="50%" height="50%">
+
+<br>
+
+Cloud build, lets you build software quickly across all languages. It is a google hosted Docker build service and is an alternative to using the Docker build. The CLI can be used to submit a build using G cloud. An example is shown on this slide. Gcloud build submits, submits the build and will run as a remote built. The `--tag` is the tag to use when the image is created. The tag must use the `gcr.io` or `star.gcr.io.star` name space. Your source must contain a Docker file if you use the tag. Finally, the dot represents the location of the source to build.
+
+<br>
+
+<img src="../assets/build_trigger.png" alt="Build Triggers" width="50%" height="50%">
+
+<br>
+
+Build triggers, watch a repository and build a container whenever code is pushed. Google's build triggers support Maven, cloud builds and Docker. A cloud build trigger automatically starts a build whenever a change is made to source code. It can be set to start a build on commits to a particular branch or on commits that contain a particular tag. You can specify a regular expression with the branch or tag value to match. The build configuration can be specified either in a Docker file or a cloud build file. The configuration required is shown on this slide. First, a source is selected. This can be cloud source repositories, GitHub or Bitbucket. In the next stage, a source repositories selected followed by the trigger settings. The trigger settings include information like the branch or tag to use for trigger. And the build configuration, for example, the Docker file or cloud build file.
+
+<br>
+
+<img src="../assets/container_registry.png" alt="Container Registry" width="50%" height="50%">
+
+<br>
+
+Container registry is a Google Cloud hosted Docker repository. Images built using cloud build are automatically saved in container registry. Images are tagged with a prefix as shown on this slide. It is also possible to push and pull images using the standard Docker commands. So to push an image, use `docker push gcr.io/your-project-id/image-name`. To pull an image, use `docker pull gcr.io/your-project-id/image-name`.
+
+<br>
+
+<img src="../assets/binary_auth.png" alt="Binary Authorization" width="50%" height="50%">
+
+<br>
+
+Now, binary authorization allows you to enforce deployment of only trusted containers into GKE. Binary authorization is a Google Cloud service and is based on the KRITIS specification. For this to work, you must enable binary authorization on your GKE cluster where your deployment will be made. A policy is required to sign the images. When an image is built by Cloud Build and an a tester verifies that it was from a trusted repository, for example, source repositories,container registry includes a vulnerability scanner that scans containers.
+
+A typical workflow is shown in the diagram. Check in of code triggers a Cloud Build. As part of the build, container registry will perform a vulnerability scan when a new image is uploaded. The scanner publishes messages to Pub/Sub. The KRITIS signer listens to pops up notifications from a container registry vulnerability scanner, and makes an attestation if the image scanning past the vulnerability scan. Google Cloud binary authorization service then enforces the policy requiring attestations by the KRITIS signer before a container image can be deployed. This flow prevents deployment of images with vulnerabilities below a certain threshold.
+
+<br>
+
+### Infrastructure as Code
+
+Let's now move on to consider Infrastructure as Code.
+
+<br>
+
+<img src="../assets/moving_to_cloud.png" alt="Moving to the Cloud" width="50%" height="50%">
+
+<br>
+
+Moving to the Cloud requires a mindset change. The on-demand pay-per-use model of Cloud computing is a different model to traditional on-premise infrastructure provisioning. A typical on-premise model would be to buy machines and keep them running continuously. The Compute Infrastructure is typically built from fewer larger machines. From an accounting view, the machines are capital expenditure that deprecates over time. When using the Cloud, resources are rented instead of purchased, and as a result, we want to turn the machines off as soon as they are not required to save on cost.
+
+The approach is to typically have lots of smaller machines scale out instead of scale up, and to expect an engineer for failure.
+
+From an accounting view, the machines are a monthly operating expenditure.
+
+In other words, in the Cloud, all infrastructure needs to be disposable.
+
+<br>
+
+<img src="../assets/disposable_infra.png" alt="Disposable Infrastructure" width="50%" height="50%">
+
+<br>
+
+The key to this is Infrastructure as Code, IaC, which allows for provisioning, configuration, and deployment activities to be automated. Having the process automated minimizes risks, eliminates manual mistakes, and supports repeatable deployments, scale, and speed. Deploying one or 100 machines is the same effort. The automation can be achieved using scripts or declarative tools such as Terraform, which we will discuss later.
+
+It is really important that no time is spent trying to fix broken machines, or installing patches, or upgrades. These will lead to problems recreating the environment at a later date. If a machine requires maintenance, remove it and create a new one instead. Costs can be reduced by provisioning ephemeral environments such as test environments that replicate the production environment.
+
+<br>
+
+<img src="../assets/iac.png" alt="IaC" width="50%" height="50%">
+
+<br>
+
+In essence, Infrastructure as Code allows for the quick provisioning and removing of infrastructure. The on-demand provisioning of a deployment is extremely powerful. This can be integrated into a continuous integration pipeline, smooths the path to continuous deployment.
+
+Automated infrastructure provisioning means that it can be provisioned on demand and the deployment complexity is managed in code. This provides the flexibility to change infrastructure as requirements change, and all the changes are in one place.
+
+Infrastructure for environments such as deployment and test can now easily replicate production and can be deleted immediately when not in use, all because of Infrastructure as Code.
+
+Several tools can be used for IaC.
+
+Google Cloud provides deployment manager where deployments are described in a YAML file known as Configuration. This details all the resources that should be provisioned. Configurations can be modularized using templates, which allows the abstraction of resources into reusable components across deployments.
+
+In addition to deployment manager, Google Cloud also provides support for other IaC tools including
+- Terraform
+- CHEF
+- Puppet
+- Ansible
+- Packer.
+
+Let's take a closer look at deployment manager and Terraform.
+
+<br>
+
+<img src="../assets/cloud_deployment_manager.png" alt="Cloud Deployment Manager" width="50%" height="50%">
+
+<br>
+
+Cloud Deployment Manager defines infrastructure using YAML files. Templates allow the separation of configuration into different pieces that can be used and reused across different deployments. These templates can be specific or more generalized. They can make use of template properties, environment variables, and modules to create dynamic configuration and template files. The template files can be written in Python or Jinja, the Python templating language. Deployments can be created using the Google Cloud Console, APIs, or GCloud. The example YAML snippet to the right shows a section from a deployment manager configuration. The configuration must list resources, which in this example is a virtual machine, including the type of VM, zone, disk, and network interface.
+
+<br>
+
+<img src="../assets/terraform.png" alt="Terraform" width="50%" height="50%">
+
+<br>
+
+Terraform is similar to deployment manager, but can be used on multiple public and private Clouds. Terraform is already installed in Cloud Shell. The example configuration files shown on the right begins by indicating that the provider is Google Cloud. What follows is the configuration of a compute engine instance and its disk. The output section allows for the IP address of the provisioned instance to be obtained from the deployment.
+
+<br>
+
+#### Lab Intro - Building a DevOps Pipeline
+
+In this first lab, you will build a DevOps Pipeline using Cloud Source repositories, Cloud Build and Container Registry.
+
+Specifically, you will first create a git repository.
+
+You will then write a simple Python application and add it to your repository.
+
+After that, you will test your web application in Cloud Shell and then define a Docker build.
+
+Once you define the build, you will use Cloud Build to create a Docker image and store the image in container registry.
+
+Then you will see how to automate bills using triggers.
+
+Once you have the trigger, you will test it by making a change to your program and pushing that change to a git repo.
+
+<br>
+

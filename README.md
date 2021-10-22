@@ -23,6 +23,12 @@ This repo holds all the notes and whatever else is in the [Google Cloud DevOps P
 
 [Developing a Google SRE Culture](https://coursera.org/share/2f98aca2089140425349b6b07d88d5d8)
 
+[Reliable Google Cloud Infrastructure: Design and Process]()
+
+[Logging, Monitoring and Observability in Google Cloud]()
+
+[Getting Started with Google Kubernetes Engine]()
+
 <hr>
 
 ## Table of Contents
