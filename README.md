@@ -20,6 +20,7 @@ This repo holds all the notes and whatever else is in the [Google Cloud DevOps P
 <br>
 
 [Google Cloud Fundamentals: Core Infrastructure](https://coursera.org/share/d6201f4435546a634dce667a65a0ca80)
+
 [Developing a Google SRE Culture](https://coursera.org/share/2f98aca2089140425349b6b07d88d5d8)
 
 <hr>
