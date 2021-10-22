@@ -1,5 +1,5 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/justisGipson/google_devops_cert)
-![GitHub language count](https://img.shields.io/github/languages/count/justisGipson/google_devops_cert)
+<!-- ![GitHub language count](https://img.shields.io/github/languages/count/justisGipson/google_devops_cert) -->
 
 # Google Cloud DevOps/SRE Certification
 
