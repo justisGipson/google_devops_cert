@@ -88,7 +88,7 @@ All of these formats have the exact same content but we recommend picking one fo
 
 <br>
 
-#### [Cloud Architect Workbook](../assets/CloudArchitectWorkbook%20_%20Design%20&%20Process.pdf)
+#### [Cloud Architect Workbook](../assets/CloudArchitectWorkbook_Design_Process.pdf)
 
 <br>
 
@@ -1250,6 +1250,200 @@ A CI pipeline automates the creation of deployment packages like Docker images i
 
 ## Module Overview - Google Cloud Storage and Data Solutions
 
-In this module, we discuss Google Cloud Storage and Data Solutions and how to select the most suitable one to meet your business and technical requirements. Google Cloud provides a rich set of different storage options that cater to different types of data, sizes of data, lifecycle and also data access patterns. We will discuss storing binary data with Cloud Storage, relational data with Cloud SQL or Spanner and NoSQL or unstructured data using Firestore and Bigtable. In addition, we will consider cashing for fast data access using Memorystore and finally aggregating data for queries and reports using BigQuery as a data warehouse.
+In this module, we discuss Google Cloud Storage and Data Solutions and how to select the most suitable one to meet your business and technical requirements.
+
+Google Cloud provides a rich set of different storage options that cater to different types of data, sizes of data, lifecycle and also data access patterns.
+
+We will discuss storing binary data with Cloud Storage, relational data with Cloud SQL or Spanner and NoSQL or unstructured data using Firestore and Bigtable. In addition, we will consider caching for fast data access using Memorystore and finally aggregating data for queries and reports using BigQuery as a data warehouse.
+
+<br>
+
+### Key Storage Characteristics
+
+Let's get started by considering key storage characteristics.
+
+<br>
+
+<img src="../assets/gcp_managed_storage.png" alt="GCP Managed Storage" width="50%" height="50%">
+
+<br>
+
+Google Cloud has a wide range of managed storage and database options in its portfolio. Knowing the characteristics of each and being able to select a suitable solution is vital as an architect during the design process.
+
+From a high-level the services range from relational, NoSQL, object storage, data warehouse, to In-memory. These services are fully managed to scalable and backed by industry leading SLAs. Making a decision on which storage solution is right for your requirements is a balance of a number of characteristics including the type of data, scale, durability, availability, and location requirements.
+
+We will discuss ways in which you can make the decision based on your requirements in this module.
+
+<br>
+
+<img src="../assets/data_storage_sla.png" alt="Data Storage SLAs" width="50%" height="50%">
+
+<br>
+
+Different data storage services have different availability SLAs. For a service, the availability SLA is often dependent on the configuration of the service.
+
+For example, for Cloud storage as the slide shows the availability varies depending on whether multi-regional, regional or coldline buckets are created. The same can be seen for Cloud Spanner and Firestore with multi-region offering higher availability than single region configurations.
+
+This is where requirements are extremely important as they will help inform the storage choices.
+
+The availability SLAs are typically defined per month. Monthly uptime percentage means the total number of minutes in a month, minus the number of minutes of downtime suffered from all downtime periods in a month, divided by the total number of minutes in a month.
+
+**For up-to-date SLA numbers refer to the documentation.**
+
+Now durability of data represents the odds of losing the data.
+
+<br>
+
+<img src="../assets/durability.png" alt="Durability of Data" width="50%" height="50%">
+
+<br>
+
+Depending on the storage solution, the durability is a shared responsibility. Google Cloud's responsibility is to ensure that data is durable in the event of a hardware failure. Your responsibility is performing backups of your data, for example Cloud storage provides you with 11 9's durability and versioning is a feature.
+
+However, it's your responsibility to determine when to use versioning.
+
+I recommend turning versioning on and having older versions archived as part of an object lifetime management policy.
+
+For other storage services to achieve durability, it usually means taking backups of data. For disks this means snapshots. So snapshot jobs should be scheduled.
+
+For Cloud SQL, Google Cloud provides automated machine backups, point-in-time recovery, and optionally a failover server. To improve durability SQL database backup should also be run. Spanner and Firestore provide automatic replication and you should run export jobs with the data being exported to Cloud storage.
+
+<br>
+
+<img src="../assets/amount_data.png" alt="Data Amounts" width="50%" height="50%">
+
+<br>
+
+The amount of data and the number of reads and writes are important to know when selecting a data storage service.
+
+Some services scale horizontally by adding nodes, for example, Bigtable and Spanner, which is in contrast to Cloud SQL and Memorystore which scale machines vertically.
+
+Other services scale automatically with no limits for example, Cloud storage, BigQuery, and Firestore.
+
+Strong consistency is another important characteristic to consider when designing data solutions. A strongly consistent database will update all copies of data within a transaction and ensure that everybody gets the latest copy of committed data on reads.
+
+<br>
+
+<img src="../assets/data_consistency.png" alt="Consistency of Data" width="50%" height="50%">
+
+<br>
+
+Google Cloud Services providing strong consistency include Cloud storage, Cloud SQL, Spanner, and Firestore.
+
+Eventual consistent data bases typically have multiple copies of the same data for performance and scalability. They support handling large volumes of writes. They operate by updating one copy of the data synchronously and all copies asynchronously. Which means that not all readers are guaranteed to read the same value at a given point in time. The data will eventually become consistent but not immediately.
+
+Bigtable and Memorystore are examples of Google Cloud data services that have eventual consistency.
+
+<br>
+
+<img src="../assets/storage_costs.png" alt="Cost of Data Storage" width="50%" height="50%">
+
+<br>
+
+When designing a data storage solution, calculating the total cost per GB is important to help determine the financial implications of a choice.
+
+Bigtable and Spanner are designed for massive data sets and are not as cost effective for small data sets.
+
+Firestore is less expensive per GB stored, but the cost for reads and writes must be considered.
+
+Cloud storage is not as expensive, but is only suitable for certain data types.
+
+BigQuery storage Is relatively cheap but does not provide fast access to records and a cost is incurred for each query.
+
+So as you see the choice of the right storage solution is not simple. It has to be based on the type of data, size of data, and read/write patterns.
+
+<br>
+
+### Activity Intro: Defining Storage Characteristics
+
+You will now define storage characteristics for each of your case study services.
+
+In a microservice architecture, there is not one big database to store everything for the entire application. Each service should maintain its own data, storage characteristics include whether the data is structured or unstructured, and relational or no SQL.
+
+Ask yourself if you require strong consistency, or if eventual consistency is good enough.
+
+Also think about how much data you have, and if you need read/write or read only.
+
+Here's an example table for an account service that specifies all the business and technical requirements that I just mentioned.
+
+Refer to activities six in your design workbook to fill out a similar table for your service
+
+<br>
+
+### Activity Review: Defining Storage Characteristics
+
+In this activity, you were asked to define these storage characteristics for the case study you are designing.
+
+These characteristics will help you choose Google Cloud Storage Services the most appropriate for your application.
+
+Here's an example for our online travel portal, Click Travel. We focused on the inventory, inventory uploads, ordering, and analytic services.
+
+As you can see, each of these services has different requirements that might result in choosing different Google Cloud Services.
+
+<br>
+
+### Choosing Google Cloud Storage & Data Solutions
+
+
+<br>
+
+### Activity Intro: Choosing Google Cloud Storage & Data Solutions
+
+
+<br>
+
+### Activity Review: Choosing Google Cloud Storage & Data Solutions
+
+
+<br>
+
+### Review
+
+
+<br>
+
+## Module Intro: Designing Google Cloud Networks
+
+
+<br>
+
+### Designing Google Cloud Networks
+
+
+<br>
+
+### Designing Google Cloud Load Balancers
+
+
+<br>
+
+### Activity Intro: Defining Network Characteristics
+
+
+<br>
+
+### Activity Review: Defining Network Characteristics
+
+
+<br>
+
+
+### Connecting Networks
+
+
+<br>
+
+### Activity Intro: Diagramming Your Network
+
+
+<br>
+
+### Activity Review: Diagramming Your Network
+
+
+<br>
+
+### Review
+
 
 <br>
