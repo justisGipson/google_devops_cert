@@ -1074,9 +1074,182 @@ After that, you will test your web application in Cloud Shell and then define a 
 
 Once you define the build, you will use Cloud Build to create a Docker image and store the image in container registry.
 
-Then you will see how to automate bills using triggers.
+Then you will see how to automate builds using triggers.
 
 Once you have the trigger, you will test it by making a change to your program and pushing that change to a git repo.
 
 <br>
 
+#### Lab Review - Building a DevOps Pipeline
+
+In this lab, you learned how to use Google Cloud tools to create a simple and automated continuous integration pipeline. You used Cloud Source repositories to create a Git repository, and then use Cloud Build and triggers to automate the creation of your Docker images when code was checked into that repo. When Cloud Build created your Docker images, it stored them in Container Registry. You saw how to access those images and test them in a Compute Engine VM. You can stay for a lab walk through, but remember that Google Cloud's user interface can change. So your environment might look slightly different. So here I am in the GCP console. The first thing I'm going to do is I'm going to go create a new repository. For that, in the navigation menu, I'm going to scroll down to Source Repositories.
+
+That opens in a new tab.
+
+In here, I'm going to click Add repository.
+
+We're going to create a new one, click Continue, and then we're just going to give it a name, which is the one we have in the lab instructions, which is `devops-repo`.
+
+Now, I want to select the project that I'm working with. So for that, you want to just make sure that you're selecting the actual Qwiklabs project that is displayed in your Qwiklabs UI.
+
+So I'm going to select that, and I'm going to click Create. So this is going to create now. What I'm going to do is I'm going to return to the Cloud Console.
+
+So I'm just switching tabs here.
+
+Within here I'm going to click Activate Cloud Shell.
+
+When prompted, I'm going to click Continue.
+
+So I'm actually also going to move this to a new tab, a specific new window. I can do that right here, and then I can see a little bit more here.
+
+So within here now I'm just going to create a new directory. So let me copy the directory name from the lab instructions, and then I'm just going to navigate to that directory. S
+
+o now we're going to clone the empty repository that we just created, and we should get a warning here. That is because we're actually using an empty directory.
+
+So you can see that right here, you appear to have cloned an empty directory, and that's okay. So this directory now created the folder devops-repo. So we can also navigate to that and right now, right now.
+
+That completes really your first task.
+
+Now, in the next task, we're now going to use the code editor and actually create a file in here. So up here, I'm going to click on Launch editor, and what we're going to do is we're going to go to the File menu and create a new file, but we want to make sure that we do that in the devops-repo.
+
+So let me navigate to the devops-repo here, then click File, New File, we're going to call that main.py. We can see that as now within that directory, and I'm just going to paste the Python code that we have from the lab instructions in there, and then I can save that.
+
+Now, I'm going to now create a new folder in here called templates.
+
+So in the devops-folder, I'm going to right-click and I can click on New Folder and I'm giving it a name templates. In that folder we're going to create the file `layout.html`, which is also from the lab instructions. So these first couple of steps are really just a lot of setting up the code here that we're going to use, and rather than just cloning this from somewhere, we're giving you all of the files and showing you what this code is so that you can understand what this code does.
+
+Again, this is just a simple Python application. So it's just really a little bit better than Hello World, but we're going to use it for the pipeline. We actually are going to use something similar throughout the other labs that we have in this course as well. Now, we also need to create an `index.html`. So I'm going to in the templates folder, also add another file, call it `index.html`, and we're also going to copy code in there, and then we're going to save that as well.
+
+Now, we also need a requirements file. This is typical for Python applications, so it's a prerequisite, and so I'm going to, in the DevOps folder, not the templates folder now, I'm going to add a new file, and call it `requirements.txt` and specify Flask in there.
+
+So now we have some files, we can save them. So what we're going to nano first we need to add all the files that we just created to the local git repo.
+
+So in Cloud Shell, we're going to make sure that we navigate to this folder. So if you copy the lab instructions that just asks you to cd to that folder, and let me make this a little bit bigger here and clear this so we can see more. Navigate, we're still there, and then we're going to run the command `git add --all`.
+
+Now, we're going to commit those changes to the repository. Now, the lab instructions say that you want to enter an email, and then what you want to enter a name, you could use your gmail or anything else here is really up to you. So I'm going to add these first command, and what I can actually do is I can just grab the email that I have in Qwiklabs as an example. So let me get to that.
+
+So in there, for example, from my current session, I have this, so I can run that for the configuration, and then I can also go back to the lab instructions. Now, specify the username, and here I can put my name, and I could just use this part of the email for that.
+
+This is just for illustration purposes, usually you'd want to put your own email and your own name here. This is just a demo.
+
+So we've configured git, so now we can go ahead and actually commit and we give it a name. Let's just call it initial commit.
+
+So here we can see the commits, these are all the files that we just did, again the requirements is directly within a devops-repo folder as well as `main.py`, and then the two HTML files are within the templates. So now we can push this to the master, and we can see that this is done.
+
+Now I can go back and switch to the Source Repositories page, and I can go refresh this, and we should see the code here. So here we go. So this worked successfully and that completes task 2.
+
+So that's all great, but we want to also test this application and actually create the Docker build and all of that. So let's get on that, I am going to go back to Cloud Shell, and first we're going to install the Flask framework using pip. So I want again, just make sure I'm in the right folder by running first the cd command, and then we're going to run `sudo pip3 install`, and that is going to go through, and then we're going to run the program with the Python command.
+
+So we can see that this is configured to run on port 8080, and we can actually preview this, what this looks like. So up here, we have a Web preview button. So if I click on this, and then preview on port 8080, it'll open a new tab for me, and that worked.
+
+So it says Hello DevOps Fans in here.
+
+So this is working, I can stop that if I go back to Cloud Shell and just `ctrl + c` out of this, and what I'm going to do now is I'm going to go into the `main.py` and I'm actually going to change the name. So if I go into `main.py` here, we see this is where that text Hello DevOp Fans was coming from. So we can change that to something else. Let's say for example, Hello Google Cloud Fans, and we're going to save that.
+
+Now we're going to take these changes we just made, and we're going to commit them. So let me just do that and give it a name, second commit, and then we'll also push to the master.
+
+Great, and now if I go back to Cloud Store Repositories, I can go in here into `main.py`, and I can see that this change actually took effect. That's the end of task three.
+
+So now we're actually going to get creative here, and we're going to define a Docker build and actually work on our DevOps pipeline.
+
+The first step to that is to create a file called `Dockerfile`, and that file just defines how I Docker containers constructed. So let me go back to Cloud Shell, and within the DevOps repo folder, I'm going to want to create a new file. I'm just going to give it the name `Dockerfile`, no extension or anything, and the `Dockerfile`.
+
+So here at the top of the file, I'm just going to say from Python 3.7. So this is just the base image, and you can actually choose many base images. In this case, you're using one with Python already installed on it, and then we're going to enter the following.
+
+Workdir app and then copy, and these lines just copy the source code from the current folder into the app folder in the container image.
+
+Then we're also going to add commands, and this uses pip to install the requirements of the Python application into the container, and `gunicorn` is a Python Web server that we use to run the Web app. Then we're also going to enter the environment variables, and this just sets the port of the application running, in this case, port 80, and the last line in here runs a Web app using `gunicorn` Web server.
+
+So you can see that here, and then you are also given, let me just make this a little bigger so we can see this whole file. You also given what the whole file looks like again. So I could also just copy that, and just make sure one more time that I have done everything correctly, and that seems to be the case.
+
+So that's it for task four.
+
+We've defined a Docker build and now we need to actually manage the Docker images with Cloud built and Container Registry. So within Cloud Shell, first I want to make sure we're still in the right folder, and we keep doing that in the lab instructions just in case you do something else or you close Cloud Shell, and reopen it and you are not in the same folder anymore.
+
+So just want to confirm I'm in the right folder. Now we're going to create an environment variable that's specifically for the project, but that's actually already stored in devshell project ID. So let's actually verify that. If I go `echo $DEVSHELL_PROJECT_ID`, we can see right here that I have my project ID, and it can also verify if I go back to my console, that is the current project I'm working on. So you can see that ends with 625c, and the same is true here. So now we're going to go ahead and use that environment variable to now start the belt. So let's do that, and this might ask us now to enable Cloud build, it's downloading.
+
+We're just going to wait for that.
+
+Now in Container Registry, the image name will always begin with `gcr.io/` and then followed by the project ID of the project you're working with, followed by the image, name, and the version, and then the period at the end of the command represents the path to `Dockerfile`.
+
+In this case, it'll be the current directory. So we're just going to wait for this to complete, and then we're going to return to the console, and look at the Container Registry.
+
+All right, it's actually done. So here you can see what I just talked about, the `gcr.io`. Then we have the name of the project. Here we have the project itself, and then the version, so the image name and the version. So I'm going to go back now to Container Registry.
+
+So let me go to Cloud Console, click on Container Registry and we're going to minimize that here, and here we can see that DevOps image. So now what we're going to do is we're going to go to Cloud Build and we should see this already. We're going to go to Compute Engine and create a VM that is going to directly use that container image. So let's go to the navigation menu and then we're going to go to Cloud Build.
+
+It's a long list in here, but here we go, and here we can see the history of that build that just happened. So we can see 50 seconds ago, and we could get some more information.
+
+We can see where this is stored.
+
+We can click into it and I can get all information, and if something were to go wrong, we can see that information here as well.
+
+But for the time being, let's go to Compute Engine and create a new VM, and in the instance creation page, we're going to use the container image that we just created. So I can just leave the name, it's instance one, and I'm going to scroll down, and the key here is now we're going to check this box that says deploy a container image to this VM instance, and then the image. Now, here we need to copy from Cloud Shell.
+
+So let me go back to Cloud Shell. Let me grab this whole path here, copy it once you select it, and then let me paste that in here, and obviously that's going to be different for your projects. So keep in mind, don't just copy the one I have here because you will have different project ideas. Now I also want to enable HTTP traffic. So this is just going to add a network tag, and then create a firewall rule with that tag to allow traffic there, and we're doing that because again, we enabled traffic on port 80, and then we're going to click Create.
+
+We're going to wait for this VM to start, and then we're going to make a request to the external IP address. I can close this over here. This is anytime you're using a new project, you get this Learn page, and with all of Qwiklabs, you're always have new projects for all of your different labs. So here we have the external IP. I can click on here.
+
+Directly, and this might take a while for this to startup, so you might have to wait a minute or so. So let's actually do that and let's get back to here. So here we go.
+
+Took about a minute to two minutes just for that container to start. But here we can see now, the new text that we have in here We can see that this is running. So again, all I did is make a request to the external IP address, and this is the IP address in my case, you can just click on that directly or you could navigate to that by just entering that IP address.
+
+Great, so now what we're going to do is we want to save these changes to our Git Repository. So we're going to go back to Cloud Shell, and let me just clear this to get a bit more space. In here now we're going to make sure we're on the right folder which we already are, and then we're going to `git add --all`.
+
+Then we're going to first commit the changes locally with just a message that we added to Docker Support, and then we're going to push that to the master.
+
+So that worked. So now we can go back to Cloud Source Repository.
+
+So let me switch tabs to that and I'm just going to refresh this page, and there we can now also see our `Dockerfile`. So we can see that's in there too now. So that's all great. But now we want to actually move into the automation piece. So we're going to now automate builds with triggers.
+
+So for that we're going to go to Container Registry, and I have that in a different tab, I believe. Let me close a couple of these. Let's actually go back just to Cloud Console, Navigation menu safety, and then scroll down to Container Registry.
+
+So we have this DevOps image folder here. If I go in there, here we can see the container that we created earlier. So now we're going to go to Cloud Build. Let me go back to navigation menu.
+
+Cloud Build, and we're going to create a trigger. So let's go through the Trigger section. We're going to create a trigger, we're going to do that for our DevOps repository, we're going to give this a name. The lab instructions just has `devops-trigger`.
+
+Now there are a lot of defaults in here. We're going to accept those. It's just going trigger on the branch and you can say what files to include, exclude, the image name, and so on.
+
+In our case, we're just going to go ahead and create this, and then once it's created, we're going to run this trigger. So let's click Run trigger.
+
+So it says that build has started, and then we're going to go to the History link. We're going to ensure that this is actually running. So let me go back here to History, and here we can see that this has triggered. So we're going to wait for this to finish, and then we're going to click on this actual trigger here and scroll down to look at the logs, and the output of the build here is what you would have seen if you're running it on your machine. S
+
+o let's just wait for this to complete and then we're going to explore that. So we can see that this is complete, I'm just going to go click on the link for that, and this is what I mentioned, if you had run this from Cloud Shell like we did earlier, this is the output that you would see.
+
+So you might see this is very familiar to what we saw earlier. So now we're going to go back to the Container Registry service and we should see the new image in there. So if I go to the navigation menu and scroll down, and go to the Container Registry, we now see the devops-image here, we have a devops-repo folder here, and here we have that new image.
+
+Here, sorry, I navigated into the wrong place. So here we see the new image, you can see that this was just created a minute ago. So we're going to go back now, we're going to make changes to our file, and we're going to try to see how these builds are done automated.
+
+Then we want to also test these build changes. So I'm going to navigate back to Cloud Shell, we're going to go to the main function, and just like we did earlier, we're going to change this title, and let's just call it what is in the lab instructions, which is `Hello Build Trigger`.
+
+We're going to save that, and we're going to commit that, first make sure we are in the right folder, and then we're going to push our changes to clutters repositories.
+
+So all I've done now is made the change, and they should now cause a trigger. So if we go back to the Cloud Build service now in the console, we can see here that this is automatically triggered, and that's the end of task 6.
+
+That's all great, but now we want to actually test this. So we're going to wait for this build to complete, we can then click on it to see the detail, and then under the build information, we're going to find the image link, and then we're going to create a new Virtual Machine to test this because this is a new image that we have and we're going to allow HTTP traffic on that, wait for that to start up, and then we should see a text that is different from this.
+
+It shouldn't say Hello Google Cloud Fans, it should say Hello Build Triggers. So here we can see that the build is completed and I can now click on it, and I'm now looking for the image so I can go through the Build Log or it can also go to the Build Artifacts, and here I see the image.
+
+So let me just make some more space here and let's copy that, and then we're going to go to the navigation menu and we're going to head over to Compute Engine and create a new instance on this. So I'll go to Compute Engine, click on Create Instance. I'm going to leave the name and regions on the default.
+
+Now importantly, need to click Deploy a Container. I'm going to paste in the image, allow HTTP traffic, and then we're going to go create that. We're going to wait for this VM to startup, and once it's started, we're going to click in the external IP address, and just like before, that won't be automatically ready because we have to wait for the container to start. So let's just do that.
+
+So here we can see that this is now finished, the container is running, and it now it says, Hello Build Trigger.
+
+That's the end of the lab.
+
+<br>
+
+### Module Review
+
+In this module you learned about sources you can use to help automate the deployment of your cloud resources and services. You use cloud source repositories, cloud build, triggers, and container registry to create continuous integration pipelines.
+
+A CI pipeline automates the creation of deployment packages like Docker images in response to changes in your source code. You also saw how to automate the creation of infrastructure using infrastructure as code tools like deployment manager and terraform.
+
+<br>
+
+## Module Overview - Google Cloud Storage and Data Solutions
+
+In this module, we discuss Google Cloud Storage and Data Solutions and how to select the most suitable one to meet your business and technical requirements. Google Cloud provides a rich set of different storage options that cater to different types of data, sizes of data, lifecycle and also data access patterns. We will discuss storing binary data with Cloud Storage, relational data with Cloud SQL or Spanner and NoSQL or unstructured data using Firestore and Bigtable. In addition, we will consider cashing for fast data access using Memorystore and finally aggregating data for queries and reports using BigQuery as a data warehouse.
+
+<br>
