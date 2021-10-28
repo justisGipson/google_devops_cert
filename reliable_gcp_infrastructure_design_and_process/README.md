@@ -1992,3 +1992,210 @@ We also covered the different options to connect networks using Peering, VPN, an
 
 <br>
 
+## Overview - Deploying Applications to Google Cloud
+
+In this module, we discuss the different options of deploying applications to Google Cloud.
+
+Google Cloud offers many possible deployment platforms, and the choice is not always immediately obvious.
+
+<br>
+
+<img src="../assets/choosing_deployment.png" alt="Choosing GCP Deployment" width="50%" height="50%">
+
+<br>
+
+Let me give you a high-level overview of how you could decide on the most suitable platform for your application.
+
+First, ask yourself whether you have specific machine and OS requirements. If you do, then Compute Engine is a platform of choice.
+
+If you have no specific machine or operating system requirements, then the next question to ask is whether you are using containers.
+
+If you are, then you should consider Google Kubernetes Engine or Cloud Run. Depending on whether you want to configure your own Kubernetes cluster.
+
+If you are not using containers, then you want to consider Cloud Functions if your service is event-driven, and App Engine if it's not.
+
+We'll talk through each of these services in this module, and you will get to explore them in a lab. Let's get started.
+
+<br>
+
+### Google Cloud Infrastructure as a Service
+
+Let's begin by talking about Compute Engine, which is Google cloud's infrastructure as a service or IaaS offering.
+
+<br>
+
+<img src="../assets/compute_engine.png" alt="Compute Engine" width="50%" height="50%">
+
+<br>
+
+Compute Engine is a great solution when you need complete control over your operating systems, or if you have an application that is not containerized, an application built on a micro service architecture or an application that is a database. Instance groups and auto-scaling as shown on this slide allow you to meet variations in demand on your application.
+
+Let's take a closer look at instance groups.
+
+<br>
+
+<img src="../assets/instance_groups.png" alt="Managed Instance Groups" width="50%" height="50%">
+
+<br>
+
+Managed instance groups create VMs based on instance templates. Instance templates are just a resource used to define VMs and manage instance groups. The templates define the boot disk image or container image to be used, the machine type, labels and other instance properties like a startup script to install software from a GIT repository.
+
+The virtual machines in a managed instance group are created by an instance group manager. Using a managed instance group offers many advantages such as auto healing to recreate instances that don't respond and creating instances in multiple zones for high availability.
+
+<br>
+
+<img src="../assets/instance_groups_backend.png" alt="instance groups for backend" width="50%" height="50%">
+
+<br>
+
+I recommend using one or more instance groups as the backend for load balancers. If you need instance groups in multiple regions, use a global load balancer. And if you have static content, simply enable Cloud CDN as shown on the right.
+
+<br>
+
+### Google Cloud Deployment Platforms
+
+Let's go through the other deployment platforms.
+
+GKE, Cloud Run, App Engine and Cloud Functions.
+
+<br>
+
+<img src="../assets/gke" alt="GKE environment" width="50%" height="50%">
+
+<br>
+
+Google Kubernetes Engine, or GKE provides a managed environment for deploying, managing and scaling containerized applications using google infrastructure. The GKE environment consists of multiple compute engine virtual machines grouped together to form a cluster.
+
+GKE clusters are powered by the kubernetes open source cluster management system. Kubernetes provides the mechanisms with which to interact with the cluster. Kubernetes commands and resources are used to deploy and manage applications, perform administration tasks and set policies and monitor the health of deployed workloads. This diagram on the right shows the layout of a kubernetes cluster. A cluster consists of at least one cluster control plane and multiple working machines that are called nodes. These control plane and node machines run the kubernetes cluster orchestration system.
+
+Pods are the smallest, most basic deployable objects in kubernetes. A pod represents a single instance of a running process in a cluster. Pods contain one or more containers, such as docker containers that run the services being deployed. You can optimize resource use by deploying multiple services to the same cluster.
+
+<br>
+
+<img src="../assets/cloud_run.png" alt="Cloud Run" width="50%" height="50%">
+
+<br>
+
+Cloud Run, on the other hand, allows you to deploy containers to a Google managed kubernetes cluster. A big advantage is that you don't need to manage or configure the cluster. The services that you deploy must be stateless and the images you use must be in Container Registry.
+
+Cloud Run can be used to automate deployment to Anthos GKE clusters. You should do this if you need more control over your services, because it will allow you to access your VPC network, tune the size of compute instances and run your services in all GKE regions. The screen shot on the right shows a Cloud Run configuration where the Container image url is specified along with the deployment platform, which can be fully managed Cloud Run or Cloud Run for Anthos.
+
+<br>
+
+<img src="../assets/app_engine.png" alt="App Engine" width="50%" height="50%">
+
+<br>
+
+App Engine is a fully managed serverless application platform supporting the building and deploying of applications.
+
+Applications can be scaled seamlessly from zero upward without having to worry about managing the underlying infrastructure. App Engine was designed for microservices. For configuration each google cloud project can contain one app engine application, and an application has one or more services. Each service can have one or more versions and each version has one or more instances.
+
+App engine supports traffic splitting so it makes switching between versions and strategies such as canary testing or A/B testing simple.
+
+The diagram on the right shows the high level organization of a google cloud project with two services and each service has two versions. These services are independently deployable and versioned.
+
+Let me show you a typical app engine micro service architecture.
+
+<br>
+
+<img src="../assets/app_engine_microservices.png" alt="App Engine Microservices Architecture" width="50%" height="50%">
+
+<br>
+
+This could be an example of a retailer that sells online. Here, App Engine serves as the front end for both web and mobile clients. The back end of this application is a variety of google cloud storage solutions with static content such as images stored in cloud storage, Cloud SQL, used for structured relational data such as customer data and sales data, and Firestore, used for NoSQL storage such as product data. Firestore has the benefit of being able to synchronize with client applications. Memcached is used to reduce the load on the data stores by caching inquiries, and cloud tasks are used to perform work a synchronously outside a user request or service to service request. There's also a batch application that generates data reports for management.
+
+<br>
+
+<img src="../assets/cloud_functions.png" alt="Cloud Functions" width="50%" height="50%">
+
+<br>
+
+Cloud functions are a great way to deploy loosely coupled event driven microservices. They have been designed for processing events that occur in Google Cloud. The functions can be triggered by changes in a cloud storage bucket, a Pub/Sub message or http requests.
+
+The platform is completely managed, scalable and inexpensive. You do not pay if there are no requests and processing is paid for by execution time in 100 millisecond increments.
+
+This graphic illustrates an image translation service, implemented with Cloud Functions.
+
+When an image is uploaded to a cloud storage bucket, it triggers an OCR Cloud Function that identifies the text in the image using Google Cloud Vision API. Once the text has been identified, this service then published as a message to a Pub/Sub topic for translation, which triggers another Cloud Function that will translate the identified text and the image using the Cloud Translation API.
+
+After that, the translator cloud function will publish a message to a file write topic in Pub/Sub, which triggers a cloud function that will write the translated image to a file.
+
+This sequence illustrates a typical use case of Cloud Functions for event based processing.
+
+<br>
+
+#### Lab Intro: Deploying Apps to Google Cloud
+
+In the first lab of this course, you used Cloud Build to create Docker images and store those images in container registry.
+
+If you follow the 12-Factor best practices when writing your applications, you should be able to create applications that are portable across different cloud providers and also portable between different deployment services provided by the cloud.
+
+That's why in this lab, you deploy code to App Engine, Google kubernetes Engine and Cloud Run.
+
+Let's quickly go over why we chose those services for this lab.
+
+Deploying your dockerized application to a virtual machine using computer engine in the first lab was easy. But that might not be the most effective option.
+
+A more automated way might be using App Engine, which will be the first compute platform of this lab.
+
+App Engine is great for those who just want to focus on their code and not worried at all about the underlying infrastructure like networks, load balancers and auto scalers, which are completely managed by App Engine.
+
+Now, sometimes developers want more freedom to customize their environments. Google Kubernetes Engine or GKE provides a balance where you have a lot of customization over your environment similar to Compute Engine. However, GKE also helps you optimize your spend by allowing you to deploy multiple services into the same cluster of virtual machines.
+
+This provides an excellent balance between flexibility, portability and cost optimization.
+
+Kubernetes can get pretty complicated though. That's where Cloud Run comes in.
+
+Cloud Run allows you to deploy your own stateless dockerized services onto Kubernetes clusters that are managed by Google. Google Cloud takes care of the hard parts of managing the cluster and configuring the load balancers, auto scales and health checkers, so that you just focus on the code.
+
+Deploying a single application on all of these platforms might help you choose the right platform for your own services.
+
+<br>
+
+#### Lab Review: Deploying Apps to Google Cloud
+
+In this lab, you saw how to deploy an application to App Engine, GKE and Cloud Run. Hopefully, this lab gives you a better feel for how each of these compute platforms work, and will help you choose the right platform for your own services. I recommend that you follow the 12-factor best practices that we covered earlier in this course. Automate as much as possible by using continuous integration and infrastructure as code tools, and containerize your services using Docker. If you do that, your apps will be very portable, and deployment will become easier and more flexible. No matter which Compute platform you use. You can stay for a lab walk-through, but remember that Google Cloud's user interface can change, so your environment might look slightly different. So here I'm in the Cloud console, and the first thing we're going to do is activate Cloud Shell, and within any project you will have to say continue, and I like opening this in a new window. So what we're going to do is we're going to create a directory and navigate to it, and then we're going to clone a GitHub repository that we have, we make a directory, then we navigate to that directory and we're going to clone our GitHub repository. We use this for a lot of other courses. It's a public GitHub repository, and the benefit of that is it actually allows you to contribute. So if you think there could be a great modification we can make, either because something's broken or we could enhance something, you can actually make a pull request and we'll review that. We're cloning that, and once that is done, we're going to navigate to the folder that it has created, and we're just going to test the program that is in here. The Python Flask-app. So let me navigate to that and then we're going to launch this. Here it is running and since it's running on port 8080, and Kaltura gives you a Preview button, so we can actually go in and see what that looks like. It's currently just saying, "Hello GCP." So somewhere there's a file in here that defines that. Great, so we can now close that. So that's really the first step. We just wanted to see what this application is. Now we're going to move on and apply this to App Engine, Kubernetes Engine, and Cloud Run, and look at some of the differences and similarities between those. Now, first we're going to do App Engine. For that, I'm going to open the editor and we're going to create a file called app.yaml. In that file, we need to define the runtime. App Engine actually runs with multiple languages. You can use Python, Java, JavaScript, and Go. So I'm going to define that by going into here, Courses, Design and Process is the same directory that we are currently in down here and here by the way, if I go to main py, we can see this is where it said, Hello GCP. So within this folder, I'm going to create a new file and call it app.yaml. In there, I'm going to define the runtime. Now there are other settings that we could specify here, but in this case, the language runtime is the required one. So let's go, File, Save. We're going to make this a little bit bigger, so we can see bit more here. Now we're going to run Digital Cloud App Create Command. For that, we need to specify the region where this app is created. So we're going to use the instructions to specify this in US central. It is telling us that currently, it hasn't picked up the project. There's actually pretty good error that you might get. So let's actually work through this. So it currently says that the project property is set to an empty string and that's invalid. So let's go to G Cloud Config Set Project, it's telling us to run that command. Let me run that. I'm going to go grab my project ID by going to the Cloud console. I actually have it here, or I could go in here and grab it as well, or you can even grab it from your Qwiklabs UI. So let me go ahead and set that. It has updated that, now let me just try to run that command again, and now we can see that is creating an App Engine application for that project in the region that we specified. Now once this is complete, we're going to deploy the app, we'll just initially going to call it Version 1. So let's do that. This is going to take a couple minutes. Once this is complete, we're going to go into App Engine and actually test this program. So we can see that the command is complete. So now I'm going to go to Cloud Console by switching tabs, and we're going to navigate to App Engine. Navigation menu, App Engine, and create some more space here, hide some of these things. So here we see our dashboard. We currently have one version. It's certainly all about traffic, and if I click on this link, which by the way, by default this URL is always going to be in a format HTTPS, the Project ID, appspot.com. So you click on that, and we should see Hello GCP. So we now have this running on App Engine. Great. So let's actually make a change to the program and see how easy App Engine makes managing versions. So I'm going to go back to Cloud Shell, and I mentioned earlier that this main py file here says Hello GCP, and that's what we're seeing. So let's change this to Hello App Engine. So we're going to make that change and save it. What we need to do now is we need to redeploy this. But rather than overwriting our existing version, let's actually create a new version. So I'm going to run the command gcloud app deploy Version 2, and I'm going to use the no promote parameter to tell App Engine to continue serving the request to the old version, Version 1. This is great because it allows us to test a new version before putting it into production. So let's wait for this to complete. So we can see that this has been completed, and if I go back to my application by just changing tabs to it, and click the Refresh button, you see it still says Hello GCP, and that's because Version 1 is the one that's serving all the traffic. So let's explore that more. I'm going to go back to App Engine, and specifically the dashboard. On the left here, I can click on Versions, and if I click Refresh, we can see that we currently have two versions, but the original one, Version 1, is still serving all of our traffic. So what we can do now is we could test this and once it's ready, we can migrate our traffic. So let me actually test this. I can click on Version 2 and I can see that, yeah, this is how App Engine, and this is a very simplification, you would want to do some more testing here. But once I'm comfortable with this, I can go back to Versions and I can go to Split Traffic, traffic allocated to two, and there's some different options here. You can split by IP address, cookie, or random, and I'm going to click Save because I'm going to say this is going to receive 100 percent of the traffic. If I add a version that could actually split and split by. In this case, I'm really just saying, "Hey, all traffic should go to Version 2." So this is going to take a minute or two now to complete, and once this is done, it actually says saved successfully. So let's go back. We can see that it is saying that all the traffic is there, and now if I go back to the dashboard and use the link, we can see that it now says Hello App Engine. That's it for deploying this in App Engine.
+
+So now what we're going to do is, we're going to go ahead and deploy this to Kubernetes Engine. Kubernetes Engine allows you to create a cluster of machines and deploy any number of applications to it. So before we get into that, I'm going to close some of these tabs just to make some space here. We're going to go now in the Navigation menu to Kubernetes Engine. So Navigation menu, it's under Compute, click on Kubernetes Engine. Within here, we're going to create a cluster. There are a lot of different settings in here. This course is not really an introduction course on Kubernetes. There's this new experience here that you can now use. We're just going to accept the defaults. So we see it just has a name, it has a region. You can specify the version of the master and nodes and so on. But I'm just going to keep all the defaults for now and just click Create because really what we're doing is we're comparing how to deploy an application to App Engine, Kubernetes Engine and Cloud run. So once this cluster is up and running, we're going to connect to it, which is really going to give us some commands for Cloud Shell. So let's wait for this cluster to be ready, and while we wait, feel free to go to the navigation menu and head over to Compute Engine. If you refresh this here, they're not quite here yet, you will see the different nodes that are going to be created because they're actually Compute Engine instances. So I'll go right back, refresh, we could sit in here for a while, and then we'll see that we actually get some Compute Engine instances. Let's wait for that to complete and come back. So here we can see that the Kubernetes cluster is now cleared, it's running, and if I head back to Compute Engine as I showed earlier, here you can see the actual nodes. So Kubernetes Engine is using Compute Engine virtual machines as a nodes, but they're being managed for you. If you remember back in the previous lab, you actually launched a container on a Compute Engine in instance. Here, we are not using Kubernetes Engine to have all of this be managed for us. So we want to connect to this. So if we go to Kubernetes Engine, we can see there's a Connect button here, and here's the command line way of connecting very specifically for the cluster that we have, the zone it's in, and the project. I could run this in culture with this button, or I can just copy this and go to my existing cultural session over here and paste the command in there. So we're going to run that, and now we can see this configured. We're going to now run the command `kubectl get nodes`. This is just going to show us the node. So here we can see again these nodes, and these are the same that I can see in Compute Engine as well. So now we're going to want to make some changes to this main.py file. I'm already in the code editor. Rather than saying, "Hello App Engine Kubernetes", I would like it to say, "Hello Kubernetes Engine." So let's type that in there and let's save that. Now we haven't deployed anything to the cluster yet, so we're going to have to do that now. Specifically, we're going to create a configuration file in YAML format. So within the developing apps, the GCP folder, I'm going to right-click and say New File, give it the name Kubernetes-config.yaml,and we already have a configuration for you. Again, this course is not about how to really work with Kubernetes, we're really just comparing. But if we scroll through here, we can see some of the configurations in here. You can see information of the front end. We see information about the container, and the image. We actually don't have an image yet, so we're going to have to put that there. We can see this is going to be load balancer on port 80. So it's, it's just an HTTP application. So again, first section of this YAML file is really about the configuration. We're deploying three instances, so three rapid class of the Python web app. We have these image attributes again. If you want more information, the lab instructions actually have some links on deployment and creating the external load balancer. So we see here this load balancer. In our case, we want to now really just create and we're going to build a Docker image. So for that, let's first make sure we're on the right folder. You can copy that in there, which we still are. Then we're going to run the command `gcloud build summit`. That's going to take a project ID, which is again an environment variable, and we're now going to create an image, and we're going to call it version 0.2. So we're going to let this build now, and at the end, we should see the image with our project ID, the name, and the version. I'm going to copy that and we're going to paste it into our Kubernetes-config.yaml file.
+
+So the image is complete and it's right here. So we can now take that and paste it into our configuration file. So there we go, and we can save that. Now we're going to have to apply this configuration. So the command for that is in the lab instructions `kubectl apply`, and we specify the YAML file. So now we can look at the pods. There should be three replicas. There we can see that the container is being created. It's only been eight seconds, so we can wait for that. You want to make sure that you wait for all of these to be ready, and you can just keep cryint to check on the status of these.
+
+So here we can see I query just 20 seconds later, and now all of these are running. Now the configuration file also mentions a load balancer. So if we go down here, we can see a load balancer. So let's actually get to the services.
+
+Here we have an external IP address. So let's go grab that external IP address and navigate to it, and see if we can already see this application. So I'm going to just open a new tab, navigate to that by typing the external IP address, and there we can see it says Hello Kubernetes Engine. That really completes task 3. So we've seen App Engine, we've seen Kubernetes Engine. There's one more to go.
+
+Let's move onto Cloud Run. Now, Cloud Run simplifies and automates deployments kubectl Kubernetes. So when you use Cloud Run, you don't need a configuration file. You simply choose a cluster for your application. With Cloud Run, you can use a cluster managed by Google or you can use your own Kubernetes cluster. So we wanted to do the same thing we did before. We want to change this main.py file, and then we're going to have to, in this case, need to create a new Docker image. So let's go back to Cloud Shell again. I don't need a configuration file. I needed that both for App Engine and for Kubernetes Engine. So I'm just going to main.py, and call this our Cloud Run and save. Now to use Cloud Run, we need to build a Docker image. So in Cloud Shell, we're going to add to some commands to use Cloud Build to create the image and store it in our container registry. So let me just clear this here and let me make sure I navigate to the right directory and then create a new image here. Once that is complete, we're going to go to Cloud Run, and create a service from here. So we can see the build completed. In here we have the image. So now let's navigate to Cloud Run. So I'm going to switch to the Cloud Console, go to the navigation menu and under Compute, select Cloud Run. Now in case Cloud Run was enabled, which is the case here, we can see Start using Cloud Run. This is going to enable the API. See it's enabling the Cloud Run API, encloses panel here, and we're going to now create a service.
+
+t's telling us the API has been enabled. So let's do that one more time, and we're going to now select the container Image. So under Cloud Run image, we can see this image that we just created just now. Let's go click continue. Then there's some other things we can set here while this is running and so on. Let's just expand all these options. The most important one that we're going to select is the allow unauthenticated invocations because we're creating a public API website. Scroll all the way down, we can leave all these other defaults and click Create. Now it really shouldn't take too long for this service to deploy, and we should see a green check once this is ready, and then we can click on the URL that will automatically generated and test it, and hopefully it will say, "Hello Cloud Run." This took maybe 1-2 minutes, which was not as long as the Kubernetes, but it still takes some time. You can see the green checkmark here, we see the URL. So if I click on that, you can see Hello Cloud Run. That's the end of the lab.
+
+<br>
+
+### Review
+
+In this module, we covered the various deployment services provided by Google.
+
+These include compute engine, if you need complete control over your deployment environment.
+
+Google Kubernetes Engine if you want the flexibility, portability and automation that is provided by Kubernetes.
+
+And App Engine and Cloud Run if you want a completely managed platform-as-a-service.
+
+Again, each of these choices has advantages and disadvantages, make sure you understand each one. So that you can make an informed decision when deploying your services
+
+<br>
+
+## Module Overview: Designing for Reliability
+
+In this module, we talked about how to design reliable systems. Specifically will go over how to design services to meet requirements for availability, durability, and scalability.
+
+We will also discuss how to implement fault-tolerant systems by avoiding single points of failure, correlated failures, and cascading failures. Overload can also be a challenge in distributed systems, and we will see how to avoid overload failures by using design patterns such as the circuit breaker and truncated exponential back-off.
+
+How does design resilient data storage systems with lazy deletion is introduced? When things go wrong, we want our system to stay in control. So we discuss design decisions for different operational states, including normal, degraded, and failure scenarios.
+
+Finally, we cover how to analyze disaster scenarios and plan, implement, and test for disaster recovery.
+
+<br>
+
+### Key Performance Metrics
+
+
