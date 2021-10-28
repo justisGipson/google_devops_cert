@@ -625,7 +625,7 @@ Fourth factor is backing services. Every backing service such as database, cache
 
 The fifth factor is build, release, run. The software deployment process should be broken into three distinct stages, built, release and run. Each state should result in an artifact that's uniquely identifiable. Build will create a deployment package from the source code. Every deployment package should be linked to a specific release that's a result of combining a runtime environment configuration with the build. This allows easy road maps and a visible audit trail of the history of every production deployment. The run stage then simply executes the application.
 
-The sixth factor is processes. Applications run as one or more stateless processes. If state is required, the technique discussed earlier in this module for State Management should be used. For instance, each service should have its own data store and cash using for example Memorystore to cash and share common data between services used.
+The sixth factor is processes. Applications run as one or more stateless processes. If state is required, the technique discussed earlier in this module for State Management should be used. For instance, each service should have its own data store and cache using for example Memorystore to cache and share common data between services used.
 
 The seventh factor is port binding. Services should be exposed using a port number. The applications bundle the web server as part of the application and do not require a separate server like Apache. In Google Cloud, such apps can be deployed on platform services such as Compute Engine, GKE, App Engine or Cloud Run.
 
@@ -1411,66 +1411,584 @@ As you can see, each of these services has different requirements that might res
 
 ### Choosing Google Cloud Storage & Data Solutions
 
+Now that you've documented the data characteristics of your services let's talk about how to select Google cloud storage and data solutions. The Google cloud storage and database portfolio covers relational, no SQL, object, data warehouse and in memory stores, as shown in this table.
+
+<br>
+
+<img src="../assets/storage_portfolio.png" alt="Storage & Database portfolio" width="50%" height="50%">
+
+<br>
+
+Let's discuss each service from left to right.
+
+Cloud SQL is a fixed schema data store with a storage limit of 30 terabytes. It is offered using MySQL, PostgreSQL and SQL Server. These services are good for web applications such as CMS, or e-commerce.
+
+Cloud Spanner is also rational and fixed schema, but it scales infinitely I can be regional or multi regional. Example use cases include scalable relational databases greater than 30 gigabytes with high availability and also global accessibility, like supply chain management and manufacturing.
+
+Google clouds NoSQL data stores are schemas Firestore is a completely managed document data store with a maximum document size of 1 megabyte. It is useful for hierarchical data for example, a game stage or user profiles.
+
+Cloud Big Table is also a no SQL data store that scales infinitely. It is good for heavy read write events and use cases including financial services, internet of things and digital advert streams.
+
+For object storage, Google Cloud offers Cloud Storage. Cloud storage is schemaless and it is completely managed with infinite scale. It stores binary object data and so it's good for storing images, media serving, and back-ups.
+
+Data warehousing is provided by BigQuery. The storage uses a fixed schema and supports completely managed SQL analysis of the data stored. It is excellent for performing analytics and business intelligence dashboards.
+
+For in memory storage, MemoryStore provides a schemaless managed Redis database. It is excellent for caching for Web and mobile applications and for providing fast access to state in microservice architectures.
+
+Let's surmise the services in this module with this decision chart.
+
+<br>
+
+<img src="../assets/storage_decision_chart.png" alt="Storage & Database Decision Chart" width="50%" height="50%">
+
+<br>
+
+First, ask yourself, is your data structured and will it need to be accessed using a structured data format? If the answer is no, then ask yourself, do you need a shared file system?
+
+If you do then choose FileStore. If you don't, then choose Cloud Storage. If your data is structured and needs to be accessed in this way, ask yourself does your workload focus on analytics? If it does, then you'll want to choose Cloud Big Table or BigQuery, depending on your latency and update needs. Otherwise, check whether your data is relational If it's not, then choose firestore. If it is relational, you'll want to choose Cloud SQL or Cloud Spanner, depending on your need for horizontal scalability.
+
+Depending on your application, you might want to use one or several of these services to get the job done. For more information on how to choose between these services, please refer to the links on storage options and databases in the course resources.
+
+You might also want to consider how to transfer data in Google Cloud.
+
+A number of factors must be considered including cost, time, offline versus online transfer options and security. All transfer into Cloud Storage is free. There will be costs with the storage of data, and maybe even appliance costs if a transfer appliance is used or egress costs if transferring from another cloud provider.
+
+If you have huge data sets, the time required for transfer across a network may be unrealistic. Even if it is realistic, the effects on your organization's infrastructure may be damaging while the transfer is taking place.
+
+This table shows the challenge of moving large data sets.
+
+<br>
+
+<img src="../assets/transfer_data.png" alt="Data Transfer" width="50%" height="50%">
+
+<br>
+
+For example, if you have one terabyte of data to transfer over 100 megabits per second connection It will take about 12 days to transfer the data. The color coded cells highlight unrealistic timelines that require alternative solutions. Let's go over online and offline data transfer options.
+
+<br>
+
+<img src="../assets/uploads.png" alt="Data uploads" width="50%" height="50%">
+
+<br>
+
+For smaller or scheduled data uploads Use cloud storage transfer service, which enables you to move or backup data to a Cloud Storage bucket from another cloud storage provider, such as Amazon S3, from on premise storage, or from any HTTP or HTTPS location. It allows you to move data from one storage bucket to another so that it's available to different groups of users or applications. It also allows for periodic movement of data as part of a data processing pipeline or analytical workflow.
+
+Storage transfer service provides options that can make data transfers and synchronization easier. For example, you can schedule one time transfer operations or recurring transfer operations.
+
+You can delete existing objects in the destination bucket if they don't have a corresponding object in the source. You can delete data source objects after transferring them. You can schedule periodic synchronization from a data source to a data sync with advanced filters based on file creation dates, file name filters, and the time of day you prefer to import data.
+
+<br>
+
+<img src="../assets/storage_transfer.png" alt="Storage transfer" width="50%" height="50%">
+
+<br>
+
+Use the storage transfer service for on premises data for large scale uploads from your data center. The storage transfer service for on premises data allows large scale online data transfers, from on premises storage to Cloud Storage.
+
+With this service, data validation, encryption, error retries and fault tolerance are built in. On-premises software is installed on your servers. The agent comes as a Docker container and a connection to Google Cloud is set up. Directories to be transferred to cloud storage are selected in the Cloud Console.
+
+Once the data transfer begins, the service will paralyze the transfer across many agents supporting a scale to billions of files and hundreds of terabytes. Via the cloud console, a user can view a detailed transfer log and also the creation, management and monitoring of transfer jobs.
+
+To use the storage transfer service for on premises a POSIX compliance source is required and a network connection of at least 300 megabits per second.
+
+Also, a Docker supported Linux server that can access the data to be transferred is required with Port 80 and 443 open for outbound connections.
+
+The use case is for on premises transfer of data whose size is greater than one terabyte.
+
+<br>
+
+<img src="../assets/transfer_appliance.png" alt="Transfer Appliance" width="50%" height="50%">
+
+<br>
+
+For large amounts of on premises data that would take too long to upload, use transfer appliance. Transfer appliance is a secure rackable high capacity storage server that you set up in your data center.
+
+You fill it with data and ship it to an ingest location where the data is uploaded to Google. The data is secure and you control the encryption key and Google erases the appliance after the transfer is complete. The process for using a transfer appliance is that you request an appliance, and it is shipped in a tamper evident case. Data is transferred to the appliance. The appliance is shipped back to Google. Data is loaded into Cloud storage and you are notified that it is available.
+
+Google uses tamper evidence seals on shipping cases to and from the data ingest safe. Data is encrypted to AES-256 standard the moment to capture. Once the transfer is complete, the appliance is a raised per NST-888 standards, you decrypted data when you want to use it.
+
+<br>
+
+<img src="../assets/bigquery_data_transfer.png" alt="BigQuery Data Transfer" width="50%" height="50%">
+
+<br>
+
+There is also a transfer service for BigQuery. The BigQuery data transfer service automates data movement from SAS applications to BigQuery on a scheduled and managed basis. The data transfer service initially supports Google applications sources, like Google ads, campaign manager, Google ad manager and YouTube.
+
+There are also data connectors that allow easy data transfer from Teradata, Amazon Redshift and Amazon S3 to BigQuery. The screenshot on slide shows that the source type is selected for a transfer, a schedule is configured on a data destination is selected.
+
+For the transfer the data formats are also configured.
 
 <br>
 
 ### Activity Intro: Choosing Google Cloud Storage & Data Solutions
 
+You will now select storage products for each of your case study services.
+
+Use these storage characteristics and your understanding of Google Cloud's various services that we covered in this module to help you choose which storage services would be most appropriate for each of your microservices.
+
+Here's an example table for an account service that should leverage Cloud SQL because we require a relational database that's strongly consistent with gigabytes of data and read/write capabilities.
+
+Refer to Activity 7 in your design workbook to fill out a similar table for your applications services.
 
 <br>
 
 ### Activity Review: Choosing Google Cloud Storage & Data Solutions
 
+In this activity, you are asked to select the appropriate Google Cloud Storage services for your case study.
+
+Here's an example for our online travel portal, ClickTravel.
+
+For the inventory service, we will use Cloud Storage for the raw inventory uploads. Suppliers will upload the inventory as JSON data stored in text files. That inventory will then be imported into a Firestore database. The orders service will store its data in a relational database running in Cloud SQL. The analytics service will aggregate data from various sources into a data warehouse for which we'll use BigQuery.
 
 <br>
 
 ### Review
 
+In this module, we covered the various storage services available in Google Cloud.
+
+These include cloud storage for binary data, Cloud SQL, and Spanner for relational databases, Cloud Bigtable, and Firestore for NoSQL databases, and BigQuery for data warehouses.
+
+We also talked about different storage characteristics and how they can be used to help you choose where to store your data.
 
 <br>
 
 ## Module Intro: Designing Google Cloud Networks
 
+In this module, we discuss Google Cloud network architectures including hybrid architectures.
+
+We will start by talking about how to design VPC networks to optimize for cost, security, and performance.
+
+Then, we'll cover the configuration of global and regional load balancers to provide access to services. As part of the load balancer configuration, you can enable Cloud CDN to provide a lower latency and decrease network egress, which ultimately decreases your networking costs.
+
+We will also introduce the Network Intelligence Center to evaluate your networks architecture, and go over the network connection options including peering, VPN and Cloud Interconnect.
 
 <br>
 
 ### Designing Google Cloud Networks
 
+Let's get started by designing Google Cloud Networks and load balancers.
+
+<br>
+
+<img src="../assets/google_network.png" alt="Google Global Network" width="50%" height="50%">
+
+<br>
+
+Google runs a worldwide network that connects regions all over the world. You can use this high bandwidth infrastructure to design your cloud networks to meet your requirements, such as location, number of users, scalability, fault tolerance, and latency.
+
+Let's take a closer look at Google Cloud's network.
+
+<br>
+
+<img src="../assets/google_cloud_network.png" alt="Cloud Network Reach" width="50%" height="50%">
+
+<br>
+
+This map represents Google Cloud's reach. On a high level, Google Cloud consists of regions which are the icons in blue, points of presence or `pops`, which are the dots in gray.
+
+A global private network which is represented by the blue lines and services.
+
+A region is a specific geographical location where you can run your resources. This map shows several regions that are currently operating, as well as future regions and zones. As of this recording, there are 21 regions and 64 zones. The pops are where Google's network is connected to the rest of the Internet.
+
+Google Cloud can bring its traffic closer to its peers because it operates an extensive global network of interconnection points. This reduces costs and provides users with a better experience. The network connects regions and pops and is composed of a global network of fiber optic cables with several submarine cable investments.
+
+<br>
+
+<img src="../assets/vpc_networks.png" alt="VPC networks" width="50%" height="50%">
+
+<br>
+
+In Google Cloud, VPC networks are global. You can either create auto mode networks and have one subnet per region, or create your own custom mode network, where you get to specify which region to create a subnet in. Resources across regions can communicate using their internal IP addresses without any added Interconnect.
+
+For example, the diagram on the right shows two subnets in different regions with a server on each subnet. They can communicate with each other using their internal IP addresses because they are connected to the same VPC Network. Selecting which regions to create subnets in depends on your requirements.
+
+For example, if you are a global company, you will most likely create subnetworks in regions across the world. If users are within a particular region, it may be suitable to select just one subnet in a region closest to these users and maybe a backup region close by. Also, you can have multiple networks per project.
+
+These networks are just a collection of regional subnetworks or subnets.
+
+<br>
+
+<img src="../assets/custom_subnets.png" alt="Custom Subnets" width="50%" height="50%">
+
+<br>
+
+To create custom subnets, you specify the region and the internal IP address range, as illustrated in the screenshots on the right. The IP ranges of the subnets don't need to be derived from a single site or block, but they cannot overlap with other subnets of the same VPC network. This applies to primary and secondary ranges. Secondary ranges allow you to define an alias IP addresses. Also, you can expand the primary IP address space of any subnets without any workload, shutdown or downtime.
+
+Once you defined your subnets machines in the same VPC network can communicate with each other through the internal IP address, regardless of the subnet they're connected to.
+
+<br>
+
+<img src="../assets/vm_network_interfaces.png" alt="VM Network Interfaces" width="50%" height="50%">
+
+<br>
+
+Now, a single VM can have multiple network interfaces connecting to different VPC networks. This graphic illustrates an example of a Compute Engine instance connected to four different networks. Convering Production, Test, Infra, and Outbound Network.
+
+A VM must have at least one network interface, that can have up to eight depending on the instance type and the number of vCPUs.
+
+A general rule is that with more vCPUs, more network interfaces are possible.
+
+All of the network interfaces must be created when the instance is created. Each interface must be attached to a different network.
+
+<br>
+
+<img src="../assets/shared_vpc.png" alt="Shared VPC Network" width="50%" height="50%">
+
+<br>
+
+Shared VPC allows an organization to connect resources from multiple projects of a single organization to a common VPC network. This allows the resources to communicate with each other securely and efficiently using internal IPs from that network.
+
+This graphic shows a scenario where a shared VPC is used with three other projects, namely service projects A, B, and C. Each of these projects has a VM instance that is attached to the shared VPC.
+
+Shared VPC is a centralized approach to multi-project networking because security and network policy occurs in a single designated VPC network. This allows for network administrators rights to be removed from developers so that they can focus on what they do best. Meanwhile, organization network administrators maintain control of resources such as subnets, firewall rules and routes, while delegating the control of creating resources such as instances to service project administrators or developers.
 
 <br>
 
 ### Designing Google Cloud Load Balancers
 
+Let's talk about load balancers.
+
+<br>
+
+<img src="../assets/global_load_balancers.png" alt="Global Load Balancers" width="50%" height="50%">
+
+<br>
+
+Global load balancers provide access to services deployed in multiple regions.
+
+For example, the load balancer shown on this slide has a backend with two instance groups deployed in different regions. Cloud load balancing is used to distribute the load among these instance groups. Global load balancing is supported by HTTP load balancers and TCP and SSL proxies in Google Cloud.
+
+For an HTTP load balancer, a global anycast IP address can be used simplifying DNS lookup. By default, requests are routed to the region closest to the requester.
+
+For services deployed in a single region, use a regional load balancer.
+
+<br>
+
+<img src="../assets/regional_load_balancers.png" alt="Regional Load Balancers" width="50%" height="50%">
+
+<br>
+
+This graphic illustrates resources deployed with a single region and Cloud load balancing routing requests to these resources. Regional load balancers support HTTP and any TCP or UDP port. If your load balancers have public IP addresses, traffic will likely be traversing the Internet.
+
+<br>
+
+<img src="../assets/ssl_load_balancer.png" alt="Load Balancer SSL" width="50%" height="50%">
+
+<br>
+
+I recommend securing this traffic with SSL which is available for HTTP and TCP load balancers as shown in the screenshot on the right. You can use either self-managed SSL certificates or Google managed SSL certificates when using SSL.
+
+Now, if you are using HTTPS load balancing, you should leverage Cloud CDN to achieve lower latency and decrease egress costs.
+
+<br>
+
+<img src="../assets/cloud_cdn.png" alt="Google CLoud CDN" width="50%" height="50%">
+
+<br>
+
+You can enable Cloud CDN by simply checking the box when configuring an HTTP global load balancer. Cloud CDN caches content across the world using Google Cloud's edge-caching locations. This means that content is cached closest to the user making the requests. The data that is cached can be from a variety of sources, including Compute Engine instances, GKE pods, or Cloud Storage buckets.
+
+Let me recap this discussion on Google Cloud load balancers and summarize the types and their capabilities.
+
+<br>
+
+<img src="../assets/load_balancer_types.png" alt="Load Balancer Types Overview" width="50%" height="50%">
+
+<br>
+
+At a high level, load balances can work with internal or external IP addresses. We refer to external IP addresses as Internet-facing. The load balancers can be regional or multi-regional. And finally, they support different traffic types, HTTP, TCP, and UDP. Let's review these starting with the traffic type.
+
+HTTPS Load Balancing is a Layer 7 load balancer. Support is provided for HTTP and HTTPS including HTTP/2. The load balancing supports both Internet-facing, and internal load balancing, as well as regional or global.
+
+TCP Load Balancing provides Layer 4 balancing or proxy for applications that require TCP/SSL protocol. You can configure a TCP Load Balancer, or a TCP, or SSL proxy. TCP Load Balancing supports both Internet-facing, and internal load balancing, as well as regional and global.
+
+UDP Load Balancing is for those applications that rely on UDP as a protocol. The UDP Load Balancer supports both Internet-facing, and internal load balancing, but only regional traffic.
+
+As part of our discussion of designing VPC networks, I also want to mention the Network Intelligence Center.
+
+<br>
+
+<img src="../assets/network_intel_center.png" alt="Network Intelligence Center" width="50%" height="50%">
+
+<br>
+
+The Network Intelligence Center is a Google Cloud service that can be used to visualize your VPC network topology and test network connectivity.
+
+The left-hand graphic shows a simple network topology visualization with external clients in three different regions, and traffic routed through an external load balancer to resources in US Central one. This facility is extremely valuable for confirming the network topology when configuring a network or when performing diagnostics. The right-hand graphic shows the configuration of a connectivity test between a source and destination along with a protocol and port.
+
+The following tests can be performed.
+
+- Between source and destination and points in your VPC network
+- From your VPC Network to and from the Internet
+- From your VPC network to and from your on-premises network
 
 <br>
 
 ### Activity Intro: Defining Network Characteristics
 
+In this design activity, you specify the network characteristics for your case study and select the type of load balancer required for each service.
+
+In the first part of this activity, describe the network characteristics of each of your services by filling out this table.
+
+The example shown here is for the account service. Because this is a backend service, you will only be access internally using TCP, and we don't plan to deploy the service in multiple regions.
+
+Then based on the network characteristics for each of your services, select the right load balancer using this table. Based on the parameters from the last slide, we will use the regional TCP load balancer.
+
+Refer to activities 8A and B in your design workbook to fill out similar tables for your services.
+
+Feel free to explore Cloud CDN to decrease latency and network egress costs.
 
 <br>
 
 ### Activity Review: Defining Network Characteristics
 
+In this activity, you are asked to specify the network characteristics of each of your services, and choose the appropriate load balances for each one.
+
+Here's a completed example for our online Travel Portal, Click Travel.
+
+The Inventory and Order Service are internal and regional using TCP. The other services need to be facing the Internet using HTTP.
+
+We decided to deploy these to multiple regions for lower latency, higher performance, and high availability to our users who are in multiple countries around the world.
+
+Based on those network characteristics, we chose the global HTTP load balancer for our public facing services, and the internal TCP load balancer for our internal facing services
 
 <br>
 
 
 ### Connecting Networks
 
+Let's focus our attention on Google Cloud's network connectivity products, which are peering, Cloud VPN, and Cloud Interconnect.
+
+If you're trying to connect two VPC networks, you might want to consider VPC peering.
+
+<br>
+
+<img src="../assets/vpc_peering.png" alt="VPC Peering" width="50%" height="50%">
+
+<br>
+
+VPC peering allows private RFC 1918 connectivity across two VPC networks regardless of whether they belong to the same project or the same organization.
+
+Now remember, each VPC network will have firewall rules that define traffic that is allowed or denied between the networks. This diagram shows a VPC peering connection between two networks belonging in different projects and different organizations. You might notice that the subnet ranges do not overlap. This is a requirement for a connection to be established.
+
+Speaking of the connection, network administrators for each VPC network must configure a VPC peering request for a connection to be established.
+
+<br>
+
+<img src="../assets/cloud_vpn.png" alt="Cloud VPN" width="50%" height="50%">
+
+<br>
+
+Cloud VPN securely connects your on-premises network to your Google Cloud VPC network through an IPsec VPN tunnel. Traffic traveling between the two networks is encrypted by one VPN gateway and then decrypted by another VPN gateway. This protects your data as it travels over the public Internet.
+
+That's why Cloud VPN is useful for low volume data connections.
+
+As a managed service, Cloud VPN provides an SLA of 99.9 percent monthly uptime for the classic VPN Configuration and 99.99 percent monthly uptime for the high availability VPN configuration.
+
+The classic VPN gateways have a single interface and a single external IP address. Whereas the high availability VPN gateways have two interfaces with two external IP addresses, one for each gateway.
+
+The choice of VPN gateways comes down to your SLA requirements and routing options. Cloud VPN supports, site-to-site VPN, static routes and dynamic routes using Cloud Router, and IKEv1 and IKEv2 ciphers. However, static routes are only supported by classic VPN.
+
+Also, Cloud VPN doesn't support use cases where clients computers need to dial in to a VPN using Client VPN software.
+
+For more information on the SLA and these features refer to the documentation.
+
+<br>
+
+<img src="../assets/vpn_topology.png" alt="VPN Topology" width="50%" height="50%">
+
+<br>
+
+Let's walk through an example of Cloud VPN. This diagram shows a classic VPN connection between your VPC and on-premises network.
+
+Your VPC network has subnets in us-east1 and us-west, with the Google Cloud resources in each of those regions. These resources are able to communicate using their internal IP addresses because routing within a network is automatically configured, assuming that firewall rules allow the communication.
+
+Now, in order to connect your on-premises network and it's resources, you need to configure your Cloud VPN gateway, your on-premises VPN gateway, and two VPN tunnels.
+
+The Cloud VPN gateway is a regional resource that uses a regional external IP address. Your on-premises VPN gateway can be a physical device in your data center, or a physical or software based VPN offering in another Cloud providers network.
+
+This VPN gateway also has an external IP address.
+
+A VPN tunnel then connects your VPN gateways and serves as a virtual medium to which encrypted traffic is passed. In order to create a connection between two VPN gateways, you must establish two VPN tunnels. Each tunnel defines a connection from the perspective of it's gateway and traffic can only pass when a pair of tunnels is established.
+
+Now, one thing to remember when using Cloud VPN is the maximum transmission unit or MTU for your on-premises VPN gateway cannot be greater than 1,460 bytes. This is because of the encryption and the capsulation of packets.
+
+For more information on this MTU consideration, refer to the documentation.
+
+In addition to classic VPN, Google Cloud also offers a second type of Cloud VPN gateway, HA VPN.
+
+<br>
+
+<img src="../assets/ha_vpn.png" alt="HA VPN" width="50%" height="50%">
+
+<br>
+
+HA VPN is a high availability Cloud VPN solution that lets your securely connect to your on-premises network, to your Virtual Private Cloud through IPSec VPN connection in a single region. HA VPN provides an SLA of 99.99 percent service availability. To guarantee a 99.99 percent availability SLA for HA VPN connections, you must properly configure two or four tunnels from your HA VPN gateway to your peer VPN gateway, or to another HA VPN gateway.
+
+When you create a HA VPN gateway, Google Cloud automatically chooses two external IP addresses. One for each of it's fixed number of two interfaces. Each IP address is automatically chosen from a unique address pool to support high availability. Each of the HA VPN gateway interfaces support multiple tunnels. You can also create multiple HA VPN gateways. When you delete the HA VPN gateway, Google Cloud releases the IP addresses for reuse.
+
+You can configure HA VPN gateway with only one active interface and one external IP address. However, this configuration does not provide a 99.99 percent service availability SLA.
+
+VPN tunnels connected to HA VPN gateways must use dynamic routing, BGP. Depending on the way that you configure root priorities for HA VPN tunnels, you can create an active active, or active passive routing configuration. HA VPN supports site-to-site VPN in one of the following recommended topologies or configuration scenarios.
+
+- A HA VPN gateway to peer VPN devices
+- A HA VPN gateway to an Amazon Web Services virtual private gateway
+- or two HA VPN gateways connected to each other
+
+Let's explore these configurations in a bit more detail.
+
+<br>
+
+<img src="../assets/gateway_topology.png" alt="HA VPN to Peer VPN Gateway Topology" width="50%" height="50%">
+
+<br>
+
+There are three typical peer gateway configurations for HA VPN.
+
+A HA VPN gateway to two separate peer VPN devices, each with its own IP address.
+
+A HA VPN gateway to one peer VPN device that uses two separate IP addresses.
+
+And a HA VPN gateway to one peer VPN device that uses one IP address.
+
+Let's walk through an example. In this topology, one HA VPN gateway connects to two peer devices. Each peer device has one interface and one external IP address. The HA VPN gateway uses two tunnels, one tunnel to each peer device. If your peer side gateway is hardware-based, having a second peer side gateway provides redundancy and fail-over on that side of the connection.
+
+A second physical gateway lets you take one of the gateways offline for software upgrades or for other scheduled maintenance. It also protects you if there is a failure in one of your devices.
+
+In Google Cloud, the redundancy type for this configuration takes the value two IPs redundancy.
+
+The example shown here provides 99.99 percent availability.
+
+<br>
+
+<img src="../assets/ha_vpn_to_aws.png" alt="HA VPN to AWS Gateway Topology" width="50%" height="50%">
+
+<br>
+
+When configuring a HA VPN external VPN gateway to Amazon Web Services, you can use either a transit gateway or a virtual private gateway. Only the transit gateway supports equal cost multipath or ECMP route. When enabled, ECMP equally distributes traffic across active tunnels.
+
+Let's walk through that example.
+
+In this topology, there are three major gateway components to set up for this configuration. A HA VPN gateway in Google Cloud with two interfaces, two AWS virtual private gateways, which connect to your HA VPN gateway, and an external VPN gateway resource in Google Cloud that represents your AWS virtual private gateway.
+
+This resource provides information to Google Cloud about your AWS gateway.
+
+The supported AWS configuration uses a total of four tunnels, two tunnels from one AWS virtual private gateway to one interface of the HA VPN gateway, and two tunnels from the other AWS virtual private gateway to the other interface of the HA VPN gateway.
+
+<br>
+
+<img src="../assets/ha_vpn_to_peer.png" alt="HA VPN to Peer VPN gateway" width="50%" height="50%">
+
+<br>
+
+You can connect two Google Cloud VPC networks together using a HA VPN gateway in each network.
+
+The configuration shown provides 99.99 percent availability.
+
+From the perspective of each HA VPN gateway, you create two tunnels. You connect interface zero on one HA VPN gateway to interface zero on the other HA VPN gateway, and interface one on one HA VPN gateway to interface one on the other HA VPN gateway.
+
+**For more information on HA VPN, refer to the documentation.**
+
+**For information on moving to HA VPN, also refer to the documentation.**
+
+I mentioned earlier that Cloud VPN supports both static and dynamic routes.
+
+<br>
+
+<img src="../assets/cloud_router.png" alt="Cloud Router" width="50%" height="50%">
+
+<br>
+
+In order to use dynamic routes, you need to configure Cloud Routers. A Cloud Router can manage routes for a Cloud VPN tunnel using Border Gateway Protocol or `BGP`.
+
+This routing method allows for routes to be updated and exchanged without changing the tunnel configuration. This allows for new subnets like staging in the VPC network and rack 30 in the peer network to be seamlessly advertised between networks.
+
+If you need a dedicated high-speed connection between networks, consider using Cloud Interconnect.
+
+<br>
+
+<img src="../assets/cloud_interconnect.png" alt="Cloud Interconnect" width="50%" height="50%">
+
+<br>
+
+Cloud Interconnect has two options for extending on-premises networks.
+
+Dedicated Interconnect and Partner Interconnect.
+
+Dedicated Interconnect provides a direct connection to a co-location facility. The co-location facility must support either 10 gigabits per second or 100 gigabits per seconds circuits. A dedicated connection can bundle up to eight 10 gigabits per second connection or two 100 gigabits per second connection for a maximum of 200 gigabits per second.
+
+Partner Interconnect provides a connection through a service provider. This can be useful for lower bandwidth requirements, starting from 50 megabits per second. In both cases, Cloud Interconnect allows access to VPC resources using an internal IP address space.
+
+You can even configure Private Google Access for on-premises hosts to allow them to access Google services using private IP addresses.
+
+<br>
+
+<img src="../assets/dedicated_interconnect.png" alt="Dedicated Interconnect" width="50%" height="50%">
+
+<br>
+
+In order to use Dedicated Interconnect, you need to provision a cross connect between the Google network and your own router in a common co-location facility, as shown on this diagram. To exchange routes between the networks, you configure a BGP session over the interconnect between the Cloud Router and your on-premises router.
+
+This will allow for user traffic from the on-premises network to reach Google Cloud resources on the VPC network and vice-versa.
+
+<br>
+
+<img src="../assets/partner_interconnect.png" alt="Partner Interconnect" width="50%" height="50%">
+
+<br>
+
+Partner Interconnect provides connectivity between your on-premises network and your VPC network through a supported service provider. This is useful if your data center isn't a physical location that cannot reach a Dedicated Interconnect co-location facility or if your data needs don't warrant a Dedicated Interconnect.
 
 <br>
 
 ### Activity Intro: Diagramming Your Network
 
+In this design activity, you draw a diagram that depicts the network requirements of your case study.
+
+Let me show you a simple example.
+
+<br>
+
+<img src="../assets/network_example.png" alt="Network Example" width="50%" height="50%">
+
+<br>
+
+This network diagram shows where the network boundaries are and how traffic is served from our users through a load balancer to our backend.
+
+We could also include the use of Cloud CDN, Cloud VPN, or any Cloud Interconnect services that are relevant to our network design.
+
+Refer to Activity 9 in your workbook to create a similar network diagram for your services.
 
 <br>
 
 ### Activity Review: Diagramming Your Network
 
+In this activity, you are asked to create a diagram that depicts the network requirements of your application.
+
+Here's an example for our online travel portal, Click Travel.
+
+<br>
+
+<img src="../assets/network_example2.png" alt="Network Example #2" width="50%" height="50%">
+
+<br>
+
+User traffic from mobile and web will first be authenticated using a third party service. Then a global HTTP load balancer directs traffic to our public facing search and web UI services.
+
+From there, regional TCP load balances direct traffic to the internal inventory and order services.
+
+The Analytics service could leverage BigQuery as the data warehouse with an on-premise reporting service that accesses the Analytics service over a VPN.
+
+This might be good enough to start and we could refine this once we start implementing it.
 
 <br>
 
 ### Review
 
+In this module, you learned about Google Cloud networking and how to design networks that meet your application security, performance, reliability, and scalability requirements.
+
+We also covered the different options to connect networks using Peering, VPN, and Cloud Interconnect.
 
 <br>
+
