@@ -46,6 +46,38 @@
     - [Activity Intro: Diagramming Your Network](#activity-intro-diagramming-your-network)
     - [Activity Review: Diagramming Your Network](#activity-review-diagramming-your-network)
     - [Review](#review-3)
+  - [Overview - Deploying Applications to Google Cloud](#overview---deploying-applications-to-google-cloud)
+    - [Google Cloud Infrastructure as a Service](#google-cloud-infrastructure-as-a-service)
+    - [Google Cloud Deployment Platforms](#google-cloud-deployment-platforms)
+      - [Lab Intro: Deploying Apps to Google Cloud](#lab-intro-deploying-apps-to-google-cloud)
+      - [Lab Review: Deploying Apps to Google Cloud](#lab-review-deploying-apps-to-google-cloud)
+    - [Review](#review-4)
+  - [Module Overview: Designing for Reliability](#module-overview-designing-for-reliability)
+    - [Key Performance Metrics](#key-performance-metrics)
+    - [Designing for Reliability](#designing-for-reliability)
+    - [Activity Intro: Designing Reliable Scalable Applications](#activity-intro-designing-reliable-scalable-applications)
+    - [Activity Review: Designing Reliable Scalable Applications](#activity-review-designing-reliable-scalable-applications)
+    - [Disaster Planning](#disaster-planning)
+    - [Activity Intro: Disaster Planning](#activity-intro-disaster-planning)
+    - [Activity Review: Disaster Planning](#activity-review-disaster-planning)
+    - [Review](#review-5)
+  - [Module Overview: Security Concepts](#module-overview-security-concepts)
+    - [Securing People](#securing-people)
+    - [Securing Machine Access](#securing-machine-access)
+    - [Network Security](#network-security)
+    - [Encryption](#encryption)
+    - [Activity Intro: Modeling Secure Google Cloud Services](#activity-intro-modeling-secure-google-cloud-services)
+    - [Activity Review: Modeling Secure Google Cloud Services](#activity-review-modeling-secure-google-cloud-services)
+    - [Review](#review-6)
+  - [Module Overview: Managing Versions & Cost Control](#module-overview-managing-versions--cost-control)
+    - [Monitoring Dashboards](#monitoring-dashboards)
+    - [Activity Intro: Cost Estimating & Planning](#activity-intro-cost-estimating--planning)
+    - [Activity Review: Cost Estimating & Planning](#activity-review-cost-estimating--planning)
+      - [Lab Intro: Monitoring Applications in Google Cloud](#lab-intro-monitoring-applications-in-google-cloud)
+      - [Lab Review: Monitoring Applications in Google Cloud](#lab-review-monitoring-applications-in-google-cloud)
+    - [Module Review](#module-review-1)
+    - [Reading: What's Next? Get Certified](#reading-whats-next-get-certified)
+    - [Reading: Workbook Example Solution](#reading-workbook-example-solution)
 
 # Course Intro
 
@@ -2188,9 +2220,11 @@ Again, each of these choices has advantages and disadvantages, make sure you und
 
 In this module, we talked about how to design reliable systems. Specifically will go over how to design services to meet requirements for availability, durability, and scalability.
 
-We will also discuss how to implement fault-tolerant systems by avoiding single points of failure, correlated failures, and cascading failures. Overload can also be a challenge in distributed systems, and we will see how to avoid overload failures by using design patterns such as the circuit breaker and truncated exponential back-off.
+We will also discuss how to implement fault-tolerant systems by avoiding single points of failure, correlated failures, and cascading failures.
 
-How does design resilient data storage systems with lazy deletion is introduced? When things go wrong, we want our system to stay in control. So we discuss design decisions for different operational states, including normal, degraded, and failure scenarios.
+Overload can also be a challenge in distributed systems, and we will see how to avoid overload failures by using design patterns such as the circuit breaker and truncated exponential back-off.
+
+How does design resilient data storage systems with lazy deletion is introduced. When things go wrong, we want our system to stay in control. So we discuss design decisions for different operational states, including normal, degraded, and failure scenarios.
 
 Finally, we cover how to analyze disaster scenarios and plan, implement, and test for disaster recovery.
 
@@ -2198,4 +2232,144 @@ Finally, we cover how to analyze disaster scenarios and plan, implement, and tes
 
 ### Key Performance Metrics
 
+Let's start by considering the key performance metrics for reliable systems.
 
+When designing for reliability, consider availability, durability, and scalability as the key performance metrics.
+
+<br>
+
+<img src="../assets/key_performance_metrics.png" alt="Key Performance Metrics" width="50%" height="50%">
+
+<br>
+
+Let me explain each of these. Availability is the percent of time a system is running and able to process requests, to achieve high availability, monitoring is vital.
+
+Health checks can detect when an application reports that it is okay. More detailed monitoring of services using white box metrics to count traffic successes and failures will help predict problems.
+
+Building in fault tolerance by, for example, removing single points of failure is also vital for improving availability. Backup systems also play a key role in improving availability.
+
+Durability is the chance of losing data because hardware or system failure. Ensuring that data is preserved and available is a mixture of replication and backup. Data could be replicated in multiple zones. Regular restores from backup should be performed to confirm that the process works as expected.
+
+Scalability is the ability of a system to continue to work as user load and data grow. Monitoring and auto scaling should be used to respond to variations and load. The metrics for scaling could be the standard metrics like CPU or memory, or you can create custom metrics like number of players on a game server.
+
+<br>
+
+### Designing for Reliability
+
+
+<br>
+
+### Activity Intro: Designing Reliable Scalable Applications
+
+
+<br>
+
+### Activity Review: Designing Reliable Scalable Applications
+
+
+<br>
+
+### Disaster Planning
+
+
+<br>
+
+### Activity Intro: Disaster Planning
+
+
+<br>
+
+### Activity Review: Disaster Planning
+
+
+<br>
+
+### Review
+
+
+<br>
+
+## Module Overview: Security Concepts
+
+
+<br>
+
+### Securing People
+
+
+<br>
+
+### Securing Machine Access
+
+
+<br>
+
+### Network Security
+
+
+<br>
+
+### Encryption
+
+
+<br>
+
+### Activity Intro: Modeling Secure Google Cloud Services
+
+
+<br>
+
+### Activity Review: Modeling Secure Google Cloud Services
+
+
+<br>
+
+### Review
+
+
+<br>
+
+## Module Overview: Managing Versions & Cost Control
+
+
+<br>
+
+### Monitoring Dashboards
+
+
+<br>
+
+### Activity Intro: Cost Estimating & Planning
+
+
+<br>
+
+### Activity Review: Cost Estimating & Planning
+
+
+<br>
+
+#### Lab Intro: Monitoring Applications in Google Cloud
+
+
+<br>
+
+#### Lab Review: Monitoring Applications in Google Cloud
+
+
+<br>
+
+### Module Review
+
+
+<br>
+
+### Reading: What's Next? Get Certified
+
+
+<br>
+
+### Reading: Workbook Example Solution
+
+
+<br>
