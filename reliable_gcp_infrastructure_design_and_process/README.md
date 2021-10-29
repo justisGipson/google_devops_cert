@@ -2256,21 +2256,193 @@ Scalability is the ability of a system to continue to work as user load and data
 
 ### Designing for Reliability
 
+Now that we've covered the key performance metrics, let's design for reliability.
+
+<br>
+
+<img src="../assets/single_points_of_failure.png" alt="Avoid Single Points of Failure" width="50%" height="50%">
+
+<br>
+
+Avoid single points of failure by replicating data and creating multiple Virtual Machine instances. It is important to define your unit of deployment and understand its capabilities.
+
+**To avoid single points of failure, you should deploy two extra instances, or N+2 to handle both failure and upgrades.**
+
+These deployments should ideally be in different zones to mitigate for zonal failures.
+
+Let me explain the upgrade consideration. Consider three VMs that are load balanced to achieve N+2. If one is being upgraded and another fails, 50 percent of the available capacity of the compute is removed, which potentially doubles alone on the remaining instance and increases the chances of that failing.
+
+This is where capacity planning and knowing the capability of your deployment unit is important.
+
+Also, for ease of scaling, it is a good practice to make the deployment units interchangeable stateless clones. It is also important to be aware of correlated failures.
+
+<br>
+
+<img src="../assets/correlated_failures.png" alt="Correlated Failures" width="50%" height="50%">
+
+<br>
+
+These occur when related items fail at the same time. At the simplest level, if a single machine fails, all requests served by that machine fail. At a hardware level, if a top of rack switch fails, the complete rack fails. At the Cloud level, if a zone or region is lost, all the resources are unavailable. Servers running the same software suffer from the same issue. If there is a fault in the software, the servers may fail at a similar time.
+
+Correlated failures can also apply to configuration data.
+
+If a global configuration system fails and multiple systems depend on it, they potentially fail too. When we have a group of related items that could fail together, we refer to it as a failure or fault domain.
+
+<br>
+
+<img src="../assets/avoid_correlated_failures.png" alt="Avoid Correlated Failures" width="50%" height="50%">
+
+<br>
+
+Several techniques can be used to avoid correlated failures. It is useful to be aware of failure domains. Then servers can be decoupled using microservices distributed among multiple failure domains. To achieve this, you can divide business-logic into services based on failure domains and deploy to multiple zones and, or regions.
+
+At a finer level of granularity, it is good to split responsibilities into components and spread these over multiple processes. This way, a failure in one component will not affect other components. If all responsibilities are in one component, a failure in one responsibility has a high likelihood of causing all responsibilities to fail.
+
+When you design microservices, your design should result in loosely coupled, independent but collaborating services. A failure in one service should not cause a failure in another service. It may cause a collaborating service to have reduced capacity or not be able to fully process it's workflows, but the collaborating service remains in control and does not fail.
+
+<br>
+
+<img src="../assets/cascading_failures.png" alt="Cascading Failures" width="50%" height="50%">
+
+<br>
+
+Cascading failures occur when one system fails, causing others to be overloaded and subsequently fail.
+
+For example, a message queue could be overloaded because a backend fails and it cannot process messages placed on the queue. The graphic on the left shows a Cloud Load Balancer distributing load across to backend servers. Each server can handle a maximum of 1,000 queries per second. The load balancer is currently sending 600 queries per second to each instance. If Server B now fails, all 1,200 queries per second have to be sent to just Server A as shown on the right.
+
+This is much higher than the specified maximum and could lead to cascading failure.
+
+So how do we avoid cascading failures? Cascading failures can be handled with support from the deployment platform. For example, you can use health checks in Compute Engine or readiness and liveliness probes in GKE to enable the detection and repair of unhealthy instances. You want to ensure that new instances start fast and ideally do not rely on other backends or systems to startup before they are ready.
+
+<br>
+
+<img src="../assets/avoid_cascading_failures.png" alt="Avoid Cascading Failures" width="50%" height="50%">
+
+<br>
+
+The graphic on this slide illustrates a deployment with four servers behind a load balancer. Based on the current traffic, a server failure can be absorbed by the remaining three servers as shown on the right-hand side. If the system uses Compute Engine with instance groups and auto healing, the failed server would be replaced with a new instance.
+
+As I just mentioned, it's important for that new server to startup quickly, to restore full capacity as quickly as possible. Also, this setup only works for stateless services.
+
+<br>
+
+<img src="../assets/query_of_death_overload.png" alt="Query of Death Overload" width="50%" height="50%">
+
+<br>
+
+You also want to plan against query of death, where a request made to a service causes a failure in the service. This is referred to as the query of death because the error manifests itself as over consumption of resources, but in reality is due to an error in the business-logic itself.
+
+This can be difficult to diagnose and requires good monitoring, observability and logging to determine the root cause of the problem.
+
+When the requests are made, latency, resource utilization, and error rates should be monitored to help identify the problem.
+
+<br>
+
+<img src="../assets/positive_feedback.png" alt="Positive Feedback Cycle" width="50%" height="50%">
+
+<br>
+
+You should also plan against positive feedback cycle overload failure, where a problem is caused by trying to prevent problems. This happens when you try to make the system more reliable by adding retries in the event of a failure.
+
+Instead of fixing the failure, this creates the potential for overload. You may actually be adding more load to an already overloaded system. The solution is intelligent retries that make use of feedback from the service that is failing.
+
+Let me discuss two strategies to address this.
+
+If a service fails, it is okay to try again, however, this must be done in a controlled manner. One way, to use the exponential backoff pattern.
+
+<br>
+
+<img src="../assets/Truncated_exponential_backoff_pattern.png" alt="Truncated Exponential Backoff Pattern" width="50%" height="50%">
+
+<br>
+
+This performs a retry, but not immediately. You should wait between retry attempts, waiting a little longer each time a request fails, therefore, giving the failing service time to recover. The number of retries should be limited to a maximum, and the length of time before giving up should also be limited.
+
+As an example, consider a failed request to a service. Using exponential backoff, we may wait one second plus a random number of milliseconds and try again. If the request fails again, we wait two seconds plus a random number of milliseconds and try again. Fail again, then wait four seconds plus a random number of milliseconds before retrying and continue until a maximum limit is reached.
+
+<br>
+
+<img src="../assets/circuit_breaker_pattern.png" alt="Circuit Breaker Pattern" width="50%" height="50%">
+
+<br>
+
+The circuit breaker pattern can also protect a service from too many retries. The pattern implements a solution for when a service is in a degraded state of operation. It is important because if a service is down or overloaded, and all it's clients are retrying, the extra requests actually make matters worse.
+
+The circuit breaker design pattern protects the service behind a proxy that monitors the service health. If the service is not deemed healthy by the circuit breaker, it will not forward request to the service. When the service becomes operational again, the circuit breaker will begin feeding request to it again in a controlled manner.
+
+If you are using GKE, then Istio's service mesh automatically implements circuit breakers.
+
+<br>
+
+<img src="../assets/lazy_deletion.png" alt="Lazy Deletion" width="50%" height="50%">
+
+<br>
+
+Lazy deletion is a method that builds in the ability to reliably recover data when a user deletes the data by mistake. With lazy deletion, a deletion pipelines similar to that shown in this graphic, is initiated and the deletion progresses in phases.
+
+The first stage is that the user deletes the data, but it can be restored within a predefined time period. In this example, it's 30 days. This protects against mistakes by the user.
+
+When the predefined period is over, the data is no longer visible to the user, but moves to the soft deletion phase. Here, the data can be restored by user support or administrators. This deletion protects against any mistakes in the application.
+
+After the soft deletion period of 15, 30, 45 or even 50 days, the data is deleted and no longer available.
+
+The only way to restore the data is by whatever backups or archives were made of the data.
 
 <br>
 
 ### Activity Intro: Designing Reliable Scalable Applications
 
+In this design activity, you draw a diagram that depicts how you can deploy your application for high availability, scalability, and durability.
+
+Let me show you an example of what to draw.
+
+<br>
+
+<img src="../assets/reliable_example.png" alt="Design for Reliable Scalable Apps" width="50%" height="50%">
+
+<br>
+
+This diagram is for an online bank application with customers in the United States. I want the web UI to be highly available. So here I depicted as being deployed behind a global HTTP load balancer across multiple regions and multiple zones within each region.
+
+I chose us-central-1 as the main region because it's somewhat in the middle of the US. I also have a backup region in us-east-1, which is on the east coast of the US.
+
+I deploy the accounts and products services as the back ends to just the us-central-1 region, but I'm using multiple zones us-central1-a and us-central1-b for high availability.
+
+I even have a failover cloud sequel database. The Filestore database for the product service is multiregional, so I don't need to worry about it failover.
+
+In case of a disaster, I'll keep backups in a multi regional cloud storage bucket. That way, if there is a regional outage, I can restore in another region.
+
+Refer to activity 10 in your workbook to create a similar diagram for your services.
 
 <br>
 
 ### Activity Review: Designing Reliable Scalable Applications
 
+In this activity, you are tasked to draw a diagram that depicts how your application can be deployed for availability, scalability, and durability.
+
+<br>
+
+<img src="../assets/reliable_example_2.png" alt="Design for Reliable Scalable Apps #2" width="50%" height="50%">
+
+<br>
+
+For our online travel application, Click Travel, I'm assuming that this is an American company, but that have a large group of customers in Europe. I want the UI to be highly available.
+
+So I've placed it into US Central 1, and Europe West 2 behind a global HTTP load balancer. This load balancer will send user requests to the region closest to the user unless that region cannot handle the traffic.
+
+I could also deploy the backends globally, but I'm trying to optimize cost. I could start by just deploying those in US Central 1. This will create a latency for our European users, but I can always revisit this later and have a similar backend in Europe West 2. To ensure high availability, I've decided to deploy the orders and inventory services to multiple zones.
+
+Because the analytics service is not customer facing, I can save money by deploying it to a single zone. I, again, have a failover Cloud SQL database and the Filestore database in BigQuery data warehouses are multi-regional, so I don't need to worry about a failover for those.
+
+In case of a disaster, I'll keep backups in a multi-regional Cloud storage bucket. That way, if there's a regional outage, I can restore it in another region.
 
 <br>
 
 ### Disaster Planning
 
+Now that we've designed for reliability, let's explore disaster planning. High availability can be achieved by deploying to multiple zones in a region. When using compute engine for higher availability, you can use a regional instance group, which provides built-in functionalities to keep instances running. Use auto healing with an application health check and load balancing to distribute load. For data, the storage solution selected will affect what is needed to achieve high availability. For cloud SQL, the database can be configured for high availability, which provides data redundancy and a standby instance of the database server in another zone. This diagram shows a high availability configuration with a regional managed instance group for a web application that's behind a load balancer. The master cloud SQL instance is in us-central 1-a, with a replica instance in us-central 1-f. Some data services such as Firestore or Spanner, provide high availability by default. In the previous example, the regional managed instance group distributes VMs across zones. You can choose between single zones and multiple zones or regional configurations when creating your instance group, as you can see in this screenshot. Google Kubernetes engine clusters can also be deployed to either a single or multiple zones, as shown in this screenshot. A cluster consists of a master controller and collections of node pools. Regional clusters increase the availability of both a cluster's master and its nodes by replicating them across multiple zones of a region. If you are using instance groups for your service, you should create a health check to enable auto healing. The health check as a test endpoint in your service, it should indicate that your service is available and ready to accept requests and not just that the servers running. A challenge with creating a good health check endpoint is that if you use other back end services, you need to check that they are available to provide positive confirmation that your service is ready to run. If the services it is dependent on are not available, it should not be available. If a health check fails the incidence group, it will remove the failing instance and create a new one. Health checks can also be used by load balancers to determine which instances to send requests to. Let's go over how to achieve high availability for Google Cloud's data storage and database services. For Google Cloud Storage, you can achieve high availability with multi-region storage buckets if the latency impact is negligible. As this table illustrates, the multi-region availability benefit is a factor of two as the unavailability decreases from 0.1% to 0.5%. If you are using Cloud SQL and need high availability, you can create a failover replica. This graphic shows the configuration where a master is configured in one zone and a replica is created in another zone but in the same region. If the master is unavailable, the failover will automatically be switched to take over the master. Remember, that you are paying for the extra instance with this design. Firestore and Spanner both offer single and multi-region deployments. A multi-region location is a general geographic area such as the United States. Data in a multi region location is replicated in multiple regions. Within a region data is replicated across zones. Multi-region locations can withstand the loss of entire regions and maintain availability without losing data. The multi-region configurations for both Firestore and Spanner offer five nines of availability, which is less than six minutes of downtime per year. Now, I already mentioned that deploying for high availability increases cost because extra resources are used. It is important that you consider the costs of your architectural decisions as part of your design process. Don't just estimate the cost of the resources used, but also consider the cost of your service being down. This table shown is a really effective way of assessing the risk versus cost, by considering the different deployment options and balancing them against the cost of being down. Now, let me introduce some disaster recovery strategies. A simple disaster recovery strategy may be to have a cold standby. You should create snapshots of persistent disks, machine images, and data backups and store them in a multi-region storage. This diagram shows a simple system using the strategy. Snapshots are taken that can be used to recreate the system. If the main region fails, you can spin up servers in the backup region using the snapshot images and persistent disks. You will have to route requests to the new region and it's vital to document and test this recovery procedure regularly. Another disaster recovery strategy is to have a hot standby where instance groups exist in multiple regions and traffic is forwarded with a global load balancer. This diagram shows such as configuration. I already mentioned this, but you can also implement this for data storage services like multi-regional cloud storage buckets and database services like Spanner and Firestore. Now, any disaster recovery plan should consider its aims in terms of two metrics, the Recovery Point Objective and the Recovery Time Objective. The Recovery Point Objective is the amount of data that would be acceptable to lose. And the Recovery Time Objective is how long it can take to be back up and running. You should brainstorm scenarios that might cause data loss or service failures and build a table similar to the one shown here. This can be helpful to provide structure on the different scenarios and to prioritize them accordingly. You will create a table like this in the upcoming design activity along with the recovery plan. You should create a plan for how to recover based on the disaster scenarios that you define. For each scenario, devise a strategy based on the risk and recovery point and time objectives. This isn't something that you want to simply document and leave. You should communicate the process recovering from failures to all parties. The procedures should be tested and validated regularly at least once per year. And ideally, recovery becomes a part of daily operations, which helps streamline the process. This table illustrates the backup strategy for different resources along with the location of the backups and the recovery procedure. This simplified view illustrates the type of information that you should capture.
+
+Before we get into our next design activity, I just want to emphasize how important it is to prepare a team for disaster by using drills. Have you decided what you think can go wrong with your system? Think about the plans for addressing each scenario and document these plans, then practice these plans periodically in either a test or production environment. At each stage, assess the risks carefully and balance the cost of availability against the cost of unavailability. The cost of unavailability will help you evaluate the risk of not knowing the system's weaknesses.
 
 <br>
 
