@@ -2440,29 +2440,251 @@ In case of a disaster, I'll keep backups in a multi-regional Cloud storage bucke
 
 ### Disaster Planning
 
-Now that we've designed for reliability, let's explore disaster planning. High availability can be achieved by deploying to multiple zones in a region. When using compute engine for higher availability, you can use a regional instance group, which provides built-in functionalities to keep instances running. Use auto healing with an application health check and load balancing to distribute load. For data, the storage solution selected will affect what is needed to achieve high availability. For cloud SQL, the database can be configured for high availability, which provides data redundancy and a standby instance of the database server in another zone. This diagram shows a high availability configuration with a regional managed instance group for a web application that's behind a load balancer. The master cloud SQL instance is in us-central 1-a, with a replica instance in us-central 1-f. Some data services such as Firestore or Spanner, provide high availability by default. In the previous example, the regional managed instance group distributes VMs across zones. You can choose between single zones and multiple zones or regional configurations when creating your instance group, as you can see in this screenshot. Google Kubernetes engine clusters can also be deployed to either a single or multiple zones, as shown in this screenshot. A cluster consists of a master controller and collections of node pools. Regional clusters increase the availability of both a cluster's master and its nodes by replicating them across multiple zones of a region. If you are using instance groups for your service, you should create a health check to enable auto healing. The health check as a test endpoint in your service, it should indicate that your service is available and ready to accept requests and not just that the servers running. A challenge with creating a good health check endpoint is that if you use other back end services, you need to check that they are available to provide positive confirmation that your service is ready to run. If the services it is dependent on are not available, it should not be available. If a health check fails the incidence group, it will remove the failing instance and create a new one. Health checks can also be used by load balancers to determine which instances to send requests to. Let's go over how to achieve high availability for Google Cloud's data storage and database services. For Google Cloud Storage, you can achieve high availability with multi-region storage buckets if the latency impact is negligible. As this table illustrates, the multi-region availability benefit is a factor of two as the unavailability decreases from 0.1% to 0.5%. If you are using Cloud SQL and need high availability, you can create a failover replica. This graphic shows the configuration where a master is configured in one zone and a replica is created in another zone but in the same region. If the master is unavailable, the failover will automatically be switched to take over the master. Remember, that you are paying for the extra instance with this design. Firestore and Spanner both offer single and multi-region deployments. A multi-region location is a general geographic area such as the United States. Data in a multi region location is replicated in multiple regions. Within a region data is replicated across zones. Multi-region locations can withstand the loss of entire regions and maintain availability without losing data. The multi-region configurations for both Firestore and Spanner offer five nines of availability, which is less than six minutes of downtime per year. Now, I already mentioned that deploying for high availability increases cost because extra resources are used. It is important that you consider the costs of your architectural decisions as part of your design process. Don't just estimate the cost of the resources used, but also consider the cost of your service being down. This table shown is a really effective way of assessing the risk versus cost, by considering the different deployment options and balancing them against the cost of being down. Now, let me introduce some disaster recovery strategies. A simple disaster recovery strategy may be to have a cold standby. You should create snapshots of persistent disks, machine images, and data backups and store them in a multi-region storage. This diagram shows a simple system using the strategy. Snapshots are taken that can be used to recreate the system. If the main region fails, you can spin up servers in the backup region using the snapshot images and persistent disks. You will have to route requests to the new region and it's vital to document and test this recovery procedure regularly. Another disaster recovery strategy is to have a hot standby where instance groups exist in multiple regions and traffic is forwarded with a global load balancer. This diagram shows such as configuration. I already mentioned this, but you can also implement this for data storage services like multi-regional cloud storage buckets and database services like Spanner and Firestore. Now, any disaster recovery plan should consider its aims in terms of two metrics, the Recovery Point Objective and the Recovery Time Objective. The Recovery Point Objective is the amount of data that would be acceptable to lose. And the Recovery Time Objective is how long it can take to be back up and running. You should brainstorm scenarios that might cause data loss or service failures and build a table similar to the one shown here. This can be helpful to provide structure on the different scenarios and to prioritize them accordingly. You will create a table like this in the upcoming design activity along with the recovery plan. You should create a plan for how to recover based on the disaster scenarios that you define. For each scenario, devise a strategy based on the risk and recovery point and time objectives. This isn't something that you want to simply document and leave. You should communicate the process recovering from failures to all parties. The procedures should be tested and validated regularly at least once per year. And ideally, recovery becomes a part of daily operations, which helps streamline the process. This table illustrates the backup strategy for different resources along with the location of the backups and the recovery procedure. This simplified view illustrates the type of information that you should capture.
+Now that we've designed for reliability, let's explore disaster planning.
 
-Before we get into our next design activity, I just want to emphasize how important it is to prepare a team for disaster by using drills. Have you decided what you think can go wrong with your system? Think about the plans for addressing each scenario and document these plans, then practice these plans periodically in either a test or production environment. At each stage, assess the risks carefully and balance the cost of availability against the cost of unavailability. The cost of unavailability will help you evaluate the risk of not knowing the system's weaknesses.
+<br>
+
+<img src="../assets/high_availability.png" alt="High Availability" width="50%" height="50%">
+
+<br>
+
+High availability can be achieved by deploying to multiple zones in a region. When using compute engine for higher availability, you can use a regional instance group, which provides built-in functionalities to keep instances running.
+
+Use auto healing with an application health check and load balancing to distribute load.
+
+For data, the storage solution selected will affect what is needed to achieve high availability. For cloud SQL, the database can be configured for high availability, which provides data redundancy and a standby instance of the database server in another zone.
+
+This diagram shows a high availability configuration with a regional managed instance group for a web application that's behind a load balancer. The master cloud SQL instance is in `us-central 1-a`, with a replica instance in `us-central 1-f`. Some data services such as Firestore or Spanner, provide high availability by default.
+
+<br>
+
+<img src="../assets/regional_managed_instance.png" alt="regional managed instance" width="50%" height="50%">
+
+<br>
+
+In the previous example, the regional managed instance group distributes VMs across zones. You can choose between single zones and multiple zones or regional configurations when creating your instance group, as you can see in this screenshot.
+
+<br>
+
+<img src="../assets/kubernetes_cluster.png" alt="Kubernetes cluster" width="50%" height="50%">
+
+<br>
+
+Google Kubernetes engine clusters can also be deployed to either a single or multiple zones, as shown in this screenshot. A cluster consists of a master controller and collections of node pools. Regional clusters increase the availability of both a cluster's master and its nodes by replicating them across multiple zones of a region.
+
+<br>
+
+<img src="../assets/health_check.png" alt="health check" width="50%" height="50%">
+
+<br>
+
+If you are using instance groups for your service, you should create a health check to enable auto healing. The health check as a test endpoint in your service, it should indicate that your service is available and ready to accept requests and not just that the servers running.
+
+A challenge with creating a good health check endpoint is that if you use other back end services, you need to check that they are available to provide positive confirmation that your service is ready to run. If the services it is dependent on are not available, it should not be available.
+
+If a health check fails the incidence group, it will remove the failing instance and create a new one. Health checks can also be used by load balancers to determine which instances to send requests to.
+
+<br>
+
+<img src="../assets/storage_high_availability.png" alt="storage high availability" width="50%" height="50%">
+
+<br>
+
+Let's go over how to achieve high availability for Google Cloud's data storage and database services. For Google Cloud Storage, you can achieve high availability with multi-region storage buckets if the latency impact is negligible. As this table illustrates, the multi-region availability benefit is a factor of two as the unavailability decreases from 0.1% to 0.5%.
+
+<br>
+
+<img src="../assets/cloud_sql_high_availability.png" alt="cloud sql high availability" width="50%" height="50%">
+
+<br>
+
+If you are using Cloud SQL and need high availability, you can create a failover replica. This graphic shows the configuration where a master is configured in one zone and a replica is created in another zone but in the same region. If the master is unavailable, the failover will automatically be switched to take over the master.
+
+Remember, that you are paying for the extra instance with this design.
+
+<br>
+
+<img src="../assets/spanner_firestore_high_availability.png" alt="spanner firestore high availability" width="50%" height="50%">
+
+<br>
+
+Firestore and Spanner both offer single and multi-region deployments. A multi-region location is a general geographic area such as the United States. Data in a multi region location is replicated in multiple regions. Within a region data is replicated across zones.
+
+Multi-region locations can withstand the loss of entire regions and maintain availability without losing data. The multi-region configurations for both Firestore and Spanner offer five nines of availability, which is less than six minutes of downtime per year.
+
+Now, I already mentioned that deploying for high availability increases cost because extra resources are used. It is important that you consider the costs of your architectural decisions as part of your design process. Don't just estimate the cost of the resources used, but also consider the cost of your service being down.
+
+<br>
+
+<img src="../assets/cost_of_availability.png" alt="cost of availability" width="50%" height="50%">
+
+<br>
+
+This table shown is a really effective way of assessing the risk versus cost, by considering the different deployment options and balancing them against the cost of being down.
+
+Now, let me introduce some disaster recovery strategies.
+
+<br>
+
+<img src="../assets/cold_standby.png" alt="Cold Standby" width="50%" height="50%">
+
+<br>
+
+A simple disaster recovery strategy may be to have a cold standby. You should create snapshots of persistent disks, machine images, and data backups and store them in a multi-region storage. This diagram shows a simple system using the strategy.
+
+Snapshots are taken that can be used to recreate the system. If the main region fails, you can spin up servers in the backup region using the snapshot images and persistent disks. You will have to route requests to the new region and it's vital to document and test this recovery procedure regularly.
+
+<br>
+
+<img src="../assets/hot_standby.png" alt="Hot Standby" width="50%" height="50%">
+
+<br>
+
+Another disaster recovery strategy is to have a hot standby where instance groups exist in multiple regions and traffic is forwarded with a global load balancer. This diagram shows such as configuration. I already mentioned this, but you can also implement this for data storage services like multi-regional cloud storage buckets and database services like Spanner and Firestore.
+
+<br>
+
+<img src="../assets/disaster_recovery_planning.png" alt="disaster recovery planning" width="50%" height="50%">
+
+<br>
+
+Now, any disaster recovery plan should consider its aims in terms of two metrics, the Recovery Point Objective and the Recovery Time Objective.
+
+The Recovery Point Objective is the amount of data that would be acceptable to lose.
+
+And the Recovery Time Objective is how long it can take to be back up and running.
+
+You should brainstorm scenarios that might cause data loss or service failures and build a table similar to the one shown here. This can be helpful to provide structure on the different scenarios and to prioritize them accordingly.
+
+You will create a table like this in the upcoming design activity along with the recovery plan.
+
+<br>
+
+<img src="../assets/disaster_recovery_scenarios.png" alt="disaster recovery scenarios" width="50%" height="50%">
+
+<br>
+
+You should create a plan for how to recover based on the disaster scenarios that you define. For each scenario, devise a strategy based on the risk and recovery point and time objectives. This isn't something that you want to simply document and leave.
+
+**You should communicate the process recovering from failures to all parties.**
+
+The procedures should be tested and validated regularly at least once per year. And ideally, recovery becomes a part of daily operations, which helps streamline the process.
+
+This table illustrates the backup strategy for different resources along with the location of the backups and the recovery procedure. This simplified view illustrates the type of information that you should capture.
+
+<br>
+
+<img src="../assets/disaster_prep.png" alt="disaster prep" width="50%" height="50%">
+
+<br>
+
+Before we get into our next design activity, I just want to emphasize how important it is to prepare a team for disaster by using drills.
+
+Have you decided what you think can go wrong with your system? Think about the plans for addressing each scenario and document these plans, then practice these plans periodically in either a test or production environment. At each stage, assess the risks carefully and balance the cost of availability against the cost of unavailability.
+
+The cost of unavailability will help you evaluate the risk of not knowing the system's weaknesses.
 
 <br>
 
 ### Activity Intro: Disaster Planning
 
+In this design activity, you brainstorm disaster scenarios for your case study and formulate a disaster recovery plan.
+
+Here's an example of such a brainstorming activity.
+
+<br>
+
+<img src="../assets/disaster_example.png" alt="disaster example" width="50%" height="50%">
+
+<br>
+
+The purpose of this activity is to think off disaster scenarios and assess how severely they would impact your services. The recovery point objective represents the maximum amount of data you would be willing to lose. Obviously, this would be different for your orders database where you wouldn't want to lose any data, and your products rating database where you could tolerate some loss. The recovery time objective represents how long it would take to recover from a disaster.
+
+In this example, we are estimating that we could recover our product ratings service database from a backup in an hour and our order service within two minutes.
+
+Now, like all things in life, we should prioritize, there's never time to get everything done. So work on the highest priority items first.
+
+Once you've identified these scenarios, come up with plans for recovery. These plans will be different based on your recovery point and recovery time objectives as well as the priorities.
+
+In this example, performing daily backups of our ratings database is good enough to meet our objectives. For the orders database, that won't be adequate. So we'll implement a failover replica in another zone.
+
+Refer to activities 11A, B and C in your design workbook to documents similar disaster scenarios for your case study and formulate a disaster recovery plan for each.
 
 <br>
 
 ### Activity Review: Disaster Planning
 
+n this activity, you were asked to come up with disaster recovery scenarios and plans for the case study you've been working on.
+
+Here's an example of some disaster scenarios for our online travel portal, Click Travel.
+
+<br>
+
+<img src="../assets/disaster_recovery_example.png" alt="disaster recovery example" width="50%" height="50%">
+
+<br>
+
+Each of our services use different database services and has different objectives and priorities. All of that affects how we design our disaster recovery plans. Our Analytics service in BigQuery had the lowest priority. Therefore, we should be able to re-import data to rebuild Analytics tables if a user deletes them.
+
+Our order service can't tolerate any data loss and has to be up and running almost immediately. For this, we need a failover replica in addition to binary logging and automated backups.
+
+Our inventory service uses Firestore. For that, we can implement daily automated backups to a multi-regional Cloud Storage bucket. Cloud Functions and Cloud Scheduler can help with this recovery procedure.
 
 <br>
 
 ### Review
 
+In this module, we covered how to deploy our applications for high availability, durability, and scalability.
+
+For high availability, we can deploy our resources across multiple zones and regions.
+
+For durability, we can keep multiple copies of data and perform regular backups.
+
+For scalability, we can deploy multiple instances of our services and set up auto scalars.
+
+We also introduced disaster recovery planning, which is defined by coming up with the scenarios that would cause you to lose data and having a plan in place for recovering if a disaster happens.
 
 <br>
 
 ## Module Overview: Security Concepts
 
+In this module, we cover security.
+
+Google has been operating securely in the cloud for 20 years. There's a strong belief that security empowers innovation. The approach of the cloud architect should be that security should be put first. Everything else will follow from this.
+
+In this module, you will learn how to design secure systems using industry best practices.
+
+<br>
+
+<img src="../assets/security_learning_objectives.png" alt="Learning Objectives" width="50%" height="50%">
+
+<br>
+
+For example, when designing a secure system, you will learn how to apply the principle of least privilege and the practice of separation of concerns.
+
+Performing regular audits is also a key part of running a secure system.
+
+Leveraging Google's Security Command Center can help to identify vulnerabilities as part of your process. Also when securing systems, governance is a major consideration. You will learn how organization policies and folders can simplify governance.
+
+Preventing access to unwanted visitors is always a challenge. Authentication and authorization is one approach and can be implemented in many different ways. You will learn how best to use IAM roles, Identity-Aware proxy and Identity Platform.
+
+You'll also learn to manage the access and authorization of resources by machines and processes using service accounts.
+
+At a lower level of access control, you will learn how to secure network access using private IP's, firewalls, and Google Cloud private access.
+
+Last but not least, you'll learn how to mitigate DDoS attacks by leveraging Cloud DNS and Google Cloud Armor.
+
+As you see there is a lot to security. Let's get started.
+
+<br>
+
+### Security Concepts
+
+Let's begin by talking about some security concepts and introducing some of the best practices for security design. When you move an application to Google Cloud, Google handles many of the lower layers of the overall security stack. Because of its scale, Google can deliver a higher level of security at these layers than most of its customers could afford to do on their own. This does not mean that Google is responsible for all the security aspects.
+
+Google Cloud security is a shared responsibility between you and Google. So it is important that there is a clear separation of duties, and there is no ambiguity between what is provided by the platform and what you are responsible for. For this, there needs to be transparency. There are certain actions you as a client are responsible for ,and some that Google is responsible for. Google Cloud provides the controls and features required to leverage the platform together with the tools to monitor your services. Google implements security in layers. At the base is custom built hardware and servers that are loaded using a verified boot loading system. All the way through the stack, security is at the forefront. When you take your part in security, for example, establishing firewall rules or configuring IAM, as long as they are configured correctly, you have a safe environment. There are tools Google Cloud provides that can be used for monitoring and auditing your networks, which we will discuss shortly, or you can also install your own tools. Let's talk about some best practices when implementing security. The principle of least privilege is the practice of granting a user only the minimal set of permissions required to perform a duty. This should apply to machine instances and processes, as well as users. Google Cloud provides cloud IAM to help apply this principle. You can use it to identify users with their login or identify machines using service accounts. Roles should be assigned to users and service accounts to restrict what they can do, always following the principle of least privilege. Separation of duties is another best practice and it has two primary objectives. One, prevention of conflict of interest and two, the detection of control failures. For example, security breaches and information theft. From a practical perspective, this means that no one person can change or delete data without being detected. No one person can steal sensitive data and no single person is in charge of designing, implementing, and reporting on sensitive systems. For example, a developer who writes the code should not be responsible for deploying that code, and anybody that has the permission to deploy should not be able to change the code. One approach to achieve this separation of duties in Google Cloud is to use multiple projects to separate duties. Different people can be given suitable rights to different projects, with these permissions following the principle of separation of duties. Folders are especially useful for organizing multiple projects.
+
+It is also vital to audit Google Cloud logs to discover attacks and potential security breaches. All Google Cloud services write to audit logs, so there is a rich source of information available. These logs include admin, data access, VPC flow, firewall, and system logs. So an in-depth view of activity is provided for audit. Now, moving to the cloud often requires maintaining compliance with regulatory requirements, or guidelines. Google Cloud meets many third party and government compliance standards worldwide. While Google cloud has been certified as secure, for example to ISO/IEC 27001, HIPAA and SOC 1, that does not mean your application running on Google Cloud is certified. Your concern should always be on what you build. Google Cloud also offers the Security Command Center, which provides access to organizational and project security configuration. As as you can see in this screenshot, the Security Command Center provides a dashboard that reports security health analysis, threat detections, anomaly detection, and a summary report. Once a threat is detected, a set of actionable recommendations is provided.
 
 <br>
 
