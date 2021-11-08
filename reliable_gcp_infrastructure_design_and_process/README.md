@@ -2680,21 +2680,143 @@ As you see there is a lot to security. Let's get started.
 
 ### Security Concepts
 
-Let's begin by talking about some security concepts and introducing some of the best practices for security design. When you move an application to Google Cloud, Google handles many of the lower layers of the overall security stack. Because of its scale, Google can deliver a higher level of security at these layers than most of its customers could afford to do on their own. This does not mean that Google is responsible for all the security aspects.
+Let's begin by talking about some security concepts and introducing some of the best practices for security design.
 
-Google Cloud security is a shared responsibility between you and Google. So it is important that there is a clear separation of duties, and there is no ambiguity between what is provided by the platform and what you are responsible for. For this, there needs to be transparency. There are certain actions you as a client are responsible for ,and some that Google is responsible for. Google Cloud provides the controls and features required to leverage the platform together with the tools to monitor your services. Google implements security in layers. At the base is custom built hardware and servers that are loaded using a verified boot loading system. All the way through the stack, security is at the forefront. When you take your part in security, for example, establishing firewall rules or configuring IAM, as long as they are configured correctly, you have a safe environment. There are tools Google Cloud provides that can be used for monitoring and auditing your networks, which we will discuss shortly, or you can also install your own tools. Let's talk about some best practices when implementing security. The principle of least privilege is the practice of granting a user only the minimal set of permissions required to perform a duty. This should apply to machine instances and processes, as well as users. Google Cloud provides cloud IAM to help apply this principle. You can use it to identify users with their login or identify machines using service accounts. Roles should be assigned to users and service accounts to restrict what they can do, always following the principle of least privilege. Separation of duties is another best practice and it has two primary objectives. One, prevention of conflict of interest and two, the detection of control failures. For example, security breaches and information theft. From a practical perspective, this means that no one person can change or delete data without being detected. No one person can steal sensitive data and no single person is in charge of designing, implementing, and reporting on sensitive systems. For example, a developer who writes the code should not be responsible for deploying that code, and anybody that has the permission to deploy should not be able to change the code. One approach to achieve this separation of duties in Google Cloud is to use multiple projects to separate duties. Different people can be given suitable rights to different projects, with these permissions following the principle of separation of duties. Folders are especially useful for organizing multiple projects.
+When you move an application to Google Cloud, Google handles many of the lower layers of the overall security stack. Because of its scale, Google can deliver a higher level of security at these layers than most of its customers could afford to do on their own. This does not mean that Google is responsible for all the security aspects.
 
-It is also vital to audit Google Cloud logs to discover attacks and potential security breaches. All Google Cloud services write to audit logs, so there is a rich source of information available. These logs include admin, data access, VPC flow, firewall, and system logs. So an in-depth view of activity is provided for audit. Now, moving to the cloud often requires maintaining compliance with regulatory requirements, or guidelines. Google Cloud meets many third party and government compliance standards worldwide. While Google cloud has been certified as secure, for example to ISO/IEC 27001, HIPAA and SOC 1, that does not mean your application running on Google Cloud is certified. Your concern should always be on what you build. Google Cloud also offers the Security Command Center, which provides access to organizational and project security configuration. As as you can see in this screenshot, the Security Command Center provides a dashboard that reports security health analysis, threat detections, anomaly detection, and a summary report. Once a threat is detected, a set of actionable recommendations is provided.
+<br>
+
+<img src="../assets/security_responsibility.png" alt="Security is a shared responsibility" width="50%" height="50%">
+
+<br>
+
+Google Cloud security is a shared responsibility between you and Google. So it is important that there is a clear separation of duties, and there is no ambiguity between what is provided by the platform and what you are responsible for.
+
+For this, there needs to be transparency. There are certain actions you as a client are responsible for, and some that Google is responsible for. Google Cloud provides the controls and features required to leverage the platform together with the tools to monitor your services.
+
+Google implements security in layers.
+
+<br>
+
+<img src="../assets/security_layers.png" alt="GCP security layers" width="50%" height="50%">
+
+<br>
+
+At the base is custom built hardware and servers that are loaded using a verified boot loading system. All the way through the stack, security is at the forefront. When you take your part in security, for example, establishing firewall rules or configuring IAM, as long as they are configured correctly, you have a safe environment.
+
+There are tools Google Cloud provides that can be used for monitoring and auditing your networks, which we will discuss shortly, or you can also install your own tools.
+
+<br>
+
+<img src="../assets/least_privileged.png" alt="Principle of least privileged" width="50%" height="50%">
+
+<br>
+
+Let's talk about some best practices when implementing security. The principle of least privilege is the practice of granting a user only the minimal set of permissions required to perform a duty. This should apply to machine instances and processes, as well as users.
+
+Google Cloud provides cloud IAM to help apply this principle. You can use it to identify users with their login or identify machines using service accounts. Roles should be assigned to users and service accounts to restrict what they can do, always following the principle of least privilege.
+
+<br>
+
+<img src="../assets/separation_of_duties.png" alt="Separation of Duties" width="50%" height="50%">
+
+<br>
+
+Separation of duties is another best practice and it has two primary objectives. One, prevention of conflict of interest and two, the detection of control failures. For example, security breaches and information theft. From a practical perspective, this means that no one person can change or delete data without being detected. No one person can steal sensitive data and no single person is in charge of designing, implementing, and reporting on sensitive systems.
+
+For example, a developer who writes the code should not be responsible for deploying that code, and anybody that has the permission to deploy should not be able to change the code. One approach to achieve this separation of duties in Google Cloud is to use multiple projects to separate duties. Different people can be given suitable rights to different projects, with these permissions following the principle of separation of duties. Folders are especially useful for organizing multiple projects.
+
+<br>
+
+<img src="../assets/log_audit.png" alt="Audits" width="50%" height="50%">
+
+<br>
+
+It is also vital to audit Google Cloud logs to discover attacks and potential security breaches. All Google Cloud services write to audit logs, so there is a rich source of information available. These logs include admin, data access, VPC flow, firewall, and system logs. So an in-depth view of activity is provided for audit.
+
+<br>
+
+<img src="../assets/compliance.png" alt="GCP Compliance" width="50%" height="50%">
+
+<br>
+
+Now, moving to the cloud often requires maintaining compliance with regulatory requirements, or guidelines. Google Cloud meets many third party and government compliance standards worldwide. While Google cloud has been certified as secure, for example to ISO/IEC 27001, HIPAA and SOC 1, that does not mean your application running on Google Cloud is certified.
+
+Your concern should always be on what you build.
+
+<br>
+
+<img src="../assets/security_command_center.png" alt="GCP Security Command Center" width="50%" height="50%">
+
+<br>
+
+Google Cloud also offers the Security Command Center, which provides access to organizational and project security configuration. As as you can see in this screenshot, the Security Command Center provides a dashboard that reports security health analysis, threat detections, anomaly detection, and a summary report.
+
+Once a threat is detected, a set of actionable recommendations is provided.
 
 <br>
 
 ### Securing People
 
+Let's move on to talk about securing people.
+
+<br>
+
+<img src="../assets/granting_access.png" alt="Granting Access" width="50%" height="50%">
+
+<br>
+
+When granting people access to your projects, you should add them as members and assign them one or more roles. Roles are simply a list of permissions. To see what permissions are granted to roles, use the Cloud Console as shown on the right. Here, you can see the role BigQuery user and the associated 15 permissions the role has assigned to it.
+
+You can assign these predefined roles to its members or customize your own roles.
+
+Now, any member added to your project will be identified by their login. For simplifying management of members and their permissions, I recommend that you create groups, that way you just need to add members to a group and new members automatically acquire the permissions of the group.
+
+The same applies for removing members from a group, which also removes the permissions of that group.
+
+<br>
+
+<img src="../assets/identity_access_management.png" alt="identity access management" width="50%" height="50%">
+
+<br>
+
+I also recommend using organizational policies and folders to simplify securing your environments and managing your resources. Organizational policies applied to all resources underneath an organization and Cloud IAM policies are also inherited top to bottom as shown on the right.
+
+Folders inherit policies of the organization.
+
+Projects inherit policies of the folders, and so on.
+
+I already mentioned that role should be granted to groups, not individuals because it simplifies management. Make sure to define groups carefully and make them more granular than job roles. It's better to use multiple groups for better control.
+
+When it comes to roles, it's better to use predefined roles over custom roles. Google has defined the roles for a reason, and it should be an exceptional case that a role does not fit your use case. When granting roles, remember the principle of least privilege. Always grant the smallest scope required. Owner and editor role should be limited. These are not or should not be required by the majority of users.
+
+<br>
+
+<img src="../assets/identity_aware_proxies.png" alt="identity aware proxies" width="50%" height="50%">
+
+<br>
+
+I also recommend leveraging Cloud Identity Aware Proxy or Cloud IAP.
+
+Cloud IAP provides managed access to applications running in App Engine standard environment, App Engine flexible environment, Compute Engine, and GKE. It allows employees to securely access web-based applications deployed on Google Cloud without requiring a VPN. Administrators control who has access and users are required to log on to gain access to the applications.
+
+The screenshots on the right show Cloud IAP being enabled on an App Engine application and the dialogue for adding new members or permissions.
+
+<br>
+
+<img src="../assets/identity_platform.png" alt="Identity Platform" width="50%" height="50%">
+
+<br>
+
+Google Cloud also offers identity platform, as a Customer Identity and Access Management, CIAM platform for adding identity and access management to applications. In other words, Identity Platform provides sign-up and sign-in for end-user applications.
+
+Now, you need to select a service provider to use Identity Platform. A broad range of protocol support is available including SAML, OpenID, email and password, phone, social, and Apple. This graphic shows a part of the configuration with a list of potential providers.
 
 <br>
 
 ### Securing Machine Access
 
+We just talked about assigning roles to members. We focused on users and Google groups, but there's another kind of member that helps secure machine access. A service account is a special kind of account used by an application, a virtual machine instance or a GKE node pool. Applications or services use service accounts to make authorized API calls. The service account is the identity of the service and defines permissions which control the resource is that service can access. A service account is both an identity and resource. A service account is used as an identity for your application or service to authenticate. For example, a compute engine VM running as a service account. To give the VM access to the necessary resource is you need to grant the relevant cloud IAM rolls to the service account. At the same time you need to control who can create VMS with the service account. So random VMS cannot assume the identity. Here the service account is the resource to be permission. You assign the service account user role to the users you trust to use the service account. Each service account is associated with public private RSA key pairs that are used to authenticate to Google. These keys can be Google managed or user managed. Google managed keys both the public and private keys are stored by Google, and they are rotated regularly. The maximum usage period is two weeks for user managed keys. The developer owns both public and private keys. They could be used from outside Google Cloud. User managed keys can be managed by the cloud IAPI, G Cloud command line tool or the service accounts page in the cloud console. It is possible to create up to ten key pairs per service account to support key rotation. User managed keys are extremely powerful credentials, and they can represent a security risk if they are not managed correctly. You can limit their use by applying the constraints. Slash I am dot disabled service account creation organization policy constraint to projects, folders or even your entire organization. After applying the constraint, you can enable users manage keys in well controlled locations. To minimize the potential risk caused by unmanaged keys, consider using cloud key management service, Cloud KMS to help securely manager keys. The slide shows the generation of a key using the cloud console, The private key can be seen in the screenshot. It's your responsibility for storing the private key securely for developers to gain control access to resources without acquiring access to the cloud console. It is possible to configure the G Cloud command line utility to use service account credentials to make requests. The command on this slide G cloud off activate service account serves the same purpose as G Cloud Off Log in but uses the service account instead of user credentials. The key file contains the Private Key and JSON Format, which I just discussed.
 
 <br>
 
