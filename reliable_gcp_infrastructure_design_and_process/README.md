@@ -2816,12 +2816,57 @@ Now, you need to select a service provider to use Identity Platform. A broad ran
 
 ### Securing Machine Access
 
-We just talked about assigning roles to members. We focused on users and Google groups, but there's another kind of member that helps secure machine access. A service account is a special kind of account used by an application, a virtual machine instance or a GKE node pool. Applications or services use service accounts to make authorized API calls. The service account is the identity of the service and defines permissions which control the resource is that service can access. A service account is both an identity and resource. A service account is used as an identity for your application or service to authenticate. For example, a compute engine VM running as a service account. To give the VM access to the necessary resource is you need to grant the relevant cloud IAM rolls to the service account. At the same time you need to control who can create VMS with the service account. So random VMS cannot assume the identity. Here the service account is the resource to be permission. You assign the service account user role to the users you trust to use the service account. Each service account is associated with public private RSA key pairs that are used to authenticate to Google. These keys can be Google managed or user managed. Google managed keys both the public and private keys are stored by Google, and they are rotated regularly. The maximum usage period is two weeks for user managed keys. The developer owns both public and private keys. They could be used from outside Google Cloud. User managed keys can be managed by the cloud IAPI, G Cloud command line tool or the service accounts page in the cloud console. It is possible to create up to ten key pairs per service account to support key rotation. User managed keys are extremely powerful credentials, and they can represent a security risk if they are not managed correctly. You can limit their use by applying the constraints. Slash I am dot disabled service account creation organization policy constraint to projects, folders or even your entire organization. After applying the constraint, you can enable users manage keys in well controlled locations. To minimize the potential risk caused by unmanaged keys, consider using cloud key management service, Cloud KMS to help securely manager keys. The slide shows the generation of a key using the cloud console, The private key can be seen in the screenshot. It's your responsibility for storing the private key securely for developers to gain control access to resources without acquiring access to the cloud console. It is possible to configure the G Cloud command line utility to use service account credentials to make requests. The command on this slide G cloud off activate service account serves the same purpose as G Cloud Off Log in but uses the service account instead of user credentials. The key file contains the Private Key and JSON Format, which I just discussed.
+We just talked about assigning roles to members. We focused on users and Google groups, but there's another kind of member that helps secure machine access.
+
+<br>
+
+<img src="../assets/service_accounts.png" alt="Identity Service Accounts" width="50%" height="50%">
+
+<br>
+
+A service account is a special kind of account used by an application, a virtual machine instance or a GKE node pool. Applications or services use service accounts to make authorized API calls. The service account is the identity of the service and defines permissions which control the resource is that service can access.
+
+**A service account is both an identity and resource.**
+
+A service account is used as an identity for your application or service to authenticate. For example, a compute engine VM running as a service account. To give the VM access to the necessary resource is you need to grant the relevant cloud IAM rolls to the service account. At the same time you need to control who can create VMS with the service account. So random VMS cannot assume the identity.
+
+Here the service account is the resource to be permission.
+
+<br>
+
+<img src="../assets/service_accounts_2.png" alt="Machine Service Accounts" width="50%" height="50%">
+
+<br>
+
+You assign the service account user role to the users you trust to use the service account. Each service account is associated with public private RSA key pairs that are used to authenticate to Google. These keys can be Google managed or user managed. Google managed keys, both the public and private keys, are stored by Google, and they are rotated regularly.
+
+**The maximum usage period is two weeks for user managed keys.**
+
+The developer owns both public and private keys. They could be used from outside Google Cloud. User managed keys can be managed by the cloud IAPI, `gcloud` command line tool or the service accounts page in the cloud console. It is possible to create up to ten key pairs per service account to support key rotation.
+
+User managed keys are extremely powerful credentials, and they can represent a security risk if they are not managed correctly. You can limit their use by applying the constraints `/iam.disabled-service-account-creation-organization-policy` constraint to projects, folders or even your entire organization.
+
+After applying the constraint, you can enable users managed keys in well controlled locations. To minimize the potential risk caused by unmanaged keys, consider using cloud key management service, Cloud KMS to help securely manage your keys.
+
+The slide shows the generation of a key using the cloud console, The private key can be seen in the screenshot. It's your responsibility for storing the private key securely for developers to gain control access to resources without acquiring access to the cloud console.
+
+<br>
+
+<img src="../assets/service_account_keys.png" alt="Service Account Keys" width="50%" height="50%">
+
+<br>
+
+It is possible to configure the G Cloud command line utility to use service account credentials to make requests. The command on this slide `gcloud auth activate-service-account` serves the same purpose as `gcloud auth login` but uses the service account instead of user credentials.
+
+The key file contains the Private Key and JSON Format, which I just discussed.
 
 <br>
 
 ### Network Security
 
+In our previous module, we talked about networks, but didn't get into a lot of network security concepts. Let's do that now.
+
+First, I recommend removing external IPs to prevent access to machines from outside their network whenever possible. Several options are available for securely communicating with VMs that do not have public IP addresses. These services do not have a public IP address because they are deployed to be consumed by other instances in the project, or maybe through dedicated interconnect options. However, for those instances that do not have an external IP address, it can be a requirement to gain external access, for instance, for updates or patches to be applied. The options for accessing the VMs include a bastion host for external access to private machines, Identity-Aware Proxy to enable SSH access or Cloud NAT to provide egress to the Internet for internal machines. The diagram on the right shows an external client accessing Compute Engine resources via a bastion host. The host is behind a firewall where access can be filtered. Whichever method you choose, all internet traffic should terminate at a load balancer, third-party firewall or API Gateway or through Cloud IAP. That way, internal services cannot be launched and get public IP addresses. Now, VM instances that only have internal IP addresses can use private Google access to access Google services that have external IP addresses. The diagram on the right shows a Compute Engine instance accessing a Cloud storage bucket using its internal IP address. Private Google access must be enabled when creating the subnet. You can achieve this either with the G Cloud command shown here or through the Cloud Console. Regardless of whether you're VM instances have public IP addresses, you should always configure a firewall rules to control access. By default, ingress on all ports is denied and all egress is allowed. It's your responsibility to define separate rules to allow or deny access to specific instances for specific IP ranges, protocols, and ports. This graphic shows some scenarios where firewall rules can be configured. Egress from Compute Engine to external servers is the first scenario. For ingress, firewall rule should be configured if direct access to an instance is being provided or if via a load balancer. The right-hand graphic shows the scenario of VM instance to instance communication. Firewall rules should be considered here to control access also. Remember, you're still responsible for application level security. If you need to manage APIs, you can use Cloud Endpoints. Endpoints is an API management gateway that helps you develop, deploy, and manage APIs on any Google Cloud backend. It provides functionality to protect and monitor your public APIs, control who has access, using, for example, Auth0 and validate every call with a JSON Web Token signed with the service account private key. Cloud Endpoints also integrates with Identity Platform for authentication. All Google Cloud Service Endpoints use HTTPS. I recommend that you use TLS for your service endpoints and it is your responsibility to configure your service endpoints for TLS. When configuring load balancers, only ever create secure front ends. This dialog shows the configuration of a front end and the protocol selected is HTTPS, with the certificate also being selected. Google provides Infrastructure DDoS support through global load balancers at level 3 and level 4 traffic. If you have enabled CDN, this will also protect backend resources because a DDOS results in a cache hit instead of hitting your resources as shown on the right. We already mentioned Google Cloud armor in the networking module. For additional features over the built-in DDoS protection, you can use Google Cloud armor to create network security policies. For example, you can create allow lists that allow known slash required addresses through and deny lists to block known attackers. This dialog shows a typical security policy configuration where you begin by selecting it as an allow list or a deny list with allow or deny for the rule. If it's a deny, the appropriate action in this example should be a 403 error. In addition to layer 3 and layer 4 security, Google Cloud armor supports layer 7 application rules. For example, predefined rules are provided for cross-site scripting, XSS, and SQL injection attacks. Google Cloud armor provides a rules language for filtering request traffic. As an example, consider the first expression on this slide. In IP range origin.ip 9.9.9.0/24. In this case, the expression returns true if the origin IP and our request is within the 9.9.9.0/24 range. The second line, request dot headers cookie contains 80 equals blah returns true if the cookie 80 with value blah exists in the request header and the third line is true if the origin region code is AU. The expressions can be combined logically with logical AND, and OR. The expressions are all assigned to an allow or deny rule that is then applied to incoming traffic.
 
 <br>
 
