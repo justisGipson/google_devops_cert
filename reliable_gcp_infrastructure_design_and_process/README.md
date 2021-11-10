@@ -3081,13 +3081,43 @@ This will also allow us to define Uptime Checks and use Cloud Monitoring Alerts 
 
 Let's begin by taking a look at version management.
 
-A key benefit of a microservice architecture is the ability to independently deploy microservices. This means that the service API has to be protected. Versioning is required and when new versions are deployed, care must be taken to ensure backward compatibility with a previous version. Some simple design rules can help, such as indicating the version in the URI and making sure you change the version when you make a backward incompatible change. Deploying new versions of software always carries risk. We want to make sure we test new versions effectively before going live and when ready to deploy a new version, we do so with zero downtime. Let me discuss some strategies that can help achieve these objectives.
+<br>
+
+<img src="../assets/version_management.png" alt="Microservice Version Management" width="50%" height="50%">
+
+<br>
+
+A key benefit of a microservice architecture is the ability to independently deploy microservices. This means that the service API has to be protected. Versioning is required and when new versions are deployed, care must be taken to ensure backward compatibility with a previous version. Some simple design rules can help, such as indicating the version in the URI and making sure you change the version when you make a backward incompatible change.
+
+Deploying new versions of software always carries risk. We want to make sure we test new versions effectively before going live and when ready to deploy a new version, we do so with zero downtime. Let me discuss some strategies that can help achieve these objectives.
+
+<br>
+
+<img src="../assets/rolling_updates.png" alt="Rolling updates" width="50%" height="50%">
+
+<br>
 
 Rolling updates allow you to deploy new versions with no downtime. The typical configuration is to have multiple instances of a service behind a load balancer. A rolling update will then update one instance at a time. This strategy works fine if the API is not changed or is backward compatible or if it is okay to have two versions of the same servers running during the update. If you are using instance groups, rolling updates are a built-in feature. You just define the rolling update strategy when you perform the update.
 
 For Kubernetes, rolling updates are there by default. You just need to specify the replacement Docker image. Finally, for App Engine, rolling updates are completely automated.
 
-Use a blue/green deployment when you don't want multiple versions of a service to run simultaneously. Blue/green deployments use two full deployment environments. The blue deployment is running the current deployed production software while the green deployment environment is available for deploying updated versions of the software. When you want to test a new software version, you deploy to the green environment. Once testing is complete, the workload is shifted from the current, which would be the blue in this case to the new, the green environment. This strategy mitigates the risk of a bad deployment by allowing the switch back to the previous deployment if something goes wrong. For Compute Engine, you can use DNS to migrate requests while in Kubernetes, you can configure your service to route to new pods using labels, which is just a simple configuration change. App Engine allows you to split traffic which you explored in the previous lab of this course. Now, you can use canary releases prior to a rolling update to reduce risk. With a canary release, you make a new deployment with the current deployment still running. Then you sent a small percentage of traffic to the new deployment and monitor it.
+<br>
+
+<img src="../assets/blue_green_deployment.png" alt="Blue/green Deployments" width="50%" height="50%">
+
+<br>
+
+Use a blue/green deployment when you don't want multiple versions of a service to run simultaneously. Blue/green deployments use two full deployment environments. The blue deployment is running the current deployed production software while the green deployment environment is available for deploying updated versions of the software. When you want to test a new software version, you deploy to the green environment. Once testing is complete, the workload is shifted from the current, which would be the blue in this case to the new, the green environment. This strategy mitigates the risk of a bad deployment by allowing the switch back to the previous deployment if something goes wrong.
+
+For Compute Engine, you can use DNS to migrate requests while in Kubernetes, you can configure your service to route to new pods using labels, which is just a simple configuration change. App Engine allows you to split traffic which you explored in the previous lab of this course.
+
+<br>
+
+<img src="../assets/canary_releases.png" alt="Canary releases" width="50%" height="50%">
+
+<br>
+
+Now, you can use canary releases prior to a rolling update to reduce risk. With a canary release, you make a new deployment with the current deployment still running. Then you sent a small percentage of traffic to the new deployment and monitor it.
 
 Once you have confidence in your new deployment, you can route more traffic to the new deployment until 100% is routed this way.
 
@@ -3099,45 +3129,388 @@ In App Engine, you can again use the Traffic Splitting feature to drive a portio
 
 ### Cost Planning
 
+Cost planning is an important phase in your design that starts with capacity planning.
+
+<br>
+
+<img src="../assets/capacity_planning.png" alt="Capacity Planning" width="50%" height="50%">
+
+<br>
+
+I recommend that you treat capacity planning not as a one off task but as a continuous iterative cycle. As illustrated on this slide start with a forecast that estimates the capacity needed. Monitor and review this forecast, then allocated by determining the resources required to meet the forecasted capacity. This allows you to estimate costs and balance them against risks and rewards.
+
+Once the design and cost is approved, deploy your design and monitor it to see how accurate you forecasts were. This feeds into the next forecast as the process repeats.
+
+<br>
+
+<img src="../assets/optimize_compute_costs.png" alt="Optimize compute costs" width="50%" height="50%">
+
+<br>
+
+A good starting point for anybody working on cost optimization is to become familiar with the VM instance pricing. It is often beneficial to start with a couple of small machines that can scale out through auto scaling as demand grows.
+
+To optimize the cost of your virtual machines. Consider using committed use discounts as these can be significant. Also, if your workloads allow for preemptible instances, you can save up to 80 and use auto healing to recover when instances are preempted.
+
+Compute engine also provides sizing recommendations for your VM instances as shown on the right. This is a really useful feature that can help you select the right size of VM for your workloads and optimize costs.
+
+<br>
+
+<img src="../assets/optimize_disk_cost.png" alt="" width="50%" height="50%">
+
+<br>
+
+A common mistake is to over allocate disk space. This is not cost efficient but selecting a disk is not just about size. It is important to determine the performance characteristics your applications display, the I/O patterns, do you have large read small writes, vice versa, mainly read only data...
+
+This type of information will help you select the correct type of disk. As the table shows. SSD persistent disks are significantly more expensive than standard persistent disks. Understanding your I/O patterns can help provide significant savings to optimize network costs.
+
+<br>
+
+<img src="../assets/optimize_network_costs.png" alt="optimize network costs" width="50%" height="50%">
+
+<br>
+
+It is best practice to keep machines as close as possible to the data they need to access. This graphic shows the different types of egress within the same zone. Between zones in the same region, intercontinental egress and internet egress. It is also important to be aware of egress charges.
+
+**These are not all straightforward.**
+
+Egress in the same zone is for you. He goes to different good cloud service within the same region using an external IP address. Or an internal IP addresses free except for some services such as memory store for Redis. Egress between zones in the same region is charged and all internet egress is charged. One way to optimize your network costs is to keep your machines close to your data.
+
+<br>
+
+<img src="../assets/gke_usage_metering.png" alt="GKE usage metering" width="50%" height="50%">
+
+<br>
+
+Another way to optimist cost is to leverage GKE usage metering which can prevent over provisioning your kubernetes cluster. With GKE usage metering an agent collects consumption metrics. In addition to the resource requests by polling pot metric objects from the metrics server. The resource requests, record and resource consumption records are exported to two separate tables and BigQuery data sets that you specify. Comparing requests that with consumed resources makes it easy to spot waste and take corrective measures.
+
+This graphic shows a typical configuration where BigQuery is used for requests based metrics collected from the usage metering agent. And together with data obtained from building export, it is analyzed in a data studio dashboard.
+
+<br>
+
+<img src="../assets/compare_storage_costs.png" alt="Comparing Storage Costs" width="50%" height="50%">
+
+<br>
+
+Earlier in the course we talked about all of the different storage services. It's important to compare the costs of the different options as well as their characteristics. For example, as of this recording Firestore provides one gigabyte of storage for free, under the free access to tier. If you sort the same amount of data in Cloud BigTable, you could pay over one $1,000 per month. Because you'd need at least three BigTable nodes. In other words, your storage and database service choice can make a significant difference to your bill.
+
+<br>
+
+<img src="../assets/cost_saving.png" alt="Cost saving w/ alternative storage" width="50%" height="50%">
+
+<br>
+
+Your architectural design can also help you optimize your costs. For example, if you use Cloud CDN for static content or Memorystore as a cache, you can save instead of allocating more resources. Similarly, instead of using a data store between two applications, considering messaging and queuing with Pub/Sub to the couple communicating services and reduce storage needs.
+
+<br>
+
+<img src="../assets/pricing_calculator.png" alt="Pricing Calculator" width="50%" height="50%">
+
+<br>
+
+The pricing calculator should be your go to resource for estimating costs. Your estimates should be based on your forecasting and capacity planning. The tool is great for comparing costs of different compute and storage services and you will use it in the upcoming design activity.
+
+<br>
+
+<img src="../assets/billing_report.png" alt="Billing report" width="50%" height="50%">
+
+<br>
+
+To monitor the cost of your existing service, leverage the cloud billing reports page as shown here. This report shows the changes in costs compared to the previous month. And you can use the filters to search for particular projects, products and regions as shown on the right.
+
+The sizing recommendations for your compute engine instances will also be in this report.
+
+<br>
+
+<img src="../assets/adv_cost_analysis.png" alt="Advanced cost analysis" width="50%" height="50%">
+
+<br>
+
+For advanced cost analysis, I recommend exporting your billing data to BigQuery. As shown in the screenshot. You can then analyze the billing data to identify large expenses and optimize your google cloud spend. For example, let's assume you label VM instances that are spread across different regions. Maybe these instances are sending most of their traffic to a different continent which could incur higher costs. In that case you might want to consider relocating some of those instances or using a caching service like CloudCDN. To cache content closer to your users, which reduces your networking spend.
+
+<br>
+
+<img src="../assets/data_studio.png" alt="Data Studio" width="50%" height="50%">
+
+<br>
+
+You can even visualize spend over time with google data studio. Which turns your data into informative dashboards and reports that are easy to read, easy to share and fully customizable. The service data is displayed in a daily and monthly view, providing at a glance summaries that can also be drilled down in to provide greater insights.
+
+<br>
+
+<img src="../assets/budgets_and_alerts.png" alt="Budgets and Alerts" width="50%" height="50%">
+
+<br>
+
+To help with project planning and controlling costs. You can set a budget, setting a budget lets you track how your spend is growing towards that amount. This screenshot shows the budget creation interface.
+
+First set a budget name and specify which project this budget applies to. Then set the budget at a specific amount or match it to the previous month spent last set the budget alerts. These alerts, sent emails to billing admins after spending exceeds a percent of a budget or a specified amount.
+
+In our case, It would send an email when spending reaches 50, 90 and 100 of the budget amount. You can even choose to send an alert when the spend is forecasted to exceed the percent of the budget amount by the end of the budget period.
+
+In addition to receiving an email, you can use pop up notifications to programmatically receive spend updates about this budget.
+
+You could even create a cloud function that listens to the pub sub topic to automate cost management.
 
 <br>
 
 ### Monitoring Dashboards
 
+Let's get into monitoring and visualizing information with dashboards.
+
+<br>
+
+<img src="../assets/monitoring_tools.png" alt="monitoring tools" width="50%" height="50%">
+
+<br>
+
+Google Cloud unifies the tools you need to monitor your service, SLOs and SLAs in real-time. These tools include Monitoring, Logging, Trace, Debugger, Error Reporting, and Profiler. All of these enable you to gain the insights you need to achieve your SLOs and determine the root cause in those rare cases that you do not achieve your SLOs.
+
+<br>
+
+<img src="../assets/monitoring_dashboards.png" alt="monitoring dashboards" width="50%" height="50%">
+
+<br>
+
+Dashboards are one way for you to view and analyze metric data that is important to you. This includes your SLIs to ensure that you are meeting your SLAs.
+
+The monitoring page of the Cloud Console automatically provides predefined dashboards for the resources and services that you use. It is important that you monitor these things you pay for to determine the trends, bottlenecks, and potential cost savings.
+
+<br>
+
+<img src="../assets/example_charts.png" alt="example monitoring charts" width="50%" height="50%">
+
+<br>
+
+Here's an example of some charts in a monitoring dashboard. On the left, you can see the CPU usage for different compute engine instances, and on the right is the ingress traffic for those instances. Charts like these provide valuable insights into usage patterns.
+
+<br>
+
+<img src="../assets/default_dashboards.png" alt="default dashboards" width="50%" height="50%">
+
+<br>
+
+To help you get started, Cloud monitoring creates default dashboards for your project resources, as shown in this screenshot. You can also create custom dashboards which you can explore in the upcoming lab.
+
+<br>
+
+<img src="../assets/uptime_checks.png" alt="uptime checks" width="50%" height="50%">
+
+<br>
+
+Now, it's a good idea to monitor latency because it can quickly highlight when problems are about to occur. As shown on the slide, you can easily create uptime checks to monitor the availability and latency of your services.
+
+So far, there is a 100 percent uptime with no outages.
+
+Latency is actually one of the four golden signals called out in Google's Site Reliability Engineering, or SRE book.
+
+SRE is a discipline that applies aspects of software engineering to operations whose goals are to create ultra scalable and highly reliable software systems. This discipline has enabled Google to build, deploy, monitor, and maintain some of the larger software systems in the world. I've linked the SRE book and the slides of this module.
+
+<br>
+
+<img src="../assets/slo_alerts.png" alt="SLO Alerts" width="50%" height="50%">
+
+<br>
+
+Your SLO will be more strict than your SLA. So it is important to be alerted when you are not meeting an SLO because it's an early warning that the SLA is under a threat.
+
+Here's an example of what creating an alerting policy looks like. On the left, you can see an HTTP check condition on the `summer01` instance. This will send an e-mail that is customized with the content of the documentation section on the right.
 
 <br>
 
 ### Activity Intro: Cost Estimating & Planning
 
+In this design activity, use Google Cloud's pricing calculator to create an initial estimate for deploying your case study application.
+
+The pricing calculator gives you a form for each service, which you fill out to estimate the cost of using that service.
+
+<br>
+
+<img src="../assets/custom_sql_example.png" alt="custom sql example" width="50%" height="50%">
+
+<br>
+
+For example, in this screenshot, I calculate the cost of one custom SQL instance with four cores, 16 gigabytes of RAM, and 500 gigabytes of SSD storage. This could represent the orders database of my online travel application. Some of these estimates aren't easy to generate because you might not know how much data your storage and database services need, and how much compute your deployment platforms require.
+
+However, it can be more challenging to estimate things like network egress or the number of reads and writes. Start with a rough estimate and refine it as your capacity plans improve.
+
+Refer to activity 13 in your workbook for similar cost estimates for your case study.
 
 <br>
 
 ### Activity Review: Cost Estimating & Planning
 
+In this activity, you were asked to use the Google Cloud pricing calculator to estimate the cost of your case study application.
+
+<br>
+
+<img src="../assets/example_sql_cost.png" alt="" width="50%" height="50%">
+
+<br>
+
+Here is a rough estimate for the database applications of my online travel portal, Click Travel. I adjusted my orders database to include a failover replica for high availability and came up with some high level estimates for my other services. My inventory services uses Cloud storage to store JSON data stored in text files.
+
+Because this is my most expensive service, I might want to reconsider the storage class or configure Object Lifecycle Management.
+
+Again, this is just an example and your cost would depend on your case study.
 
 <br>
 
 #### Lab Intro: Monitoring Applications in Google Cloud
 
+We started this course with a discussion on defining SLOs and SLIs for your services. This helps with the detailed design and architecture and helps developers know when they're done implementing a service.
+
+However, the SLIs and SLOs aren't very useful if you don't monitor your applications to see whether you are meeting them. That's where the monitoring tools come in. In this lab, you will see how to use some of these tools.
+
+Specifically, you will examine logs, view profile information, explore tracing, monitor your resources using dashboards, and create uptime checks and alerts.
 
 <br>
 
 #### Lab Review: Monitoring Applications in Google Cloud
 
+In this lab, you saw how to monitor your applications using built-in Google Cloud tools. First, you deployed an application to App Engine and examined Cloudlocks. Then you viewed profile information and explored Cloud Trace. Last, but not least, you monitored your applications with dashboards and created uptime checks and alerts. You can stay for our lab walk-through, but remember, Google Cloud's user interface can change, so your environment might look slightly different.
+
+So the first thing we're going to do is Activate Cloud Shell and then we're going to use that to download a sample app from GitHub. So I'm just going to click continue, because this is a new project, and I like to open this in a new window just so I have a little bit more space. That's just telling us that the Cloud SDK is pre-installed, that's great, and I'm going to wait for the machine to be provisioned. I'm going to create a directory, navigate to that directory, and then clone a simple Python Flask application from GitHub.
+
+So let me just make that directory, going to navigate to that directory, and then I'm going to git clone from the same repository that we saw in the previous lab.
+
+So this is not been completed, so let me change directories to that, and then I'm also going to launch the code editor, and in here, I am also going to navigate through courses, design-process, to this application.
+
+And here we can see the main file.
+
+So what I'm going to do now is I'm going to make some modifications to the main file because I want to use the Google Cloud profile. The first thing I'm going to do is import the profiler. I'm going to specify that on line 2, import profiler, and this allows the profiler to monitor the resources the application uses.
+
+Now I'm also going to, after the main function, add a code snippet to start the profiler. So let me go down here, and maybe add this on line 13, and then they're going to try to add that. And now I'm going to confirm that the code in here matches what is shown in the lab instructions, and that looks good to me. So this code simply turns the profiler on and once the profiler is on, it starts reporting application metrics to Google Cloud.
+
+Now, we also have to add the profiler to, the profiler library, I should say, to our requirements.txt. So let me go do that, I'm going to open the requirements.txt, and on line 2, I'm just going to specify that we're going to use the Google Cloud profiler.
+
+And so I've added it everywhere. Now, the last thing I need to do is enable it for the project. We can do that directly in Cloud Shell.
+
+So I'm just going to clear this to give myself more space and I'm going to run the command and lab instructions to enable the cloud profiler from the Google APIs. So let me run that, and once that has been completed, we're going to test the program by first installing the requirements and then starting the program.
+
+And there we can see the Google profiler in here, that's successfully built, and let's test that. Now, within Cloud Shell, I have the web preview option to preview this import 8080.
+
+And if I do that, we see that the program is currently working and it's just displaying, HELLO GCP.
+
+So that's it for task one. Now, in task two, we're going to take this application and deploy it to an App Engine application.
+
+So let me go back, we are going to stop this.
+
+And I'm now going to create a new file, the app.yaml, which we did similarly in the previous lab, so I'm just going to, oops, right click here on this folder, New File, app.yaml.
+
+And the minimum that we need to specify in here is the runtime. So I'm going to specify python, then Save those changes, and now we're going to start off by specifying the region where we want this app to be created. So I'm going to use the gcloud app create region us-central1, and that's now creating that for our project in that region. And once that's up and running, we're going to deploy our app.
+
+Okay, so now I can deploy it and we're going to wait for that to complete. So the app has been deployed, so let's go to the Cloud Console to view it. So I'm just going to navigate to the Cloud Console, can make this a bit smaller here. And in the navigation menu, I'm going to go to App Engine. Collapse these two so I have a bit more space, and we currently only have one version, and here's our application, and if I click on that, we should see the same page we saw earlier, Hello GCP. And I can refresh this a couple times now to start generating some traffic and we're going to do a little bit more of that in a second for the profiler. But first, let's go to task three and examine the Cloud Locks.
+
+So for that, I'm going back to App Engine, and I'm going to click on Versions.
+
+Here is my version that's serving all of the traffic. And if I go to the right under Diagnose, tools, I'm going to leverage Logs.
+
+And we'll see here some of the requests I've been making, and we will also see here that the Stackdriver profiler agent has started and has created a profile, so we can see that that has been successful.
+
+So now we can move on to task four and view the profiler information. So I can go to the navigation menu, scroll down to Operations, and here is the Profiler.
+
+So this gray bar here at the top represents the total amount of CPU time used by the program. And the bars below that represent the amount of CPU time used by the program's function relative to the total. At this point there's no traffic, really, so the chart is not very interesting. So what we're going to do now is we're going to throw some load at the application. We're going to do that by creating a virtual machine using Compute Engine that is in a different region than our App Engine app, and then we will use Bench to create some traffic on here.
+
+So let me go to the navigation menu, go to Compute Engine, and I'm going to click Create.
+
+And in here now, we're going to just choose a different region.
+
+So instead of us-central1, we're going to place this in, let's say, europe-west1, and then I'm just going to click Create.
+
+And once this virtual machine is up and running, we're going to SSH to this instance. We're going to run sudo apt update and then also install apache2 utils. So we go to SSH and resize this window a little bit.
+
+And then we're going to go ahead and run that and then use Apache Bench to generate the traffic. So first, I'm going to update.
+
+Then install Apache Bench.
+
+And when I run the Apache Bench command now, I'm going to run it 1,000 times, 10 requests at a time, but I need the site, the HTTPS address, for my App Engine application. This is always in the form of, by default, of project ID.appspot.com, so I could just use that, or I am going to go back and just grab it in my browser, I still have it in there. And it's important that you have the slash at the end. So I'm going to run that, and we can run that a couple times to just generate some traffic. It might take a while for the profiler to show something very interesting. But if you generate enough traffic, and again, you might have to try just a couple times for the information to start showing up, you will definitely see him some more interesting graphs, that again, where you have these bars. And each bar represents a function and the width of the bars represent how much CPU time each function consumed, so I'm just going to keep generating some more traffic. I'll look at the profiler and then move on to task five. All right, so I've generated some more traffic. So I think it's time to go back to the Cloud Console, and from the navigation menu, I'm going to go back to Profiler, and indeed, this looks a lot more interesting. So again, each of these bars is a function and the width of the bar represents the amount of CPU time that the program has consumed for each of those functions.
+
+So that finishes task four, so it's time to move on to task five where we're going to explore Cloud Trace.
+
+So every request to your application is added to a trace list. So let's go to the navigation menu and as well under operations go to trace.
+
+So this is an overview screen and it shows recent requests allows you to create reports to analyze traffic. But because our program is new and really only has one page is not very interesting but in a real lab, there will be lots of useful information in here.
+
+So I'm going to first click on the trace list and this is going to show a history of the requests and their latency. So here are all of the different requests. I've made just over the last couple of minutes. I can see all the latency. Some of them definitely took a little bit longer and I Also see all of them here and there latency so we could do now is I could go back to my SSH window of my virtual machine. I could just go ahead and generate more and more traffic and I'm going to do that. I'm going to come back and look at this Trace list again.
+
+So I've run the Apache bench command a couple more times. And what I did is I've actually changed it and you could do that to to just play a little bit with the values of N and C. So I'm requesting it 10,000 times and a hundred times a time.
+
+So now let me go in here and reload my Trace list and now you can see that I have a lot more requests and because I'm requesting so many do so many question the same time some of them certainly have a higher latency. So again, you could keep playing with this. Keep in mind, the lab is only open for so long. But this is just to give you an idea of Trace and how to use the Trace lists.
+
+I'm now going to move on to Task 6 where we're going to monitor resources using dashboards. So in the Cloud Console, I'm going to navigate to Monitoring which again is under the Operations section.
+
+And what this is gong to do is it's going to first set up a Workspace for us. So let's wait for this to complete.
+
+So the Workspace is now established, so we get this Welcome page here and we can now use the navigation bar over here on the left. So first I'm going to head to Dashboards and here we can see Dashboards for different resources. It's currently not showing GC instances. We might have to refresh and wait for a while it to come back. For now let's just go to App Engine and here we see our project and our application. And I can click on that to just see a dashboard for our application. Now it's just just showing me some responses on HTTP. I can also go to SYSTEM and DATASTORE and look at a couple different options or I could actually go ahead and create my own custom dashboard. So if I go back to Dashboards, I could also click CREATE DASHBOARD, give it a name, My Dashboard.
+
+And since it's currently not showing GC instances, let's just create something ourself. So dashboard is just sort of a canvas and you just add Charts to it. So I'm going to look for GCE VM instance. There we go, and I'm going to select CPU utilization.
+
+No, I only have one instance, so that is the one shown here. And here I get a little bit idea of what kind of load the Apache Bench command has put in my instance that I have. So obviously, when I run the command there's high utilization than when I don't, you can see that here. And I could put other things in here like Filters or Group this or I could just save it and have this chart. So here we can now see my CPU utilization, and I could create other charts in here that might be interesting.
+
+Now, that's it for Task 6, so let's move to Task 7 where we're going to create uptime checks and alerts. So here in the left hand side I'm going to click on Uptime checks and CREATE UPTIME CHECK. Now we're just going to give it a name, so let's make this the Uptime Check for our App Engine application. The check type is going to be HTTPS. We're just going to use a resource by URL and now I need to put in the Hostname and then .appspot.com. So I'm just going to grab that again, I'm navigating back to the browser where I have this app open already and put that in here. I already set this to HTTPS. And this is the path, so I can remove that up here and then I can just say, sure, check every minute. And I could now test this to see this working, response okay. Great, and then I can Save that.
+
+Now it's saying, hey, great, we've created this uptime check, but do you also want to create an alert policy? This is actually pretty useful because if for whatever reason you have some down time in your application and you're not currently looking at this uptime check, you won't be notified unless you create a policy. So let's create an alert policy.
+
+So it's already looking at that and making sure that's uptime.
+
+So this is the uptime check sort of metric itself the condition so I can just give that a name. Say My Uptime Alert.
+
+Or actually the, sorry, the lab instructions are saying, Uptime Check Alerts. So let's do that because a lot of times the scores that we're giving the labs require that you follow the instructions.
+
+And then I'm going to, this is the, sorry, this is the condition. I can also put that same name in here and then I could have several conditions. So if anything else is going on and I could say, hey, it's either an or or an and condition with these triggers. And then really importantly, optional, but important you should add a notification channel. So if I click on that in here you have different types. So you could use, for example, Email and you could send yourself an email. I don't really recommend putting your own email in here. You could and test it, but the App Store not going to go down until this project is deleted and then you might get tons of emails that you may not like. So as an example, I can just put in the email from this qwiklabs project and add that.
+
+And then also importantly is to actually put in some documentation. So whoever gets this email, what should they be doing when they receive this alert? I'd be very specific, I'd have the actual disaster plan in here, right? If this application goes down, do XYZ, notify these people, do that. So that's really what you want to put into the documentation. So I'm just going to go ahead and save that because that's required for the scoring that we have in here.
+
+And actually what you can do is you could now go ahead and disable the application and just see that the uptime check will then fail. So let's actually look at the uptime check. Currently, if I go to the up time check, we see these different continents from where we're checking. This uptime check, it's working from everywhere. I can click on the name to actually get more information. I see so far it's been 100% uptime. I see the latency and I can drill down into that by looking at the latency from different regions. So here we can see this is actually being tested from different regions, specifically in these different continents. We have different regions from where we're checking this and here we can see our overall configuration one more time. We also see that we have an Alert Policy and we could create some other Alert Policies. So let's go ahead and disable the application. So I'm going to go into the navigation menu and go back to App Engine.
+
+All right, so here I am on App Engine, since I'm going to scroll down and go to Settings. And I'm going to click Disable application. Now for safety reasons, it's telling me that I need to type in the name. So let's type in the App ID, I can actually copy that and click Disable. So this is now getting disabled and now I can go back to the Dashboard. And if I try that URL, we see we get a 404. Great, that's what we're trying to replicate. So let me go to the navigation menu and let's go back to Monitoring and head to our Uptime check. And we're going to wait until this check is run again, which keep in mind, is being run every minute and see that this should then be failing.
+
+Okay, so here we can see it's already failing, only took a couple seconds. In Europe it's failing, here one out of three tests have failed, and if I just navigate to Alerting and back to Uptime checks, I can see, what? All of North America, all of South America, Asia Pacific, probably needs to run one more time. If I go in here now, we see the Percent Uptime is already down over the last hour. My Uptime Latency Zone and here apac-singapore's the last region and if we refresh there we go, all of these have failed. So if I go to Alerting, I see that I have my Alert policy. They should be firing any moment now to send me an actual alert depending on the the conditions that are defined in this alert, which is just at what point does it actually send that alert? And if you've put in your own email address, you will actually be getting that alert.
+
+So we could refresh this a couple times and wait for that and once you actually see that the incidence fired or you get the alert, you do want to go back here and edit the notification channel of this alert. And remove your email address so that you don't accidentally get any spam about this failing in the future because it's going to keep failing so you will keep getting alerts.
+
+So you can do that in here by just editing this.
+
+And clicking the trash icon next to the email and then clicking Save. And then you could also go to the Uptime check and delete the Uptime check itself, as well, just for safety so that, again, you're not being notified about this. And that's the end of the lab.
 
 <br>
 
 ### Module Review
 
+In this module, you learned about managing new versions of your microservices using rolling updates, canary deployments, and blue green deployments.
+
+It's important when deploying microservices that you deploy new versions with no downtime, but also that the new versions don't break the clients that use your services.
+
+You also learned about cost planning and optimization and you estimated the cost of running your case study application. You finished the module by learning how to leverage the monitoring tools provided by Google Cloud.
+
+These tools can be invaluable for managing your services and monitoring your SLIs and SLOs.
 
 <br>
 
 ### Reading: What's Next? Get Certified
 
+What’s Next? Get Certified
+
+Depending on your planned career path, there are different learning paths and certifications that you can pursue. The Architecting with Google Cloud: Design & Process course that you have just completed forms part of the following learning paths:
+
+[Cloud Architect learning path](https://cloud.google.com/training/cloud-infrastructure#cloud-architect-learning-path)
+
+**Cloud Architects** have a thorough understanding of cloud architecture. They design, develop, and manage robust and scalable cloud architecture solutions. The next course in this learning path is [Getting started with Google Kubernetes Engine](https://google.qwiklabs.com/courses/1574), where you will explore how to implement solutions using Google Kubernetes Engine (GKE).
+
+The Cloud Architect learning path aims to assist you in obtaining the **Professional Cloud
+Architect** certification. Complete the curated quests for further hands-on learning and to earn
+Google Cloud skill badges. The final course in this learning path is [Preparing for the Professional Cloud Architect Examination](https://google.qwiklabs.com/courses/1491). You will analyze use cases, identify technical watchpoints, and develop proposed solutions. You can test your abilities with hands-on labs and with sample questions similar to those on the exam.
+
+[Cloud DevOps Engineer learning path](https://cloud.google.com/training/application-development#cloud-devOps-engineer-learning-path)
+
+Cloud DevOps Engineers are responsible for maintaining the efficient operations of the full software delivery pipeline. They also oversee that production balances both service reliability and delivery speed. The next course in this learning path is [Logging, Monitoring, and Observability in Google Cloud](https://google.qwiklabs.com/courses/1597) where, guided by the principles of Site Reliability Engineering (SRE), you will learn the techniques for monitoring, troubleshooting, and improving infrastructure and application performance in Google Cloud.
+
+The Cloud DevOps Engineer learning path also has a series of quests that enable you to earn Google Cloud skill badges as you progress on your way to the **Professional Cloud DevOps Engineer** certification.
 
 <br>
 
 ### Reading: Workbook Example Solution
 
+[Sample Workbook | Architecting with Google Cloud: Design and Process v2.0.3](../assets/Architecting_GoogleCloud:Design_and_Process_v2.0.3.pdf)
 
 <br>
