@@ -62,6 +62,7 @@
     - [Activity Review: Disaster Planning](#activity-review-disaster-planning)
     - [Review](#review-5)
   - [Module Overview: Security Concepts](#module-overview-security-concepts)
+    - [Security Concepts](#security-concepts)
     - [Securing People](#securing-people)
     - [Securing Machine Access](#securing-machine-access)
     - [Network Security](#network-security)
@@ -70,6 +71,8 @@
     - [Activity Review: Modeling Secure Google Cloud Services](#activity-review-modeling-secure-google-cloud-services)
     - [Review](#review-6)
   - [Module Overview: Managing Versions & Cost Control](#module-overview-managing-versions--cost-control)
+    - [Managing Versions](#managing-versions)
+    - [Cost Planning](#cost-planning)
     - [Monitoring Dashboards](#monitoring-dashboards)
     - [Activity Intro: Cost Estimating & Planning](#activity-intro-cost-estimating--planning)
     - [Activity Review: Cost Estimating & Planning](#activity-review-cost-estimating--planning)
@@ -2866,31 +2869,235 @@ The key file contains the Private Key and JSON Format, which I just discussed.
 
 In our previous module, we talked about networks, but didn't get into a lot of network security concepts. Let's do that now.
 
-First, I recommend removing external IPs to prevent access to machines from outside their network whenever possible. Several options are available for securely communicating with VMs that do not have public IP addresses. These services do not have a public IP address because they are deployed to be consumed by other instances in the project, or maybe through dedicated interconnect options. However, for those instances that do not have an external IP address, it can be a requirement to gain external access, for instance, for updates or patches to be applied. The options for accessing the VMs include a bastion host for external access to private machines, Identity-Aware Proxy to enable SSH access or Cloud NAT to provide egress to the Internet for internal machines. The diagram on the right shows an external client accessing Compute Engine resources via a bastion host. The host is behind a firewall where access can be filtered. Whichever method you choose, all internet traffic should terminate at a load balancer, third-party firewall or API Gateway or through Cloud IAP. That way, internal services cannot be launched and get public IP addresses. Now, VM instances that only have internal IP addresses can use private Google access to access Google services that have external IP addresses. The diagram on the right shows a Compute Engine instance accessing a Cloud storage bucket using its internal IP address. Private Google access must be enabled when creating the subnet. You can achieve this either with the G Cloud command shown here or through the Cloud Console. Regardless of whether you're VM instances have public IP addresses, you should always configure a firewall rules to control access. By default, ingress on all ports is denied and all egress is allowed. It's your responsibility to define separate rules to allow or deny access to specific instances for specific IP ranges, protocols, and ports. This graphic shows some scenarios where firewall rules can be configured. Egress from Compute Engine to external servers is the first scenario. For ingress, firewall rule should be configured if direct access to an instance is being provided or if via a load balancer. The right-hand graphic shows the scenario of VM instance to instance communication. Firewall rules should be considered here to control access also. Remember, you're still responsible for application level security. If you need to manage APIs, you can use Cloud Endpoints. Endpoints is an API management gateway that helps you develop, deploy, and manage APIs on any Google Cloud backend. It provides functionality to protect and monitor your public APIs, control who has access, using, for example, Auth0 and validate every call with a JSON Web Token signed with the service account private key. Cloud Endpoints also integrates with Identity Platform for authentication. All Google Cloud Service Endpoints use HTTPS. I recommend that you use TLS for your service endpoints and it is your responsibility to configure your service endpoints for TLS. When configuring load balancers, only ever create secure front ends. This dialog shows the configuration of a front end and the protocol selected is HTTPS, with the certificate also being selected. Google provides Infrastructure DDoS support through global load balancers at level 3 and level 4 traffic. If you have enabled CDN, this will also protect backend resources because a DDOS results in a cache hit instead of hitting your resources as shown on the right. We already mentioned Google Cloud armor in the networking module. For additional features over the built-in DDoS protection, you can use Google Cloud armor to create network security policies. For example, you can create allow lists that allow known slash required addresses through and deny lists to block known attackers. This dialog shows a typical security policy configuration where you begin by selecting it as an allow list or a deny list with allow or deny for the rule. If it's a deny, the appropriate action in this example should be a 403 error. In addition to layer 3 and layer 4 security, Google Cloud armor supports layer 7 application rules. For example, predefined rules are provided for cross-site scripting, XSS, and SQL injection attacks. Google Cloud armor provides a rules language for filtering request traffic. As an example, consider the first expression on this slide. In IP range origin.ip 9.9.9.0/24. In this case, the expression returns true if the origin IP and our request is within the 9.9.9.0/24 range. The second line, request dot headers cookie contains 80 equals blah returns true if the cookie 80 with value blah exists in the request header and the third line is true if the origin region code is AU. The expressions can be combined logically with logical AND, and OR. The expressions are all assigned to an allow or deny rule that is then applied to incoming traffic.
+<br>
+
+<img src="../assets/remove_external_ips.png" alt="Remove External Ips" width="50%" height="50%">
+
+<br>
+
+First, I recommend removing external IPs to prevent access to machines from outside their network whenever possible.
+
+Several options are available for securely communicating with VMs that do not have public IP addresses. These services do not have a public IP address because they are deployed to be consumed by other instances in the project, or maybe through dedicated interconnect options.
+
+However, for those instances that do not have an external IP address, it can be a requirement to gain external access, for instance, for updates or patches to be applied. The options for accessing the VMs include a bastion host for external access to private machines, Identity-Aware Proxy to enable SSH access or Cloud NAT to provide egress to the Internet for internal machines.
+
+The diagram on the right shows an external client accessing Compute Engine resources via a bastion host. The host is behind a firewall where access can be filtered. Whichever method you choose, all internet traffic should terminate at a load balancer, third-party firewall or API Gateway or through Cloud IAP. That way, internal services cannot be launched and get public IP addresses.
+
+<br>
+
+<img src="../assets/private_access.png" alt="Private Access w/ internal address" width="50%" height="50%">
+
+<br>
+
+Now, VM instances that only have internal IP addresses can use private Google access to access Google services that have external IP addresses. The diagram on the right shows a Compute Engine instance accessing a Cloud storage bucket using its internal IP address.
+
+Private Google access must be enabled when creating the subnet. You can achieve this either with the gcloud command shown here or through the Cloud Console.
+
+Regardless of whether you're VM instances have public IP addresses, you should always configure a firewall rules to control access.
+
+<br>
+
+<img src="../assets/firewall_rules.png" alt="Firewall Rules" width="50%" height="50%">
+
+<br>
+
+By default, ingress on all ports is denied and all egress is allowed. It's your responsibility to define separate rules to allow or deny access to specific instances for specific IP ranges, protocols, and ports.
+
+This graphic shows some scenarios where firewall rules can be configured. Egress from Compute Engine to external servers is the first scenario. For ingress, firewall rule should be configured if direct access to an instance is being provided or of via a load balancer. The right-hand graphic shows the scenario of VM instance to instance communication.
+
+Firewall rules should be considered here to control access also. Remember, you're still responsible for application level security.
+
+<br>
+
+<img src="../assets/cloud_endpoints.png" alt="cloud endpoints" width="50%" height="50%">
+
+<br>
+
+If you need to manage APIs, you can use Cloud Endpoints. Endpoints is an API management gateway that helps you develop, deploy, and manage APIs on any Google Cloud backend. It provides functionality to protect and monitor your public APIs, control who has access, using, for example, Auth0 and validate every call with a JSON Web Token signed with the service account private key.
+
+Cloud Endpoints also integrates with Identity Platform for authentication.
+
+<br>
+
+<img src="../assets/restrict_access.png" alt="Restrict Access" width="50%" height="50%">
+
+<br>
+
+All Google Cloud Service Endpoints use HTTPS. I recommend that you use TLS for your service endpoints and it is your responsibility to configure your service endpoints for TLS. When configuring load balancers, only ever create secure front ends.
+
+This dialog shows the configuration of a front end and the protocol selected is HTTPS, with the certificate also being selected.
+
+<br>
+
+<img src="../assets/ddos_protection.png" alt="DDoS Protection" width="50%" height="50%">
+
+<br>
+
+Google provides Infrastructure DDoS support through global load balancers at level 3 and level 4 traffic. If you have enabled CDN, this will also protect backend resources because a DDoS results in a cache hit instead of hitting your resources as shown on the right.
+
+<br>
+
+<img src="../assets/cloud_armor.png" alt="cloud armor" width="50%" height="50%">
+
+<br>
+
+We already mentioned Google Cloud armor in the networking module. For additional features over the built-in DDoS protection, you can use Google Cloud armor to create network security policies.
+
+For example, you can create allow lists that allow known slash required addresses through and deny lists to block known attackers.
+
+This dialog shows a typical security policy configuration where you begin by selecting it as an allow list or a deny list with allow or deny for the rule.
+
+If it's a deny, the appropriate action in this example should be a 403 error.
+
+<br>
+
+<img src="../assets/cloud_armor_2.png" alt="Cloud Armor Layer 7" width="50%" height="50%">
+
+<br>
+
+In addition to layer 3 and layer 4 security, Google Cloud armor supports layer 7 application rules.
+
+For example, predefined rules are provided for cross-site scripting, XSS, and SQL injection attacks. Google Cloud armor provides a rules language for filtering request traffic.
+
+As an example, consider the first expression on this slide. In IP range `origin.ip 9.9.9.0/24`. In this case, the expression returns true if the origin IP and our request is within the `9.9.9.0/24` range.
+
+The second line, `request.headers['cookie'].contains('80=BLAH')` returns true if the cookie 80 with value blah exists in the request header and the third line is true if the origin region code is AU. The expressions can be combined logically with logical AND, and OR. The expressions are all assigned to an allow or deny rule that is then applied to incoming traffic.
 
 <br>
 
 ### Encryption
 
+Last, but certainly not least, let's go over encryption.
+
+<br>
+
+<img src="../assets/gcp_encryption.png" alt="Encryption" width="50%" height="50%">
+
+<br>
+
+Google Cloud encrypts customer data stored at rest by default, with no additional action required from users. A data encryption key orDEK using AES 256 Symmetric key is used, and the key itself is encrypted by Google using a key encryption key, KEK. This is so that the DEK could be stored local to the encrypted data for fast decryption, with no visible performance impact to the user.
+
+To protect the KEKs, they're stored in Cloud KMS. The keys are rotated periodically and automatically for added security.
+
+This diagram shows a simple app engine application that uses cloud storage. The data is encrypted using AES 256 using a DEK and decrypted transparently to the application when the data is read.
+
+<br>
+
+<img src="../assets/compliance_key_management.png" alt="Key management for compliance" width="50%" height="50%">
+
+<br>
+
+Now for compliance reasons, you may need to manage your own encryption keys rather than the automatically generated keys as just discussed. In this scenario, you can use Cloud Key Management Service or Cloud KMS to generate what are known as customer managed encryption keys, CMEK.
+
+These keys are stored in cloud KMS for direct use by cloud services. You can manually create the key using a dialogue similar to the one shown here and specify the rotation frequency, which defaults to 90 days. The keys you create can then be used when creating storage re sources such as disks or buckets.
+
+When you're required to generate your own encryption key or manage it on premises, Google Cloud supports customer supplied encryption keys CSEK. Those keys are kept on premises and not in Google Cloud. The Keys are provided as part of API service calls and Google only keeps the key in memory and uses it to decrypt a single payload or block of returned data. Currently, customer supplied encryption keys can be used with cloud storage and compute engine.
+
+<br>
+
+<img src="../assets/data_loss_prevention.png" alt="Data Loss Prevention API" width="50%" height="50%">
+
+<br>
+
+You should also consider the data loss prevention API to protect sensitive data by finding it and redacting it. Cloud DLP provides fast scalable classification and redaction for sensitive data elements like credit card numbers, names, Social Security numbers, US and Selected International Identify our numbers, phone numbers and Google Cloud credentials.
+
+Cloud DLP classifies this data using more than 90 pre defined detectors to identify patterns, formats and check sums and even understands contextual clues. Some of these are shown on the right. You can optionally redact data as well, using techniques like masking, secure hashing, tokenization, bucketing and format preserving encryption.
 
 <br>
 
 ### Activity Intro: Modeling Secure Google Cloud Services
 
+In this design activity, you'll draw a diagram that depicts your case study security requirements.
+
+Let me show you an example of what to draw.
+
+<br>
+
+<img src="../assets/modeling_security_example.png" alt="Modeling secure services" width="50%" height="50%">
+
+<br>
+
+This diagram illustrates a custom VPC network with two subnets in the US. Maybe US Central 1 is our primary region and US East 1 is our backup region. The firewall rules allow HTTPS ingress from the internal and SSH from known sources. Otherwise all other incoming traffic is disabled by the implied deny all ingress firewall rule that every VPC network has.
+
+Because we're allowing HTTPS from anywhere, it's useful to configure Google Cloud Armor on a global HTTP load balancer to block any denied IP addresses at the edge of Google Cloud's network. This is a simple design, but a great starting point because it allows us to grow our backends without changing our security design.
+
+Refer to Activity 12 in your workbook to create a similar diagram for your case study.
 
 <br>
 
 ### Activity Review: Modeling Secure Google Cloud Services
 
+In this activity, you were asked to draw a diagram depicting the security requirements for your case study.
+
+Here's the diagram that I drew for our online travel portal, Click Travel.
+
+<br>
+
+<img src="../assets/modeling_security_example_2.png" alt="Modeling secure services" width="50%" height="50%">
+
+<br>
+
+This is a similar design to what I showed you earlier. First, I configured Google Cloud Armor on a global HTTP load balancer to block any denied IP addresses.
+
+My Custom VPC network has subnets in US Central 1 for my American customers, and a backup subnet in US East 1, and a subnet in Europe West 2 for my European customers. My firewall rules only allow SSH from known sources. Although I allow HTTPS from anywhere, I can always deny IP addresses with Google Cloud Armor at the edge of Google Cloud's network.
+
+I also configured Cloud VPN tunnels to securely communicate with my on-premises network for my reporting service. Now, while my load balancer needs a public IP address, I can secure my backend services by creating them without external IP addresses.
+
+In order for those instances to communicate with the Google Cloud called database services, I enable private Google access.
+
+This enables the inventory, orders, and analytic services traffic to remain private while reducing my networking costs.
 
 <br>
 
 ### Review
 
+In this module, we covered how to secure our Google Cloud resources.
+
+This includes securing both the network and our stored data.
+
+We also covered how to secure people using IAM, Cloud Identity, and Identity Aware Proxy, and how we can secure our applications and machines using service accounts.
+
+Remember, security should be put first.
+
+Everything else will follow from this.
 
 <br>
 
 ## Module Overview: Managing Versions & Cost Control
+
+In this final module of this course, we cover application maintenance and monitoring.
+
+Maintenance is primarily concerned with how updates are made to running applications, the different strategies available, and how different deployment platforms support them.
+
+For monitoring, I discussed this vital error for Cloud native applications from two perspectives. First, I will talk about the cost perspective to make sure that resources are being best provisioned against demand. After all, why should you pay for resources that you don't need.
+
+Second, I will discuss how to implement monitoring and observability to determine and alert on the health of services and applications using Cloud Monitoring and Dashboards.
+
+This will also allow us to define Uptime Checks and use Cloud Monitoring Alerts to identify service outages.
+
+<br>
+
+### Managing Versions
+
+Let's begin by taking a look at version management.
+
+A key benefit of a microservice architecture is the ability to independently deploy microservices. This means that the service API has to be protected. Versioning is required and when new versions are deployed, care must be taken to ensure backward compatibility with a previous version. Some simple design rules can help, such as indicating the version in the URI and making sure you change the version when you make a backward incompatible change. Deploying new versions of software always carries risk. We want to make sure we test new versions effectively before going live and when ready to deploy a new version, we do so with zero downtime. Let me discuss some strategies that can help achieve these objectives.
+
+Rolling updates allow you to deploy new versions with no downtime. The typical configuration is to have multiple instances of a service behind a load balancer. A rolling update will then update one instance at a time. This strategy works fine if the API is not changed or is backward compatible or if it is okay to have two versions of the same servers running during the update. If you are using instance groups, rolling updates are a built-in feature. You just define the rolling update strategy when you perform the update.
+
+For Kubernetes, rolling updates are there by default. You just need to specify the replacement Docker image. Finally, for App Engine, rolling updates are completely automated.
+
+Use a blue/green deployment when you don't want multiple versions of a service to run simultaneously. Blue/green deployments use two full deployment environments. The blue deployment is running the current deployed production software while the green deployment environment is available for deploying updated versions of the software. When you want to test a new software version, you deploy to the green environment. Once testing is complete, the workload is shifted from the current, which would be the blue in this case to the new, the green environment. This strategy mitigates the risk of a bad deployment by allowing the switch back to the previous deployment if something goes wrong. For Compute Engine, you can use DNS to migrate requests while in Kubernetes, you can configure your service to route to new pods using labels, which is just a simple configuration change. App Engine allows you to split traffic which you explored in the previous lab of this course. Now, you can use canary releases prior to a rolling update to reduce risk. With a canary release, you make a new deployment with the current deployment still running. Then you sent a small percentage of traffic to the new deployment and monitor it.
+
+Once you have confidence in your new deployment, you can route more traffic to the new deployment until 100% is routed this way.
+
+In Compute Engine, you can create a new instance group and add it to the load balancer as an additional backend. In Kubernetes, you can create a new pod with the same labels as the existing pods. The service will automatically divert a portion of the request to the new pod.
+
+In App Engine, you can again use the Traffic Splitting feature to drive a portion of traffic to the new version.
+
+<br>
+
+### Cost Planning
 
 
 <br>
