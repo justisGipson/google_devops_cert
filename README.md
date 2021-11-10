@@ -23,7 +23,7 @@ This repo holds all the notes and whatever else is in the [Google Cloud DevOps P
 
 [Developing a Google SRE Culture](https://coursera.org/share/2f98aca2089140425349b6b07d88d5d8)
 
-[Reliable Google Cloud Infrastructure: Design and Process]()
+[Reliable Google Cloud Infrastructure: Design and Process](https://www.coursera.org/account/accomplishments/certificate/P4DRYAAK52QZ)
 
 [Logging, Monitoring and Observability in Google Cloud]()
 
@@ -36,7 +36,7 @@ This repo holds all the notes and whatever else is in the [Google Cloud DevOps P
 1. [GCP Fundamentals: Core Infrastructure](https://github.com/justisGipson/google_devops_cert/tree/main/GCP_fundamentals_core_infrastructure)
 2. [Developing a Google SRE Culture](https://github.com/justisGipson/google_devops_cert/tree/main/developing_google_sre_culture)
 3. [Reliable Google Cloud Infrastructure: Design and Process](https://github.com/justisGipson/google_devops_cert/tree/main/reliable_gcp_infrastructure_design_and_process)
-4. [Logging, Monitoring and Observability in Google Cloud]()
+4. [Logging, Monitoring and Observability in Google Cloud](https://github.com/justisGipson/google_devops_cert/tree/main/logging_monitoring_observability_in_gcp)
 5. [Getting Started with Google Kubernetes Engine]()
 
 
